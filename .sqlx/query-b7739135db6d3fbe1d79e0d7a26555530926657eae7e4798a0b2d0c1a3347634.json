@@ -1,0 +1,21 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT max(seq) AS \"last?: i64\" FROM audit_events",
+  "describe": {
+    "columns": [
+      {
+        "name": "last?: i64",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "b7739135db6d3fbe1d79e0d7a26555530926657eae7e4798a0b2d0c1a3347634"
+}

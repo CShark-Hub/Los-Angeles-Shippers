@@ -1,0 +1,134 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT a.id, a.question_id, a.reason_json, a.draft_answer, a.created_at, a.expires_at,\n                  q.project, q.class, q.user_id AS asker, u.role\n           FROM approvals a\n           JOIN questions q ON q.id = a.question_id\n           JOIN users u ON u.id = q.user_id\n           WHERE a.status = 'pending' AND a.expires_at > ?\n             AND COALESCE(q.project, 'portfolio') IN\n                 (SELECT up.project FROM user_projects up JOIN users me ON me.id = up.user_id\n                  WHERE up.user_id = ? AND up.approver = 1 AND me.role IN ('pm', 'tech_lead'))\n           ORDER BY a.created_at, a.id",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "name": "question_id",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "question_id"
+          }
+        }
+      },
+      {
+        "name": "reason_json",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "reason_json"
+          }
+        }
+      },
+      {
+        "name": "draft_answer",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "draft_answer"
+          }
+        }
+      },
+      {
+        "name": "created_at",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "name": "expires_at",
+        "ordinal": 5,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "expires_at"
+          }
+        }
+      },
+      {
+        "name": "project",
+        "ordinal": 6,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "class",
+        "ordinal": 7,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "class"
+          }
+        }
+      },
+      {
+        "name": "asker",
+        "ordinal": 8,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "user_id"
+          }
+        }
+      },
+      {
+        "name": "role",
+        "ordinal": 9,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "role"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "ac338dd4cadc71a7be75149975d90a997978ad4153fca9d3d8b324027958d912"
+}

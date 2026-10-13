@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE tokens SET last_used_at = ?\n             WHERE public_id = ? AND (last_used_at IS NULL OR last_used_at <= ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "fbdf1df92e9a79abc525a811c3becf8a759448f8ac4854b3914cfaa6a55d4c02"
+}

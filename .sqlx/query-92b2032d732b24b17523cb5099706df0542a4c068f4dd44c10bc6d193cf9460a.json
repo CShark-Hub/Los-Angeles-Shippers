@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE sessions SET revoked_at = ? WHERE token_public_id = ? AND revoked_at IS NULL",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "92b2032d732b24b17523cb5099706df0542a4c068f4dd44c10bc6d193cf9460a"
+}

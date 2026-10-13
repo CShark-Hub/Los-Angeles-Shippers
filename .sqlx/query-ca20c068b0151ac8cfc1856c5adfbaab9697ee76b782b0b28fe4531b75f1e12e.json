@@ -1,0 +1,74 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT status, access, access_limited_by, last_seen_at, quarantine_reason\n                 FROM probes WHERE project = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "status",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "access",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "access"
+          }
+        }
+      },
+      {
+        "name": "access_limited_by",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "access_limited_by"
+          }
+        }
+      },
+      {
+        "name": "last_seen_at",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "last_seen_at"
+          }
+        }
+      },
+      {
+        "name": "quarantine_reason",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "quarantine_reason"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "ca20c068b0151ac8cfc1856c5adfbaab9697ee76b782b0b28fe4531b75f1e12e"
+}

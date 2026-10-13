@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM idempotency_keys WHERE user_id = ? AND key = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "d00ae37ff498f3ad56c4c156db7c279d7090beb9409efc161afdc7d0fd27ba67"
+}

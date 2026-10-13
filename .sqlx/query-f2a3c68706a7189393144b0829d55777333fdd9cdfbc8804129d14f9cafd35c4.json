@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET status = 'delivered', judge_mode = ?, cost_usd = ?, duration_ms = ?,\n                     finished_at = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "f2a3c68706a7189393144b0829d55777333fdd9cdfbc8804129d14f9cafd35c4"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE approvals SET status = 'expired', decided_at = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "93d006a4f0aef17714c888ae11d716f47571a6e90434daab09376007a4de8bd5"
+}

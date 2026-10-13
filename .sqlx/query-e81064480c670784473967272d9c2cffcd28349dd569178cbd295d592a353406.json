@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET prompt_version = ?, text_redacted = COALESCE(?, text_redacted) WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "e81064480c670784473967272d9c2cffcd28349dd569178cbd295d592a353406"
+}

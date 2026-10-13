@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT project, last_seen_at FROM probes\n         WHERE status != 'quarantined' AND last_seen_at < ? ORDER BY project",
+  "describe": {
+    "columns": [
+      {
+        "name": "project",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "last_seen_at",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "last_seen_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "109b3cfc239ebb1fe002ff7c30cb3bb0877f7c31626b6bdaa11579fc3dc3a7c7"
+}

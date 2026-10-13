@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT spent_usd FROM spend WHERE day = ? AND user_id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "spent_usd",
+        "ordinal": 0,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "spend",
+            "name": "spent_usd"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "172b3ddee38b0bddf8771d2650001273c66852258528e0421de142ea5a31a0e5"
+}

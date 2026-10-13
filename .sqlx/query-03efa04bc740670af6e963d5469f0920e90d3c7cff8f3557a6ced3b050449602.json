@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT status, quarantine_reason, registered_at FROM probes WHERE project = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "status",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "quarantine_reason",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "quarantine_reason"
+          }
+        }
+      },
+      {
+        "name": "registered_at",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "registered_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "03efa04bc740670af6e963d5469f0920e90d3c7cff8f3557a6ced3b050449602"
+}

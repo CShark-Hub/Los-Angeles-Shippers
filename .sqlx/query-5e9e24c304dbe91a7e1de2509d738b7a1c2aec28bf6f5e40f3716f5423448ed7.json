@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT a.payload_json FROM audit_events a JOIN questions q ON q.id = a.question_id\n         WHERE a.type = 'refused' AND q.created_at >= ? ORDER BY a.seq",
+  "describe": {
+    "columns": [
+      {
+        "name": "payload_json",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "5e9e24c304dbe91a7e1de2509d738b7a1c2aec28bf6f5e40f3716f5423448ed7"
+}

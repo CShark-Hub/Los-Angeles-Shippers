@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT cost_usd, judge_mode, prompt_version FROM questions WHERE id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "cost_usd",
+        "ordinal": 0,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "cost_usd"
+          }
+        }
+      },
+      {
+        "name": "judge_mode",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "judge_mode"
+          }
+        }
+      },
+      {
+        "name": "prompt_version",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "prompt_version"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "953b2ea38adc002fc03d56b2b87cbd391130af808a6d890e3bfb33a50a9dd3e2"
+}

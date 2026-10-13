@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT project FROM probes WHERE project = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "project",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "project"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "03f519f5852130704a41f5ca98c19590501e194c28a83e6155740b3c6260022a"
+}
