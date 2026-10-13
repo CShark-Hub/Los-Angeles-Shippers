@@ -1,0 +1,39 @@
+[package]
+name = "mercury-probe"
+description = "The probe next to a repository: sync, serve and dev modes"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+axum.workspace = true
+chrono.workspace = true
+flate2.workspace = true
+futures-util.workspace = true
+getrandom.workspace = true
+globset.workspace = true
+mercury-schema.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+rmcp.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_norway.workspace = true
+sha2.workspace = true
+sqlx.workspace = true
+tar.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["io-util", "sync", "time"] }
+
+[dev-dependencies]
+http-body-util.workspace = true
+tempfile.workspace = true
+# a paused clock, for what waits for minutes
+tokio = { workspace = true, features = ["test-util"] }
+tower.workspace = true
+wiremock.workspace = true
+
+[lints]
+workspace = true
