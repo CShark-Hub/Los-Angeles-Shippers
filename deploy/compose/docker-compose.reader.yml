@@ -1,0 +1,71 @@
+# The `demo` preset's code reader (code_model): `code-reader` takes one request from a probe's `serve`
+# and forwards it to ONE upstream, OpenRouter, with zero data retention, and nothing else. It is the
+# only part of Mercury that sends code to a model, and only the code of a repository made for
+# demos: its route is the network's, not the code's (docs/security.md).
+#
+#   code-reader     the probe image in its `reader` mode: on `probes` (the probes and the core reach it)
+#                   and on `reader-out`; no volume, no disk; its key is the secret `reader_api_key`.
+#   reader-egress   the probe image in its `egress` mode, the egress proxy, with an allowlist of the one
+#                   upstream host, on `reader-out` and `egress`: the reader's only way out.
+#   reader-out      internal: no route but the proxy.
+#
+# Never in .env's default COMPOSE_FILE (the VM's): `just demo-local` adds it when secrets/reader_api_key
+# holds a key, and exports MERCURY_CODE_READER_URL and MERCURY_CODE_READER_MODEL, which the probes'
+# PROBE_CODE_READER_* lines read. Without them a probe whose manifest asks for code_model runs `code`.
+#
+# A company's copy names its own model host in READER_UPSTREAM_URL and in reader-egress/allowlist (the
+# one host of both), drops READER_ALLOW_OUTSIDE (only this preset may name an upstream outside your
+# network) and, when the host is inside your network, the proxy.
+services:
+  code-reader:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["reader"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the reader instead of waiting for a SIGKILL
+    environment:
+      READER_LISTEN: 0.0.0.0:7100
+      READER_UPSTREAM_URL: https://openrouter.ai/api/v1/chat/completions
+      READER_MODEL: anthropic/claude-4.6-sonnet-20260217
+      READER_KEY_FILE: /run/secrets/reader_api_key
+      READER_DAILY_USD: "1.00"                # its own cap, in memory: a restart starts the day at 0
+      READER_ALLOW_OUTSIDE: mock-repository   # only in this file: an upstream outside your network
+      HTTPS_PROXY: http://reader-egress:8888
+      https_proxy: http://reader-egress:8888
+      HOME: /tmp
+    secrets: [reader_api_key]
+    networks: [probes, reader-out]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "healthcheck", "7100"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  reader-egress:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["egress", "--listen", "0.0.0.0:8888", "--allow", "/etc/egress/allowlist"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the proxy instead of waiting for a SIGKILL
+    volumes:
+      - ./reader-egress/allowlist:/etc/egress/allowlist:ro   # the one upstream host
+    networks: [reader-out, egress]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "reach", "127.0.0.1:8888"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+networks:
+  reader-out: { internal: true }   # code-reader and reader-egress alone
+
+secrets:
+  reader_api_key: { file: ./secrets/reader_api_key }

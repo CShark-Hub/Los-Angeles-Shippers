@@ -1,0 +1,32 @@
+# In place of docker-compose.repos.yml: one probe in dev mode on the synthetic fixture repository,
+# mounted read-only from the clone. No sync, no GitHub token, and no network but `probes`. It
+# registers with the core with the probe token the core reads too (`just compose-up` writes it).
+services:
+  probe-delta:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["dev", "--repo", "/fixture", "--meta", "/fixture/meta", "--listen", "0.0.0.0:7000"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the probe instead of waiting for a SIGKILL
+    environment:
+      PROBE_TOKEN_FILE: /run/secrets/probe_delta_token
+      PROBE_CORE_INTERNAL_URL: http://core:8081
+      # nothing until a manifest says code_model, and then only with a reader: empty means none
+      PROBE_CODE_READER_URL: ${MERCURY_CODE_READER_URL:-}
+      PROBE_CODE_READER_MODEL: ${MERCURY_CODE_READER_MODEL:-}
+    secrets: [probe_delta_token]
+    volumes:
+      - ../../tests/fixtures/repo-delta:/fixture:ro
+    networks: [probes]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "healthcheck", "7000"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+secrets:
+  probe_delta_token: { file: ./secrets/probes/delta.token }
