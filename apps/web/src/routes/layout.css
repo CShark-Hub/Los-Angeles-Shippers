@@ -1,0 +1,258 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Components use only these, so a look is one block of variables, chosen at build
+ * time with PUBLIC_MERCURY_THEME (it sets data-theme on <html>): `demo`, or the neutral default.
+ *
+ * Surfaces come in layers, from the back: the page (`bg`), the side panel (`sidebar`), a card
+ * (`surface`), what sits raised above a card (`surface-raised`: the composer, a popover), and an
+ * inset or hovered area inside a card (`surface-2`, then `surface-3` for a hover on an inset).
+ * Edges come in steps: `border-subtle` between rows inside a card, `border` around a card,
+ * `border-control` around a button, and `border-strong` around a field, 3:1 against every surface.
+ */
+:root {
+	color-scheme: light;
+	--bg: #f4f5f8;
+	--sidebar: #fbfbfd;
+	--surface: #ffffff;
+	--surface-raised: #ffffff;
+	--surface-2: #f1f3f6;
+	--surface-3: #e8ebf0;
+	--border-subtle: #edf0f4;
+	--border: #e2e5eb;
+	--border-control: #d3d8e1;
+	--border-strong: #838c9e;
+	--text: #0d1220;
+	--text-2: #434c5e;
+	--text-3: #5d6678;
+
+	--accent: #5145d6;
+	--accent-hover: #4338ca;
+	--accent-soft: #eeedfd;
+	--accent-text: #4338ca;
+	--on-accent: #ffffff;
+	--accent-2: #19b98a;
+	--on-accent-2: #0f1422;
+
+	--success: #0e9f6e;
+	--warning: #a8480a;
+	--danger: #c0201f;
+	--info: #2563eb;
+	--ring: var(--accent-text);
+
+	/* Depth: a short shadow offset downwards, for a control, a card and what is raised above a card. */
+	--elevation-control: 0 1px 2px rgb(15 20 34 / 0.06);
+	--elevation-card: 0 1px 2px rgb(15 20 34 / 0.04), 0 2px 8px -2px rgb(15 20 34 / 0.06);
+	--elevation-raised: 0 1px 3px rgb(15 20 34 / 0.06), 0 10px 28px -8px rgb(15 20 34 / 0.16);
+	--elevation-accent: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 1px 2px rgb(49 40 160 / 0.28);
+	/* The browser's own surfaces in the look's colours. */
+	--selection: rgb(81 69 214 / 0.18);
+	--scrollbar: #c3c8d2;
+
+	/*
+	 * Chart marks: what became of a question, one colour each, in the order a stack is built
+	 * (checked for colour vision deficiency and against the cards, in both looks); the neutral
+	 * bar of a ranking; the hairline grid. Text never wears these.
+	 */
+	--series-1: #2a78d6;
+	--series-2: #eda100;
+	--series-3: #4a3aa7;
+	--series-4: #eb6834;
+	--series-other: #b4bac6;
+	--bar: #8f98aa;
+	--grid: #eceef2;
+}
+
+/* The demo look: dark navy, with the indigo of the mark and a mint accent. */
+[data-theme='demo'] {
+	color-scheme: dark;
+	--bg: #0a0b0f;
+	--sidebar: #0d0f15;
+	--surface: #12151d;
+	--surface-raised: #161a24;
+	--surface-2: #191d28;
+	--surface-3: #212633;
+	--border-subtle: #1c202b;
+	--border: #242a37;
+	--border-control: #303747;
+	--border-strong: #666e82;
+	--text: #e9ebf1;
+	--text-2: #a9b0bf;
+	--text-3: #8891a4;
+
+	--accent: #6259e0;
+	--accent-hover: #5248d4;
+	--accent-soft: rgb(124 116 240 / 0.15);
+	--accent-text: #aca6fb;
+	--on-accent: #ffffff;
+	--accent-2: #4fe3b4;
+	--on-accent-2: #0a0b0f;
+
+	--success: #34d399;
+	--warning: #fbbf24;
+	--danger: #f87171;
+	--info: #60a5fa;
+	--ring: var(--accent-text);
+
+	/* On navy a shadow vanishes: depth comes from the layers and a faint light along the top edge. */
+	--elevation-control: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 1px 2px rgb(0 0 0 / 0.35);
+	--elevation-card: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 1px 3px rgb(0 0 0 / 0.4);
+	--elevation-raised: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 14px 36px -10px rgb(0 0 0 / 0.75);
+	--elevation-accent: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 1px 3px rgb(0 0 0 / 0.45);
+	--selection: rgb(124 116 240 / 0.38);
+	--scrollbar: #313848;
+
+	--series-1: #3987e5;
+	--series-2: #c98500;
+	--series-3: #9085e9;
+	--series-4: #d95926;
+	--series-other: #4a5163;
+	--bar: #5f6779;
+	--grid: #1e222b;
+}
+
+@theme inline {
+	--color-bg: var(--bg);
+	--color-sidebar: var(--sidebar);
+	--color-surface: var(--surface);
+	--color-surface-raised: var(--surface-raised);
+	--color-surface-2: var(--surface-2);
+	--color-surface-3: var(--surface-3);
+	--color-border-subtle: var(--border-subtle);
+	--color-border: var(--border);
+	--color-border-control: var(--border-control);
+	--color-border-strong: var(--border-strong);
+	--color-text: var(--text);
+	--color-text-2: var(--text-2);
+	--color-text-3: var(--text-3);
+	--color-accent: var(--accent);
+	--color-accent-hover: var(--accent-hover);
+	--color-accent-soft: var(--accent-soft);
+	--color-accent-text: var(--accent-text);
+	--color-on-accent: var(--on-accent);
+	--color-accent-2: var(--accent-2);
+	--color-on-accent-2: var(--on-accent-2);
+	--color-success: var(--success);
+	--color-warning: var(--warning);
+	--color-danger: var(--danger);
+	--color-info: var(--info);
+	--color-ring: var(--ring);
+	--color-series-1: var(--series-1);
+	--color-series-2: var(--series-2);
+	--color-series-3: var(--series-3);
+	--color-series-4: var(--series-4);
+	--color-series-other: var(--series-other);
+	--color-bar: var(--bar);
+	--color-grid: var(--grid);
+
+	/* `shadow-control` a button, `shadow-card` a card, `shadow-raised` the composer and popovers,
+	   `shadow-accent` a filled button */
+	--shadow-control: var(--elevation-control);
+	--shadow-card: var(--elevation-card);
+	--shadow-raised: var(--elevation-raised);
+	--shadow-accent: var(--elevation-accent);
+}
+
+/*
+ * Shape and measure, the same in both looks: one radius per kind of thing (`rounded-chip`,
+ * `rounded-control`, `rounded-card`, `rounded-panel`), and the longest comfortable line of running
+ * text (`max-w-measure`), for prose inside a full-width card.
+ */
+@theme {
+	--radius-chip: 0.375rem;
+	--radius-control: 0.5rem;
+	--radius-card: 0.75rem;
+	--radius-panel: 1rem;
+	--container-measure: 76ch;
+}
+
+/*
+ * The type scale, in rem so that every size follows the person's text size (app.html opts into
+ * the system's text scale) and the hierarchy grows as one. Tailwind's own steps sit between
+ * these: `text-xs` 12px, `text-sm` 14px, `text-base` 16px, `text-lg` 18px, `text-xl` 20px (px at
+ * the default 16px root). The small roles keep the normal leading (1.5);
+ * `text-xs/normal` gives 12px the same.
+ *
+ * Roles: a page's title `text-xl` semibold; a card's title `text-compact` or `text-sm` semibold;
+ * body `text-sm`; an answer's prose `text-title` with relaxed leading; metadata `text-xs` and
+ * `text-2xs` in `text-text-3`. Digits that line up use `tabular-nums`.
+ */
+@theme {
+	/* 11px: labels, metadata, chips, captions */
+	--text-2xs: 0.6875rem;
+	--text-2xs--line-height: 1.5;
+	/* 13px: the main line of a dense card or row: its title, a value, a short lead */
+	--text-compact: 0.8125rem;
+	--text-compact--line-height: 1.5;
+	/* 15px: an answer's prose, the name heading a detail panel, and the figures beside it */
+	--text-title: 0.9375rem;
+	--text-title--line-height: 1.5;
+	/* 17px: the wordmark at the top of the sidebar */
+	--text-brand: 1.0625rem;
+	--text-brand--line-height: 1.5;
+	/* 22px: the value of a stat tile, on a 28px line */
+	--text-figure: 1.375rem;
+	--text-figure--line-height: calc(1.75 / 1.375);
+}
+
+body {
+	/* the page's own colour, under the side panel and every screen's panels */
+	background: var(--bg);
+	color: var(--text);
+	font-family: system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+::selection {
+	background: var(--selection);
+	color: var(--text);
+}
+
+input,
+textarea {
+	caret-color: var(--accent-text);
+}
+
+/*
+ * The focus indicator of every control a keyboard reaches: a solid outline in the ring colour, set
+ * off from the control so it shows on a filled button too, 3:1 or better against the page and the
+ * cards in both looks (`contrast.spec.ts` checks it).
+ */
+@utility focus-ring {
+	&:focus-visible {
+		outline: 3px solid var(--ring);
+		outline-offset: 2px;
+	}
+}
+
+/* A placeholder is text: the tertiary text colour, not the text colour at half strength. */
+::placeholder {
+	color: var(--text-3);
+	opacity: 1;
+}
+
+/* Scroll bars in the look's colours: thin, with no track of their own. */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar) transparent;
+}
+
+/* Whatever can be pressed shows the hand; something switched off keeps the arrow. */
+@layer base {
+	button:not(:disabled),
+	[role='button']:not([aria-disabled='true']),
+	summary,
+	select:not(:disabled),
+	label:has(input:not(:disabled)),
+	input[type='radio']:not(:disabled),
+	input[type='checkbox']:not(:disabled) {
+		cursor: pointer;
+	}
+
+	/* A key to press, named in a hint. */
+	kbd {
+		font-family: inherit;
+	}
+}
