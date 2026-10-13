@@ -1,0 +1,34 @@
+# The second project of `just demo-local`, `poison`: a probe in dev mode on the red team's repository
+# (tests/redteam/repo-poisoned), mounted read-only from the clone, beside the real repositories' pairs.
+# Its README and titles carry hidden instructions for AI agents, so the demo can show them withheld.
+# No sync, no GitHub token and no network but `probes`, like every `serve` probe. `just demo-local`
+# adds this file and writes the probe token the core reads too; the `demo` preset holds the project.
+services:
+  probe-poison:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["dev", "--repo", "/poisoned", "--meta", "/poisoned/meta", "--listen", "0.0.0.0:7000"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the probe instead of waiting for a SIGKILL
+    environment:
+      PROBE_TOKEN_FILE: /run/secrets/probe_poison_token
+      PROBE_CORE_INTERNAL_URL: http://core:8081
+      # nothing until its manifest says code_model, and then only with a reader: empty means none
+      PROBE_CODE_READER_URL: ${MERCURY_CODE_READER_URL:-}
+      PROBE_CODE_READER_MODEL: ${MERCURY_CODE_READER_MODEL:-}
+    secrets: [probe_poison_token]
+    volumes:
+      - ../../tests/redteam/repo-poisoned:/poisoned:ro
+    networks: [probes]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "healthcheck", "7000"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+secrets:
+  probe_poison_token: { file: ./secrets/probes/poison.token }

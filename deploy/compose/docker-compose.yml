@@ -1,0 +1,98 @@
+name: mercury
+
+services:
+  caddy:
+    image: ${MERCURY_REGISTRY}/mercury-web:${MERCURY_VERSION}   # the official Caddy image + the built SPA in /srv/web
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]   # the caddy binary carries it as a file capability; without it the binary won't start
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      MERCURY_SITE: ${MERCURY_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [edge]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  core:
+    image: ${MERCURY_REGISTRY}/mercury-core:${MERCURY_VERSION}
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the core instead of waiting for a SIGKILL
+    environment:
+      MERCURY_PUBLIC_ADDR: 0.0.0.0:8080
+      MERCURY_INTERNAL_ADDR: 0.0.0.0:8081
+      MERCURY_INTERNAL_ALLOW_CIDRS: ${MERCURY_PROBES_SUBNET:-172.30.10.0/24}   # the probes network below; add ,100.64.0.0/10 for tailnet probes
+      MERCURY_PUBLIC_ORIGIN: https://${MERCURY_DOMAIN}  # the only Origin accepted with the session cookie
+      MERCURY_TRUSTED_PROXY_CIDRS: ${MERCURY_EDGE_SUBNET:-172.30.9.0/24}   # the edge network below: only Caddy's X-Forwarded-For is believed
+      MERCURY_SESSION_TTL: 12h
+      MERCURY_DB: /data/mercury.db
+      MERCURY_CONFIG_DIR: /config
+    secrets: [openrouter_api_key]
+    volumes:
+      - core-data:/data
+      - ./config:/config:ro
+      - ./secrets/probes:/run/mercury/probe-tokens:ro
+    networks: [edge, probes, egress]
+    healthcheck:
+      test: ["CMD", "mercury-core", "healthcheck"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # The sync probes' only way out: the probe image's own HTTP CONNECT proxy, which tunnels to port
+  # 443 of the hosts its allowlist names (one anchored extended regular expression a line) and
+  # refuses everything else.
+  egress-proxy:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["egress", "--listen", "0.0.0.0:8888", "--allow", "/etc/egress/allowlist"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the proxy instead of waiting for a SIGKILL
+    volumes:
+      - ./egress-proxy/allowlist:/etc/egress/allowlist:ro   # api.github.com and codeload.github.com
+    networks: [sync, egress]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "reach", "127.0.0.1:8888"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+networks:
+  edge:           # caddy and core only
+    ipam:
+      # fixed, so the core believes the address Caddy forwards only from this range; it reads the same variable
+      config: [{ subnet: "${MERCURY_EDGE_SUBNET:-172.30.9.0/24}" }]
+  egress: {}
+  probes:
+    internal: true
+    ipam:
+      # fixed, so the core can allow only this range on 8081; its allowlist reads the same variable
+      config: [{ subnet: "${MERCURY_PROBES_SUBNET:-172.30.10.0/24}" }]
+  sync: { internal: true }
+
+volumes:
+  caddy-data: {}
+  caddy-config: {}
+  core-data: {}
+
+secrets:
+  openrouter_api_key: { file: ./secrets/openrouter_api_key }

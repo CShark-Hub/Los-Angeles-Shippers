@@ -1,0 +1,84 @@
+# One sync + serve pair per repository: copy the block, replace `delta` and the repository name.
+# For 2–4 repositories copying is simpler than a generator.
+services:
+  probe-delta-sync:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["sync"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true   # PID 1 is an init, so a stop's SIGTERM ends the probe instead of waiting for a SIGKILL
+    environment:
+      PROBE_PROJECT: delta
+      PROBE_GITHUB_REPO: your-org/delta
+      PROBE_GITHUB_TOKEN_FILE: /run/secrets/delta_github_token
+      PROBE_CODE_INTERVAL: 60s
+      PROBE_META_INTERVAL: 300s
+      PROBE_SNAPSHOT_MAX_MB: "512"          # above it the probe falls back to metadata
+      HTTPS_PROXY: http://egress-proxy:8888
+      https_proxy: http://egress-proxy:8888
+      HOME: /tmp
+      # a project that asks for code_model gets it only where a code reader is set (docker-compose.reader.yml,
+      # which `just demo-local` adds with a key): empty means none, and the pair runs `code`
+      PROBE_CODE_READER_URL: ${MERCURY_CODE_READER_URL:-}
+    secrets: [delta_github_token]
+    volumes:
+      - repo-delta:/repo
+      - meta-delta:/meta
+      - ./config/projects.yaml:/config/projects.yaml:ro   # access_max and the server-side manifest copy
+    networks: [sync]
+    # Every good metadata round rewrites /meta/github.json whole, so a file older than three rounds
+    # means sync has stalled. `serve` keeps answering from its last index meanwhile, so only this
+    # check shows it (`docker compose ps`); it marks the service, it doesn't restart it.
+    healthcheck:
+      test: ["CMD-SHELL", "test -n \"$$(find /meta/github.json -mmin -16 2>/dev/null)\""]
+      interval: 60s
+      timeout: 5s
+      retries: 1
+      start_period: 10m
+
+  probe-delta:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["serve"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true
+    environment:
+      PROBE_PROJECT: delta
+      PROBE_LISTEN: 0.0.0.0:7000
+      PROBE_TOKEN_FILE: /run/secrets/probe_delta_token
+      PROBE_CORE_INTERNAL_URL: http://core:8081
+      PROBE_CODE_READER_URL: ${MERCURY_CODE_READER_URL:-}     # empty: no code reader, the pair runs `code`
+      PROBE_CODE_READER_MODEL: ${MERCURY_CODE_READER_MODEL:-}
+    secrets: [probe_delta_token]
+    volumes:
+      - repo-delta:/repo:ro
+      - meta-delta:/meta:ro
+      - index-delta:/data
+    networks: [probes]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "healthcheck", "7000"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  repo-delta:                  # RAM only: two snapshots of at most PROBE_SNAPSHOT_MAX_MB each
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: "size=1024m,uid=10001,gid=10001,mode=0700"
+  meta-delta: {}               # metadata JSON, no code
+  index-delta: {}              # the facts index
+
+secrets:
+  delta_github_token: { file: ./secrets/github/delta.token }
+  probe_delta_token:  { file: ./secrets/probes/delta.token }
