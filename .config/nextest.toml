@@ -1,0 +1,8 @@
+# A test that hangs ends instead of holding the job: nextest marks a test slow after `period` and
+# kills it after `terminate-after` periods. The slowest test takes about 12 s on CI's agent.
+[profile.default]
+slow-timeout = { period = "30s", terminate-after = 4 }
+# The compile-fail tests run rustc on each case: about 40 s on CI's agent, 90 s on a Windows machine.
+overrides = [
+    { filter = "binary_id(mercury-schema::compile_fail)", slow-timeout = { period = "60s", terminate-after = 5 } },
+]

@@ -1,0 +1,6 @@
+/target/
+# the core's database when MERCURY_DB is not set (`just dev`, admin commands run from here)
+/mercury.db
+/mercury.db-*
+# the golden and judge-eval runs write their reports here; none is kept
+/tests/golden/reports/
