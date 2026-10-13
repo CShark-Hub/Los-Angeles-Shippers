@@ -1,0 +1,11 @@
+# The findings the image scan (`just _image-scan`) lets through. The scan fails on a critical
+# vulnerability that has a fix; one goes here only when it can't be fixed yet, with the reason as
+# its statement, which the scan prints beside it, and a date after which it fails the scan again:
+#
+#   vulnerabilities:
+#     - id: CVE-YYYY-NNNNN
+#       statement: why it doesn't reach Mercury, and what would fix it
+#       expired_at: YYYY-MM-DD
+#
+# Nothing is let through today.
+vulnerabilities: []

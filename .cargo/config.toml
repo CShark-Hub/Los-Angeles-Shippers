@@ -1,0 +1,5 @@
+# Queries are checked at compile time against `.sqlx/`, never against a live database, so CI, the
+# images and every machine check them the same way. `cargo sqlx prepare` lifts this while it
+# rewrites `.sqlx/`; set SQLX_OFFLINE=false with DATABASE_URL to check new queries live.
+[env]
+SQLX_OFFLINE = "true"
