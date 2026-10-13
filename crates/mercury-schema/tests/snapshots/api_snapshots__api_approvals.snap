@@ -1,0 +1,75 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: "json!({ \"list\": list, \"reject\": reject, \"approve\": approve })"
+---
+{
+  "approve": {
+    "decision": "approve"
+  },
+  "list": {
+    "approvals": [
+      {
+        "asked_by_me": false,
+        "asker_role": "pm",
+        "class": "progress",
+        "created_at": "2026-10-04T15:12:09Z",
+        "draft": {
+          "confidence": 0.91,
+          "facts": [
+            {
+              "confidence": 0.93,
+              "evidence": [
+                {
+                  "at": "2026-10-04",
+                  "ref": "#412",
+                  "state": "merged",
+                  "type": "pr"
+                }
+              ],
+              "id": "f_7Qx2",
+              "kind": "feature",
+              "module": "Invoicing",
+              "people": [],
+              "status": "done",
+              "tested": "passing",
+              "title": "Invoice list with filters",
+              "title_withheld": false,
+              "updated_at": "2026-10-04T15:12:00Z",
+              "waiting_on": null
+            }
+          ],
+          "text": "One item was finished in Invoicing this week: the invoice list with filters."
+        },
+        "expires_at": "2026-10-05T15:12:09Z",
+        "flags": [
+          {
+            "check": "sentence_evaluates_people",
+            "p": 0.41,
+            "sentence": "One item was finished in Invoicing this week."
+          }
+        ],
+        "id": "ap_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+        "project": "delta",
+        "question_id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+        "reason": "review_band",
+        "status": "pending"
+      },
+      {
+        "asked_by_me": true,
+        "asker_role": "tech_lead",
+        "class": "tested",
+        "created_at": "2026-10-04T16:00:00Z",
+        "expires_at": "2026-10-05T16:00:00Z",
+        "id": "ap_01JB2M3N4P5Q6R7S8T9V0W1X2Z",
+        "project": "delta",
+        "question_id": "q_01JB2M3N4P5Q6R7S8T9V0W1X30",
+        "reason": "class",
+        "status": "pending"
+      }
+    ]
+  },
+  "reject": {
+    "decision": "reject",
+    "note": "Ask the tech lead first."
+  }
+}

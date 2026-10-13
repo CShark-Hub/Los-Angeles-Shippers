@@ -1,0 +1,131 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: events
+---
+[
+  {
+    "data": {
+      "id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y"
+    },
+    "event": "accepted"
+  },
+  {
+    "data": {
+      "p": 0.99,
+      "project": "delta",
+      "source": "explicit"
+    },
+    "event": "project"
+  },
+  {
+    "data": {
+      "checks": [
+        {
+          "id": "asks_for_code",
+          "p": 0.02,
+          "source": "jev",
+          "verdict": "pass"
+        }
+      ],
+      "class": "progress",
+      "p": 0.94
+    },
+    "event": "classified"
+  },
+  {
+    "data": {
+      "calls": [
+        {
+          "args": {
+            "limit": 20,
+            "since": "2026-09-28"
+          },
+          "tool": "progress"
+        }
+      ]
+    },
+    "event": "plan"
+  },
+  {
+    "data": {
+      "call": 0,
+      "checks": [
+        {
+          "id": "args_match_question",
+          "p": 0.95,
+          "source": "chat",
+          "verdict": "pass"
+        },
+        {
+          "id": "scope",
+          "source": "rule",
+          "verdict": "pass"
+        }
+      ]
+    },
+    "event": "tool_checked"
+  },
+  {
+    "data": {
+      "access": "code",
+      "call": 0,
+      "items": 2,
+      "withheld_fields": [
+        "/items/1/title"
+      ]
+    },
+    "event": "tool_result"
+  },
+  {
+    "data": {},
+    "event": "composing"
+  },
+  {
+    "data": {
+      "held": 0,
+      "sentences": 2,
+      "stripped": 1
+    },
+    "event": "judged"
+  },
+  {
+    "data": {
+      "confidence": 0.91,
+      "facts": [
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "at": "2026-10-04",
+              "ref": "#412",
+              "state": "merged",
+              "type": "pr"
+            }
+          ],
+          "id": "f_7Qx2",
+          "kind": "feature",
+          "module": "Invoicing",
+          "people": [],
+          "status": "done",
+          "tested": "passing",
+          "title": "Invoice list with filters",
+          "title_withheld": false,
+          "updated_at": "2026-10-04T15:12:00Z",
+          "waiting_on": null
+        }
+      ],
+      "text": "One item was finished in Invoicing this week: the invoice list with filters."
+    },
+    "event": "answer"
+  },
+  {
+    "data": {
+      "audit_id": 1834,
+      "composer": "model",
+      "cost_usd": 0.004,
+      "duration_ms": 1900,
+      "judge_mode": "jev"
+    },
+    "event": "done"
+  }
+]

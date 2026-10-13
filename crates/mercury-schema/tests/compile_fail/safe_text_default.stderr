@@ -1,0 +1,5 @@
+error[E0599]: no associated function or constant named `default` found for struct `SafeText` in the current scope
+ --> tests/compile_fail/safe_text_default.rs:4:28
+  |
+4 |     let _title = SafeText::default();
+  |                            ^^^^^^^ associated function or constant not found in `SafeText`

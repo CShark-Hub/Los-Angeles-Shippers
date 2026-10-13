@@ -1,0 +1,14 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"progress\": progress, \"changes\": changes })"
+---
+{
+  "changes": {
+    "since": "2026-09-28"
+  },
+  "progress": {
+    "limit": 20,
+    "module": "Export",
+    "since": "2026-09-28"
+  }
+}

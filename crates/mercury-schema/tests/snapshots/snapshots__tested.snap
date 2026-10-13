@@ -1,0 +1,32 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "modules": [
+    {
+      "module": "Invoicing",
+      "tests_total": 128,
+      "tests_changed_14d": 9,
+      "last_ci": {
+        "status": "passed",
+        "at": "2026-10-04T14:58:00Z"
+      },
+      "pass_rate_7d": 0.96,
+      "flaky_7d": 0.02
+    },
+    {
+      "module": "Export",
+      "tests_total": 0,
+      "tests_changed_14d": 0,
+      "last_ci": {
+        "status": "none",
+        "at": null
+      },
+      "pass_rate_7d": 0.0,
+      "flaky_7d": 0.0
+    }
+  ]
+}

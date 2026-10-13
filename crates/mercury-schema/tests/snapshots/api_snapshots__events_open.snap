@@ -1,0 +1,104 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: events
+---
+[
+  {
+    "data": {
+      "id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y"
+    },
+    "event": "accepted"
+  },
+  {
+    "data": {
+      "p": 0.99,
+      "project": "delta",
+      "source": "explicit"
+    },
+    "event": "project"
+  },
+  {
+    "data": {
+      "checks": [
+        {
+          "id": "asks_for_code",
+          "p": 0.04,
+          "source": "jev",
+          "verdict": "pass"
+        }
+      ],
+      "class": "open",
+      "p": 0.88
+    },
+    "event": "classified"
+  },
+  {
+    "data": {
+      "calls": [
+        {
+          "args": {
+            "module": "Export"
+          },
+          "tool": "progress"
+        },
+        {
+          "args": {
+            "question": "How does the export pick the file format?"
+          },
+          "tool": "ask_code"
+        }
+      ]
+    },
+    "event": "plan"
+  },
+  {
+    "data": {
+      "access": "code_model",
+      "call": 0,
+      "items": 0,
+      "withheld_fields": []
+    },
+    "event": "tool_result"
+  },
+  {
+    "data": {
+      "access": "code_model",
+      "call": 1,
+      "items": 2,
+      "p_min": 0.93,
+      "withheld_fields": []
+    },
+    "event": "tool_result"
+  },
+  {
+    "data": {},
+    "event": "composing"
+  },
+  {
+    "data": {
+      "held": 0,
+      "p_min": 0.87,
+      "sentences": 2,
+      "stripped": 0
+    },
+    "event": "judged"
+  },
+  {
+    "data": {
+      "confidence": 0.82,
+      "facts": [],
+      "text": "The export writes one file per invoice batch. Totals are rounded once, after the discounts."
+    },
+    "event": "answer"
+  },
+  {
+    "data": {
+      "audit_id": 1852,
+      "composer": "model",
+      "cost_usd": 0.0074,
+      "duration_ms": 9800,
+      "judge_mode": "jev"
+    },
+    "event": "done"
+  }
+]

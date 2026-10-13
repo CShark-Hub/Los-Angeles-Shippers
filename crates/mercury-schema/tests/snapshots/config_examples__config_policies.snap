@@ -1,0 +1,77 @@
+---
+source: crates/mercury-schema/tests/config_examples.rs
+expression: "serde_json::to_value(policies).unwrap()"
+---
+{
+  "defaults": {
+    "show_evidence_refs": true,
+    "show_people": false,
+    "show_titles": true
+  },
+  "global": {
+    "deny": [
+      "source_code",
+      "file_paths",
+      "secrets",
+      "people_evaluation",
+      "client_commitments"
+    ],
+    "hold_review_band_for_signoff": true,
+    "redact": [
+      {
+        "pattern": "(?i)\\bacme(\\s+corp)?\\b",
+        "replace": "the client"
+      },
+      {
+        "pattern": "[\\w.+-]+@[\\w-]+\\.[\\w.]+",
+        "replace": "[email]"
+      }
+    ]
+  },
+  "limits": {
+    "burst": 5,
+    "questions_per_hour": 30
+  },
+  "retention": {
+    "audit_payload_days": 90
+  },
+  "roles": {
+    "board": {
+      "aggregates_only": true,
+      "classes": [
+        "health",
+        "portfolio"
+      ],
+      "signoff": [
+        "portfolio"
+      ]
+    },
+    "pm": {
+      "aggregates_only": false,
+      "classes": [
+        "progress",
+        "tested",
+        "blocked",
+        "health",
+        "changes",
+        "open"
+      ],
+      "show_people": true,
+      "signoff": []
+    },
+    "tech_lead": {
+      "aggregates_only": false,
+      "classes": [
+        "progress",
+        "tested",
+        "blocked",
+        "health",
+        "changes",
+        "open"
+      ],
+      "show_people": true,
+      "signoff": []
+    }
+  },
+  "version": 1
+}
