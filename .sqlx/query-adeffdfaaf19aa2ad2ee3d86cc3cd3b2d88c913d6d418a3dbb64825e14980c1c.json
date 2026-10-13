@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET status = 'failed' WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "adeffdfaaf19aa2ad2ee3d86cc3cd3b2d88c913d6d418a3dbb64825e14980c1c"
+}

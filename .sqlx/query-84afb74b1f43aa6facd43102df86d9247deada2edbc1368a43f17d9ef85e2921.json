@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT revoked_at FROM tokens WHERE public_id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "revoked_at",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "tokens",
+            "name": "revoked_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "84afb74b1f43aa6facd43102df86d9247deada2edbc1368a43f17d9ef85e2921"
+}

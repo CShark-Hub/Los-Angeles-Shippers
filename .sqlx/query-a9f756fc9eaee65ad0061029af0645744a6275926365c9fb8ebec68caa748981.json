@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT status, last_seen_at, manifest_json FROM probes WHERE project = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "status",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "last_seen_at",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "last_seen_at"
+          }
+        }
+      },
+      {
+        "name": "manifest_json",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "manifest_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a9f756fc9eaee65ad0061029af0645744a6275926365c9fb8ebec68caa748981"
+}

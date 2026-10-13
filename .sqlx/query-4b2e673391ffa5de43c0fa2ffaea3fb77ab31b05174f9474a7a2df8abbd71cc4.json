@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT q.duration_ms AS \"duration_ms!\" FROM questions q\n           WHERE q.finished_at >= ? AND q.duration_ms IS NOT NULL\n             AND NOT EXISTS (SELECT 1 FROM audit_events a\n                             WHERE a.question_id = q.id AND a.type = 'pending_signoff')\n           ORDER BY q.duration_ms",
+  "describe": {
+    "columns": [
+      {
+        "name": "duration_ms!",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "duration_ms"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "4b2e673391ffa5de43c0fa2ffaea3fb77ab31b05174f9474a7a2df8abbd71cc4"
+}

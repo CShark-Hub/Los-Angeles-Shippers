@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE audit_events SET payload_json = NULL WHERE created_at < ? AND payload_json IS NOT NULL",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "281a2420c9e2e38de0fe2630361315e6406c5b8e14dcbef4f008fdf11959c77f"
+}

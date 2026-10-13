@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT payload_json FROM audit_events WHERE question_id = ? AND type = ? ORDER BY seq DESC LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "name": "payload_json",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "6c133ec3b0d0e9f9cce25c278309f33e2994ea816c2ee1391c878a495d68c1b5"
+}

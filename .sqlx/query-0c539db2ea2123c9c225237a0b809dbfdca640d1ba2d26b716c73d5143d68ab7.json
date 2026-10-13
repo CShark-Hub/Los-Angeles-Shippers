@@ -1,0 +1,98 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT seq, type AS event_type, payload_json, payload_sha256, prev_hash, hash, created_at FROM audit_events ORDER BY seq",
+  "describe": {
+    "columns": [
+      {
+        "name": "seq",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "seq"
+          }
+        }
+      },
+      {
+        "name": "event_type",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "type"
+          }
+        }
+      },
+      {
+        "name": "payload_json",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      },
+      {
+        "name": "payload_sha256",
+        "ordinal": 3,
+        "type_info": "Blob",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_sha256"
+          }
+        }
+      },
+      {
+        "name": "prev_hash",
+        "ordinal": 4,
+        "type_info": "Blob",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "prev_hash"
+          }
+        }
+      },
+      {
+        "name": "hash",
+        "ordinal": 5,
+        "type_info": "Blob",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "hash"
+          }
+        }
+      },
+      {
+        "name": "created_at",
+        "ordinal": 6,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "created_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "0c539db2ea2123c9c225237a0b809dbfdca640d1ba2d26b716c73d5143d68ab7"
+}

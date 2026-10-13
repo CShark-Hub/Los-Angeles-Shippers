@@ -1,0 +1,117 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT q.user_id AS \"user_id!\", q.channel AS \"channel!\", q.project AS \"project?\",\n                  q.class AS \"class?\", q.status AS \"status!\", q.judge_mode AS \"judge_mode?\",\n                  q.cost_usd AS \"cost_usd!: f64\", q.created_at AS \"created_at!\",\n                  EXISTS (SELECT 1 FROM audit_events a\n                          WHERE a.question_id = q.id AND a.type = 'pending_signoff') AS \"held!: bool\"\n           FROM questions q WHERE q.created_at >= ? ORDER BY q.created_at, q.id",
+  "describe": {
+    "columns": [
+      {
+        "name": "user_id!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "user_id"
+          }
+        }
+      },
+      {
+        "name": "channel!",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "channel"
+          }
+        }
+      },
+      {
+        "name": "project?",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "class?",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "class"
+          }
+        }
+      },
+      {
+        "name": "status!",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "judge_mode?",
+        "ordinal": 5,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "judge_mode"
+          }
+        }
+      },
+      {
+        "name": "cost_usd!: f64",
+        "ordinal": 6,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "cost_usd"
+          }
+        }
+      },
+      {
+        "name": "created_at!",
+        "ordinal": 7,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "name": "held!: bool",
+        "ordinal": 8,
+        "type_info": "Integer",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "cf69ce41c221669f7c42148bcda8fa82bdfdb34e675e2319e0b4fef100b55c2e"
+}

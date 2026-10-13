@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT seq AS \"seq!\", type AS kind, payload_json FROM audit_events\n               WHERE question_id = ? AND seq > ? ORDER BY seq",
+  "describe": {
+    "columns": [
+      {
+        "name": "seq!",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "seq"
+          }
+        }
+      },
+      {
+        "name": "kind",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "type"
+          }
+        }
+      },
+      {
+        "name": "payload_json",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "165d60ceffe874a610e70d7f5109231eae04ea10c4b1bf16264c94b53b292ef0"
+}

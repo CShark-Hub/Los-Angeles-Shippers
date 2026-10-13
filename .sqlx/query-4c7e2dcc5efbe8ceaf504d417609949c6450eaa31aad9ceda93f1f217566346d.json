@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE sessions SET last_seen_at = ?\n             WHERE id_sha256 = ? AND (last_seen_at IS NULL OR last_seen_at <= ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "4c7e2dcc5efbe8ceaf504d417609949c6450eaa31aad9ceda93f1f217566346d"
+}

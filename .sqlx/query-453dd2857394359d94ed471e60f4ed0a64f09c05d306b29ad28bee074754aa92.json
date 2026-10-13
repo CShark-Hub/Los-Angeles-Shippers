@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM user_projects WHERE user_id = ? AND project = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "453dd2857394359d94ed471e60f4ed0a64f09c05d306b29ad28bee074754aa92"
+}

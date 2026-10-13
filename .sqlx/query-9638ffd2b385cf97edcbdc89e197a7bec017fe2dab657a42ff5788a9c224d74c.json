@@ -1,0 +1,146 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT a.id, a.question_id, a.reason_json, a.draft_answer, a.status, a.expires_at,\n                  q.user_id AS asker, q.project, q.cost_usd, q.judge_mode, q.created_at AS asked_at\n           FROM approvals a JOIN questions q ON q.id = a.question_id WHERE a.id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "name": "question_id",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "question_id"
+          }
+        }
+      },
+      {
+        "name": "reason_json",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "reason_json"
+          }
+        }
+      },
+      {
+        "name": "draft_answer",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "draft_answer"
+          }
+        }
+      },
+      {
+        "name": "status",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "expires_at",
+        "ordinal": 5,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "approvals",
+            "name": "expires_at"
+          }
+        }
+      },
+      {
+        "name": "asker",
+        "ordinal": 6,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "user_id"
+          }
+        }
+      },
+      {
+        "name": "project",
+        "ordinal": 7,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "cost_usd",
+        "ordinal": 8,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "cost_usd"
+          }
+        }
+      },
+      {
+        "name": "judge_mode",
+        "ordinal": 9,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "judge_mode"
+          }
+        }
+      },
+      {
+        "name": "asked_at",
+        "ordinal": 10,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "created_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "9638ffd2b385cf97edcbdc89e197a7bec017fe2dab657a42ff5788a9c224d74c"
+}

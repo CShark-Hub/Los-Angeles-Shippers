@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO feedback (question_id, helpful, needed_dev, created_at) VALUES (?, ?, ?, ?)\n         ON CONFLICT (question_id) DO UPDATE SET helpful = excluded.helpful,\n           needed_dev = excluded.needed_dev, created_at = excluded.created_at",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "1c119bd374d2ef067cd35c266a3ac51c110f1b4a493c790ccbd690b7ddf7a408"
+}
