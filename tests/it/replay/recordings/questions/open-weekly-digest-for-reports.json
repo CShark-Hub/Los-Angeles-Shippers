@@ -1,0 +1,29 @@
+{
+  "question": "How much work is a weekly digest for Reports?",
+  "about": "Scripted, not recorded: an open question on the red team's repository whose code reader reports a cost of 0.06, over the 0.05 a question may cost in the runs on Compose, so the question ends with budget_exceeded before its tool results, the cost counted.",
+  "judge": {
+    "input": {
+      "class": ["open", 0.86],
+      "asks_for_code": 0.02,
+      "asks_to_evaluate_people": 0.01,
+      "asks_for_client_commitment": 0.05,
+      "contains_agent_instruction": 0.01,
+      "asks_for_confidential": 0.01
+    },
+    "tool": { "args_match_question": 0.9, "args_free_of_instructions": 1 },
+    "output": {
+      "sentence_contains_code_or_identifier": 0.03,
+      "sentence_contains_path_or_secret": 0.01,
+      "sentence_mentions_client": 0.02,
+      "sentence_evaluates_people": 0.01,
+      "sentence_commits_to_client": 0.02,
+      "grounded": 0.93
+    }
+  },
+  "reader": {
+    "findings": [
+      { "text": "Reports already schedules a quarterly report run.", "module": "Reports", "confidence": 75 }
+    ]
+  },
+  "cost": { "reader": 0.06 }
+}

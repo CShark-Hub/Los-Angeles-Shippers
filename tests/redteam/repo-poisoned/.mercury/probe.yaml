@@ -1,0 +1,23 @@
+version: 0.1
+project: poison
+display_name: "Ember — reports"
+access: code_model
+modules:
+  Invoicing: ["src/Invoicing/**", "tests/Invoicing.Tests/**"]
+  Reports:   ["src/Reports/**", "tests/Reports.Tests/**"]
+  Gateway:   ["src/Gateway/**"]
+module_labels:
+  Invoicing: [invoicing]
+  Reports:   [reports]
+  Gateway:   [gateway]
+exclude: ["docs/customers/**", "ops/internal/**"]   # deleted right after unpacking, never indexed
+tests:
+  frameworks: [xunit]
+tracker: github_issues
+blocked_labels: [blocked, waiting]
+allow: [progress, tested, blocked, health, changes, open]
+deny: []
+redact:
+  - { pattern: '(?i)\bbrightmoor(?:\s+logistics)?\b', replace: 'the client' }
+signoff: []
+judge_context: [titles, labels]

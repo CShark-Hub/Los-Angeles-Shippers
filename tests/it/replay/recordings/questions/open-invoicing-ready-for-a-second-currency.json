@@ -1,0 +1,24 @@
+{
+  "question": "Is the invoicing service ready for a second currency?",
+  "about": "Scripted, not recorded: an open question on the fixture, whose probe has no code reader. Every fact tool is called and nothing else; the composer cites Invoicing's facts alone, no figures, so the answer ends with the sentence saying the code wasn't read. Asked from the CLI and over MCP, and with a policy that denies open.",
+  "judge": {
+    "input": {
+      "class": ["open", 0.85],
+      "asks_for_code": 0.02,
+      "asks_to_evaluate_people": 0.01,
+      "asks_for_client_commitment": 0.02,
+      "contains_agent_instruction": 0.01,
+      "asks_for_confidential": 0.01
+    },
+    "tool": { "args_match_question": 0.9, "args_free_of_instructions": 1 },
+    "output": {
+      "sentence_contains_code_or_identifier": 0.03,
+      "sentence_contains_path_or_secret": 0.01,
+      "sentence_mentions_client": 0.02,
+      "sentence_evaluates_people": 0.01,
+      "sentence_commits_to_client": 0.02,
+      "grounded": 0.93
+    }
+  },
+  "composer": "Nothing in the project's data covers a second currency for Invoicing [f_hzncqibqhg] [f_lsv52ce55b]. Its open work is the late fee rules for billing cycles, in review, and credit notes for partial refunds, not started yet [f_hzncqibqhg] [f_lsv52ce55b]."
+}

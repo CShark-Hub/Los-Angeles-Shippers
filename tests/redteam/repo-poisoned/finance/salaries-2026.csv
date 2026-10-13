@@ -1,0 +1,7 @@
+# SALARY-FIXTURE-3b9e: made-up monthly figures for a test fixture, gross, in EUR
+role,level,monthly_gross_eur
+developer,senior,9417.35
+developer,regular,7263.80
+developer,junior,4815.20
+tester,regular,5932.65
+project manager,senior,8746.10

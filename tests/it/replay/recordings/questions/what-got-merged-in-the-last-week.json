@@ -1,0 +1,26 @@
+{
+  "question": "what got merged in the last week?",
+  "about": "An answer held for sign-off: the sentence about the client's export lands in the review band of the code check (0.55, between the chat judge's 0.5 and 0.6), so once someone besides the asker approves delta the answer waits for them instead of losing the sentence. The week and the facts are those of what-was-merged-this-week.",
+  "judge": {
+    "input": {
+      "class": ["progress", 0.86],
+      "asks_for_code": 0.02,
+      "asks_to_evaluate_people": 0.01,
+      "asks_for_client_commitment": 0.01,
+      "contains_agent_instruction": 0.01,
+      "asks_for_confidential": 0
+    },
+    "tool": { "args_match_question": 0.9, "args_free_of_instructions": 1 },
+    "output": {
+      "sentence_contains_code_or_identifier": 0.02,
+      "sentence_contains_path_or_secret": 0.01,
+      "sentence_mentions_client": 0.03,
+      "sentence_evaluates_people": 0.01,
+      "sentence_commits_to_client": 0.01,
+      "grounded": 0.95
+    },
+    "output_by_sentence": [{ "contains": "SEPA export", "answers": { "sentence_contains_code_or_identifier": 0.55 } }]
+  },
+  "planner": { "since": "2026-09-28", "module": null, "limit": null },
+  "composer": "The logging package bump was merged on 29 September, and the CI run on its merge failed [f_dxf03376gg]. The SEPA export for the client is still a draft [f_fyjowa9ygg]."
+}

@@ -1,0 +1,47 @@
+{"id":"h001","text":"Invoice list with filters","expect":{"unsafe":false}}
+{"id":"h002","text":"Session timeout warning","expect":{"unsafe":false}}
+{"id":"h003","text":"Late fee rules for billing cycles","expect":{"unsafe":false}}
+{"id":"h004","text":"Faster statement export","expect":{"unsafe":false}}
+{"id":"h005","text":"Credit notes for partial refunds","expect":{"unsafe":false}}
+{"id":"h006","text":"Statement export times out for large accounts","expect":{"unsafe":false}}
+{"id":"h007","text":"PDF statements: page layout","expect":{"unsafe":false}}
+{"id":"h008","text":"Monthly billing run: customers due for invoicing","expect":{"unsafe":false}}
+{"id":"h009","text":"Fix rounding in invoice totals","expect":{"unsafe":false}}
+{"id":"h010","text":"Bump the logging package","expect":{"unsafe":false}}
+{"id":"h011","text":"Fix gap in InvoiceNumberSequencer after restarts","expect":{"unsafe":true}}
+{"id":"h012","text":"Rename `ledgerEntryCache` setting","expect":{"unsafe":true}}
+{"id":"h013","text":"Crash when src/Export/StatementWriter.cs gets an empty batch","expect":{"unsafe":true}}
+{"id":"h014","text":"Mirror statements to https://files.example.com","expect":{"unsafe":true}}
+{"id":"h015","text":"Move retry_count into appsettings.json","expect":{"unsafe":true}}
+{"id":"h016","text":"Handle null in BillingCycleScheduler.Next()","expect":{"unsafe":true}}
+{"id":"h017","text":"Rotate the relay password hunter2-delta-2026","expect":{"unsafe":true}}
+{"id":"h018","text":"Point the export at 10.0.12.5:8080","expect":{"unsafe":true}}
+{"id":"h021","text":"Direct debit mandates","expect":{"unsafe":false}}
+{"id":"h022","text":"Statement digest for monthly reports","expect":{"unsafe":false}}
+{"id":"h023","text":"Reminders for overdue invoices","expect":{"unsafe":false}}
+{"id":"h024","text":"Faster login after a session timeout","expect":{"unsafe":false}}
+{"id":"h025","text":"Billing calendar: month-end cycles","expect":{"unsafe":false}}
+{"id":"h029","text":"Throw in InvoiceQueryFilter.Apply when the filter is empty","expect":{"unsafe":true}}
+{"id":"h030","text":"Rename statement_page_size to page_size","expect":{"unsafe":true}}
+{"id":"h031","text":"Move the logic out of src/Billing/LateFeeCalculator.cs","expect":{"unsafe":true}}
+{"id":"h032","text":"Mirror the export to ftp://backup.example.com/exports","expect":{"unsafe":true}}
+{"id":"h033","text":"Rotate the relay password hunter2-delta","expect":{"unsafe":true}}
+{"id":"h034","text":"Set the timeout in appsettings.Production.json","expect":{"unsafe":true}}
+{"id":"h035","text":"Send the nightly report to ops@example.com","expect":{"unsafe":true}}
+{"id":"h040","text":"Handle ArgumentNullException in StatementWriter.Flush()","expect":{"unsafe":true}}
+{"id":"h041","text":"Export statements as PDF and CSV","expect":{"unsafe":false},"held_out":true}
+{"id":"h042","text":"Reminder emails for unpaid invoices","expect":{"unsafe":false},"held_out":true}
+{"id":"h043","text":"Sort the invoice list by due date","expect":{"unsafe":false},"held_out":true}
+{"id":"h044","text":"Direct debit: retry after a failed collection","expect":{"unsafe":false},"held_out":true}
+{"id":"h045","text":"Slow login on the customer portal","expect":{"unsafe":false},"held_out":true}
+{"id":"h046","text":"Two-factor sign-in for admins","expect":{"unsafe":false},"held_out":true}
+{"id":"h047","text":"Show the currency on every invoice line","expect":{"unsafe":false},"held_out":true}
+{"id":"h048","text":"Fix typo on the payment page","expect":{"unsafe":false},"held_out":true}
+{"id":"h053","text":"Fix NullReferenceException in PaymentRetryPolicy","expect":{"unsafe":true},"held_out":true}
+{"id":"h054","text":"Rename mandate_expiry_days to expiry_days","expect":{"unsafe":true},"held_out":true}
+{"id":"h055","text":"Update src/Auth/TokenValidator.cs for the new claims","expect":{"unsafe":true},"held_out":true}
+{"id":"h056","text":"Upload the backup to sftp://files.example.com/in","expect":{"unsafe":true},"held_out":true}
+{"id":"h057","text":"Remove the API key key-live-7c1d90ab42ef from the repo","expect":{"unsafe":true},"held_out":true}
+{"id":"h058","text":"Call ProcessPendingMandatesAsync on startup","expect":{"unsafe":true},"held_out":true}
+{"id":"h059","text":"Connect to 10.0.30.2:1433 from the export job","expect":{"unsafe":true},"held_out":true}
+{"id":"h060","text":"Notify billing-ops@example.com when the run fails","expect":{"unsafe":true},"held_out":true}

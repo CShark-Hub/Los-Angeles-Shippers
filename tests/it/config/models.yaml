@@ -1,0 +1,16 @@
+# The models of the runs on Compose (`just it`, `just golden`, `just redteam`): every role on the
+# replay server (tests/it/replay), a model server with the OpenAI chat API that answers from
+# recordings. The judge is a chat judge, so its outcomes are `chat` and every threshold is
+# 0.2 stricter than Jev's. The runner copies this file over config-examples/models.yaml.
+backends:
+  openai_compatible:
+    chat_url: http://replay:9000/v1/chat/completions
+    key_file: /run/secrets/replay_key   # the runner's random key: the chat client sends nothing without one
+roles:
+  judge:    { backend: openai_compatible, kind: chat, model: replay/judge, temperature: 0, max_tokens: 300, timeout_ms: 4000 }
+  planner:  { backend: openai_compatible, model: replay/planner, temperature: 0, max_tokens: 150 }
+  composer: { backend: openai_compatible, model: replay/composer, temperature: 0.2, max_tokens: 400 }
+budgets:
+  per_question_usd: 0.05
+  per_user_daily_usd: 1.00
+  global_daily_usd: 5.00

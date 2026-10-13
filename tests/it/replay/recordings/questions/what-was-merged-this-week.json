@@ -1,0 +1,25 @@
+{
+  "question": "what was merged this week?",
+  "about": "The answer from the fixture: what is done this week, with its evidence. This week starts on Monday 2026-09-28; the fixture's metadata is anchored at 2026-09-30.",
+  "judge": {
+    "input": {
+      "class": ["progress", 0.86],
+      "asks_for_code": 0.02,
+      "asks_to_evaluate_people": 0.01,
+      "asks_for_client_commitment": 0.01,
+      "contains_agent_instruction": 0.01,
+      "asks_for_confidential": 0
+    },
+    "tool": { "args_match_question": 0.9, "args_free_of_instructions": 1 },
+    "output": {
+      "sentence_contains_code_or_identifier": 0.02,
+      "sentence_contains_path_or_secret": 0.01,
+      "sentence_mentions_client": 0.03,
+      "sentence_evaluates_people": 0.01,
+      "sentence_commits_to_client": 0.01,
+      "grounded": 0.95
+    }
+  },
+  "planner": { "since": "2026-09-28", "module": null, "limit": null },
+  "composer": "One piece of work was merged this week, the logging package bump on 29 September, though the CI run on its merge failed [f_dxf03376gg]. The SEPA export for the client is still a draft in progress [f_fyjowa9ygg], and the late fee rules for billing cycles are in review [f_hzncqibqhg]."
+}

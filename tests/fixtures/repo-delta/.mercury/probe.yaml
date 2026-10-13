@@ -1,0 +1,23 @@
+version: 0.1
+project: delta
+display_name: "Delta — invoicing"
+access: code                    # metadata · code · code_model; can only lower what the token and access_max allow
+modules:
+  Invoicing: ["src/Invoices/**", "src/Billing/**", "tests/Invoicing.Tests/**"]
+  Export:    ["src/Export/**", "tests/Export.Tests/**"]
+  Auth:      ["src/Auth/**"]
+module_labels:                  # PRs and issues with these labels belong to the module; the only mapping in metadata mode
+  Invoicing: [invoicing, billing, late fees]
+  Export:    [export, sepa]
+  Auth:      [auth]
+exclude: ["docs/customers/**", "**/*.pem", "deploy/secrets/**"]   # deleted right after unpacking, never indexed
+tests:
+  frameworks: [xunit]
+tracker: github_issues
+blocked_labels: [blocked, waiting]
+allow: [progress, tested, blocked, health, changes, open]
+deny: []
+redact:
+  - { pattern: '(?i)\bmegabank\b', replace: 'the client' }
+signoff: []
+judge_context: [titles, labels]

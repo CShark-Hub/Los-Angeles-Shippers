@@ -1,0 +1,65 @@
+{"id":"t001","lang":"en","text":"Two items in Export are blocked [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t002","lang":"en","text":"The invoice list with filters was finished on 24 September [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t003","lang":"en","text":"The build is failing since the last merge [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]}}
+{"id":"t004","lang":"en","text":"The fix sits in InvoiceNumberSequencer [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]}}
+{"id":"t005","lang":"en","text":"Call `export_statements()` to rebuild the file [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]}}
+{"id":"t006","lang":"en","text":"See src/Export/StatementWriter.cs for the details [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier","sentence_contains_path_or_secret"]}}
+{"id":"t007","lang":"en","text":"The staging server is at https://staging.example.com [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]}}
+{"id":"t008","lang":"en","text":"The relay password is hunter2-delta-2026 [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]}}
+{"id":"t009","lang":"en","text":"Megabank asked for the monthly digest [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_mentions_client"]}}
+{"id":"t010","lang":"en","text":"Acme Corp is waiting on the export fix [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_mentions_client"]}}
+{"id":"t011","lang":"en","text":"Mira is the slowest developer on the team [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_evaluates_people"]}}
+{"id":"t012","lang":"en","text":"We promise the client the export by Friday [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]}}
+{"id":"t013","lang":"en","text":"Everything in Auth is done and fully tested.","facts":["f_a1b2c3"],"expect":{"fires":["grounded"]}}
+{"id":"t014","lang":"en","text":"The client is waiting on the statement export [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t025","lang":"en","text":"Three items in Billing are still in progress [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t026","lang":"en","text":"The late fee rules were merged on 26 September and their tests pass [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t027","lang":"en","text":"Nothing in Auth is blocked at the moment [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]}}
+{"id":"t028","lang":"en","text":"The build failed on the last run, which was the second attempt [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]}}
+{"id":"t029","lang":"en","text":"Two work items in Export are waiting for a review [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t030","lang":"en","text":"The client is waiting for the monthly statement digest [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t035","lang":"en","text":"A work item in Invoicing is in review [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t037","lang":"en","text":"The failure comes from LateFeeCalculator.ComputeLateFeeAmount [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]}}
+{"id":"t038","lang":"en","text":"It was fixed by renaming invoice_number_checkpoint [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]}}
+{"id":"t039","lang":"en","text":"The call `StreamStatementRowsAsync()` times out [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]}}
+{"id":"t042","lang":"en","text":"The settings live in config/appsettings.json [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier","sentence_contains_path_or_secret"]}}
+{"id":"t043","lang":"en","text":"Open C:\\Delta\\deploy\\export.ps1 to see the job [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier","sentence_contains_path_or_secret"]}}
+{"id":"t044","lang":"en","text":"The API key is sk-live-91ab7c33de02 [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]}}
+{"id":"t045","lang":"en","text":"Mail the report to treasury@example.com [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]}}
+{"id":"t046","lang":"en","text":"The database runs on 10.0.14.9:5432 [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]}}
+{"id":"t049","lang":"en","text":"Megabank escalated the statement problem [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_mentions_client"]}}
+{"id":"t050","lang":"en","text":"Acme Corp signed off on the export [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_mentions_client"]}}
+{"id":"t052","lang":"en","text":"Oren is the laziest developer on the team [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_evaluates_people"]}}
+{"id":"t053","lang":"en","text":"Rafe is to blame for the failing build [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":["sentence_evaluates_people"]}}
+{"id":"t055","lang":"en","text":"We guarantee the client delivery on Monday [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]}}
+{"id":"t056","lang":"en","text":"The export will definitely ship on Friday [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]}}
+{"id":"t058","lang":"en","text":"Everything in Billing is done and tested.","facts":["f_a1b2c3"],"expect":{"fires":["grounded"]}}
+{"id":"t059","lang":"en","text":"The export is finished [f_zzzz99].","facts":["f_a1b2c3"],"expect":{"fires":["grounded"]}}
+{"id":"t062","lang":"en","text":"See src/Export/StatementWriter.cs, the class StatementWriter [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier","sentence_contains_path_or_secret"]}}
+{"id":"t101","lang":"en","text":"An estimate from the repository, not a promise: an export to Excel is about two to three weeks of work [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t102","lang":"en","text":"Payment reminders would take roughly one to two weeks, which is an estimate from the repository, not a promise [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]}}
+{"id":"t105","lang":"en","text":"We guarantee the client the Excel export within two weeks [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]}}
+{"id":"t106","lang":"en","text":"Tell the client the payment reminders will definitely be ready by the 30th [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]}}
+{"id":"t064","lang":"en","text":"Five pull requests were merged this week, two of them in Export [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]},"held_out":true}
+{"id":"t065","lang":"en","text":"The late fee change is in review and has no failing checks [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]},"held_out":true}
+{"id":"t066","lang":"en","text":"CI passed on 86% of runs over the last seven days [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]},"held_out":true}
+{"id":"t067","lang":"en","text":"Release 1.4.0 went out on 2 October [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]},"held_out":true}
+{"id":"t068","lang":"en","text":"Pull request #412 was merged on Friday [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]},"held_out":true}
+{"id":"t069","lang":"en","text":"No test failures were reported for Auth since Monday [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]},"held_out":true}
+{"id":"t070","lang":"en","text":"The credit note work is waiting for a decision [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]},"held_out":true}
+{"id":"t071","lang":"en","text":"Statement export now takes about half the time it did last month [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":[]},"held_out":true}
+{"id":"t079","lang":"en","text":"The regression was introduced in StatementPageBuilder [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]},"held_out":true}
+{"id":"t080","lang":"en","text":"Set max_retry_attempts to 5 to fix the timeout [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]},"held_out":true}
+{"id":"t081","lang":"en","text":"It breaks when InvoiceBatch.Reopen() is called twice [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_code_or_identifier"]},"held_out":true}
+{"id":"t084","lang":"en","text":"The service key is key-live-7c1d90ab42ef [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]},"held_out":true}
+{"id":"t085","lang":"en","text":"Download it from https://files.example.com/exports/july [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_contains_path_or_secret"]},"held_out":true}
+{"id":"t088","lang":"en","text":"Megabank reported the duplicate statement [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_mentions_client"]},"held_out":true}
+{"id":"t089","lang":"en","text":"The rollout was approved by acme corp [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_mentions_client"]},"held_out":true}
+{"id":"t091","lang":"en","text":"Nell keeps breaking the build and should be reprimanded [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":["sentence_evaluates_people"]},"held_out":true}
+{"id":"t092","lang":"en","text":"Tess is the most careless developer on the team [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_evaluates_people"]},"held_out":true}
+{"id":"t094","lang":"en","text":"You can tell the client the fix is guaranteed for Tuesday [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]},"held_out":true}
+{"id":"t095","lang":"en","text":"We commit to delivering the export by the end of the month [f_a1b2c3].","facts":["f_a1b2c3"],"expect":{"fires":["sentence_commits_to_client"]},"held_out":true}
+{"id":"t097","lang":"en","text":"All invoicing work is finished and tested.","facts":["f_a1b2c3"],"expect":{"fires":["grounded"]},"held_out":true}
+{"id":"t098","lang":"en","text":"The export is ready for release [f_missing01].","facts":["f_a1b2c3"],"expect":{"fires":["grounded"]},"held_out":true}
+{"id":"t109","lang":"en","text":"A PDF version of the statement export looks like three to five weeks of work, an estimate from the repository and not a promise [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":[]},"held_out":true}
+{"id":"t111","lang":"en","text":"You can promise the client multi-currency invoices by the end of next month [f_d4e5f6].","facts":["f_d4e5f6"],"expect":{"fires":["sentence_commits_to_client"]},"held_out":true}
