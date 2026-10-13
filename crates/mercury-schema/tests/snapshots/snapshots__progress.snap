@@ -1,0 +1,39 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "items": [
+    {
+      "id": "f_7Qx2",
+      "kind": "feature",
+      "title": "Invoice list with filters",
+      "module": "Invoicing",
+      "status": "done",
+      "tested": "passing",
+      "confidence": 0.93,
+      "waiting_on": null,
+      "people": [
+        "Anna Smith"
+      ],
+      "evidence": [
+        {
+          "type": "pr",
+          "ref": "#412",
+          "state": "merged",
+          "at": "2026-10-04"
+        },
+        {
+          "type": "ci",
+          "ref": null,
+          "state": "passed",
+          "at": "2026-10-04"
+        }
+      ],
+      "title_withheld": false,
+      "updated_at": "2026-10-04T15:12:00Z"
+    }
+  ]
+}

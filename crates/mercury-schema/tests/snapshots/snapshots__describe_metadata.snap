@@ -1,0 +1,28 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "project": "omega",
+  "display_name": "Omega — mobile app",
+  "access": "metadata",
+  "access_limited_by": "token",
+  "modules": [
+    "Login",
+    "Payments"
+  ],
+  "tools": [
+    "describe",
+    "progress",
+    "tested",
+    "blocked",
+    "health",
+    "changes"
+  ],
+  "snapshot": {
+    "commit_short": null,
+    "indexed_at": "2026-10-04T15:12:30Z",
+    "meta_at": "2026-10-04T15:10:00Z"
+  }
+}

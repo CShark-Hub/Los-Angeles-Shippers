@@ -1,0 +1,31 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "items": [
+    {
+      "id": "f_9Kd1",
+      "kind": "fix",
+      "title": "Work item in Export",
+      "module": "Export",
+      "status": "blocked",
+      "tested": "unknown",
+      "confidence": 0.9,
+      "waiting_on": "external",
+      "people": [],
+      "evidence": [
+        {
+          "type": "issue",
+          "ref": null,
+          "state": "open",
+          "at": "2026-10-02"
+        }
+      ],
+      "title_withheld": true,
+      "updated_at": "2026-10-03T09:00:00Z"
+    }
+  ]
+}

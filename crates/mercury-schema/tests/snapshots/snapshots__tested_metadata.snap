@@ -1,0 +1,21 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "modules": [
+    {
+      "module": "Login",
+      "tests_total": null,
+      "tests_changed_14d": null,
+      "last_ci": {
+        "status": "failed",
+        "at": "2026-10-04T14:58:00Z"
+      },
+      "pass_rate_7d": 0.75,
+      "flaky_7d": 0.1
+    }
+  ]
+}

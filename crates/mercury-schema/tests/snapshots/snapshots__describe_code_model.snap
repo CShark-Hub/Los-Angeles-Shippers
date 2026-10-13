@@ -1,0 +1,30 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "project": "delta",
+  "display_name": "Delta — invoicing",
+  "access": "code_model",
+  "access_limited_by": null,
+  "modules": [
+    "Invoicing",
+    "Export",
+    "Other"
+  ],
+  "tools": [
+    "describe",
+    "progress",
+    "tested",
+    "blocked",
+    "health",
+    "changes",
+    "ask_code"
+  ],
+  "snapshot": {
+    "commit_short": "a1b2c3d",
+    "indexed_at": "2026-10-04T15:12:30Z",
+    "meta_at": "2026-10-04T15:10:00Z"
+  }
+}

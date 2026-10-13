@@ -1,0 +1,118 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: "json!({ \"requests\": [status, kind, title], \"replies\": replies })"
+---
+{
+  "replies": [
+    {
+      "items": [
+        {
+          "id": "f_pull412",
+          "p": 0.81,
+          "status": "blocked"
+        },
+        {
+          "id": "f_issue77",
+          "p": 0.66,
+          "status": "blocked"
+        }
+      ],
+      "judge_mode": "jev",
+      "purpose": "status_from_candidates"
+    },
+    {
+      "items": [
+        {
+          "id": "f_pull412",
+          "kind": "fix",
+          "p": 0.93
+        }
+      ],
+      "judge_mode": "jev",
+      "purpose": "kind"
+    },
+    {
+      "items": [
+        {
+          "id": "f_pull412",
+          "p": 0.12
+        }
+      ],
+      "judge_mode": "chat",
+      "purpose": "title_safety"
+    }
+  ],
+  "requests": [
+    {
+      "items": [
+        {
+          "candidates": [
+            "in_review",
+            "blocked"
+          ],
+          "id": "f_pull412",
+          "labels": [
+            "export",
+            "blocked"
+          ],
+          "signals": {
+            "ci": "passed",
+            "issues": [
+              {
+                "blocked": true,
+                "open": true
+              }
+            ],
+            "pr": {
+              "review_requested": true,
+              "state": "open",
+              "updated_14d": true
+            }
+          },
+          "title": "Invoice export in the new file format"
+        },
+        {
+          "candidates": [
+            "blocked",
+            "not_started"
+          ],
+          "id": "f_issue77",
+          "labels": [],
+          "signals": {
+            "ci": "none",
+            "issues": [
+              {
+                "blocked": true,
+                "open": true
+              }
+            ],
+            "pr": null
+          },
+          "title": null
+        }
+      ],
+      "purpose": "status_from_candidates"
+    },
+    {
+      "items": [
+        {
+          "id": "f_pull412",
+          "labels": [
+            "bug"
+          ],
+          "title": "Fix rounding in invoice totals"
+        }
+      ],
+      "purpose": "kind"
+    },
+    {
+      "items": [
+        {
+          "id": "f_pull412",
+          "title": "Call the exporter nightly"
+        }
+      ],
+      "purpose": "title_safety"
+    }
+  ]
+}

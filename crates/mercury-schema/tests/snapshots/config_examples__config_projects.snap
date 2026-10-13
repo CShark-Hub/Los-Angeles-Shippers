@@ -1,0 +1,20 @@
+---
+source: crates/mercury-schema/tests/config_examples.rs
+expression: projects
+---
+{
+  "projects": {
+    "delta": {
+      "display_name": "Delta — invoicing",
+      "aliases": [
+        "delta",
+        "invoicing"
+      ],
+      "access_max": "code",
+      "probe": {
+        "url": "http://probe-delta:7000/mcp",
+        "token_file": "/run/mercury/probe-tokens/delta.token"
+      }
+    }
+  }
+}

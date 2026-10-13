@@ -1,0 +1,23 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "findings": [
+    {
+      "text": "The export writes one file per invoice batch",
+      "module": "Export",
+      "confidence": 82
+    },
+    {
+      "text": "Totals are rounded once, after the discounts",
+      "module": null,
+      "confidence": 64
+    }
+  ],
+  "withheld": 1,
+  "cost_usd": 0.0031,
+  "prompt_version": 1
+}

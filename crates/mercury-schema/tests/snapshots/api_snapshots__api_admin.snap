@@ -1,0 +1,288 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: "json!({\n    \"overview\": overview, \"people\": people, \"repositories\": repositories\n})"
+---
+{
+  "overview": {
+    "alerts": [
+      {
+        "budget_usd": null,
+        "judge_mode": null,
+        "kind": "probe_silent",
+        "project": "delta",
+        "since": "2026-10-08T08:30:00Z",
+        "spent_usd": null
+      }
+    ],
+    "askers": 4,
+    "bucket": "day",
+    "channels": [
+      {
+        "channel": "cli",
+        "counts": {
+          "answered": 0,
+          "degraded": 0,
+          "held": 0,
+          "other": 0,
+          "refused": 0
+        }
+      },
+      {
+        "channel": "web",
+        "counts": {
+          "answered": 31,
+          "degraded": 2,
+          "held": 3,
+          "other": 1,
+          "refused": 6
+        }
+      },
+      {
+        "channel": "mcp",
+        "counts": {
+          "answered": 0,
+          "degraded": 0,
+          "held": 0,
+          "other": 0,
+          "refused": 0
+        }
+      }
+    ],
+    "classes": [
+      {
+        "class": "progress",
+        "count": 18
+      },
+      {
+        "class": "blocked",
+        "count": 9
+      }
+    ],
+    "cost_usd": 0.42,
+    "duration_ms": {
+      "max": 21000,
+      "p50": 6400,
+      "p95": 14200
+    },
+    "judge": {
+      "chat": 2,
+      "jev": 38,
+      "none": 3,
+      "rules": 0
+    },
+    "projects": [
+      {
+        "cost_usd": 0.42,
+        "counts": {
+          "answered": 31,
+          "degraded": 2,
+          "held": 3,
+          "other": 1,
+          "refused": 6
+        },
+        "project": "delta"
+      },
+      {
+        "cost_usd": 0.0,
+        "counts": {
+          "answered": 0,
+          "degraded": 0,
+          "held": 0,
+          "other": 0,
+          "refused": 0
+        },
+        "project": null
+      }
+    ],
+    "refusals": [
+      {
+        "code": "asks_for_code",
+        "count": 4
+      },
+      {
+        "code": "forbidden_project",
+        "count": 2
+      }
+    ],
+    "series": [
+      {
+        "counts": {
+          "answered": 0,
+          "degraded": 0,
+          "held": 0,
+          "other": 0,
+          "refused": 0
+        },
+        "start": "2026-10-01T00:00:00Z"
+      },
+      {
+        "counts": {
+          "answered": 31,
+          "degraded": 2,
+          "held": 3,
+          "other": 1,
+          "refused": 6
+        },
+        "start": "2026-10-02T00:00:00Z"
+      }
+    ],
+    "settings": {
+      "budgets": {
+        "global_daily_usd": 5.0,
+        "per_question_usd": 0.05,
+        "per_user_daily_usd": 1.0
+      },
+      "checks": [
+        {
+          "block_at": 0.5,
+          "clarify_below": null,
+          "id": "asks_for_code",
+          "pass_at": null,
+          "review_at": null,
+          "stage": "input"
+        }
+      ],
+      "models": [
+        {
+          "backend": "openrouter",
+          "kind": "jev",
+          "model": "jev",
+          "role": "judge"
+        },
+        {
+          "backend": "openrouter",
+          "kind": null,
+          "model": "example/composer-1",
+          "role": "composer"
+        }
+      ]
+    },
+    "signoffs": {
+      "approved": 2,
+      "expired": 0,
+      "pending": 1,
+      "rejected": 0
+    },
+    "since": "2026-10-01T09:00:00Z",
+    "spend": {
+      "daily_budget_usd": 5.0,
+      "day": "2026-10-08",
+      "everyone_usd": 0.12,
+      "people": [
+        {
+          "display_name": "Alex",
+          "email": "pm@example.com",
+          "spent_usd": 0.12,
+          "user_id": "u_01JB2M3N4P5Q6R7S8T9V0W1X2Z"
+        }
+      ],
+      "per_user_daily_usd": 1.0
+    },
+    "totals": {
+      "answered": 31,
+      "degraded": 2,
+      "held": 3,
+      "other": 1,
+      "refused": 6
+    },
+    "until": "2026-10-08T09:00:00Z",
+    "window": "7d"
+  },
+  "people": {
+    "classes_known": true,
+    "people": [
+      {
+        "created_at": "2026-09-30T10:00:00Z",
+        "disabled_at": null,
+        "display_name": "Alex",
+        "email": "pm@example.com",
+        "grants": [
+          {
+            "approver": false,
+            "classes": [
+              {
+                "class": "progress",
+                "signoff": false
+              },
+              {
+                "class": "health",
+                "signoff": true
+              }
+            ],
+            "project": "delta"
+          },
+          {
+            "approver": false,
+            "classes": null,
+            "project": "gamma"
+          }
+        ],
+        "id": "u_01JB2M3N4P5Q6R7S8T9V0W1X2Z",
+        "last_asked_at": "2026-10-08T08:59:00Z",
+        "questions_30d": 27,
+        "role": "pm",
+        "spent_today_usd": 0.12,
+        "tokens": [
+          {
+            "created_at": "2026-09-30T10:01:00Z",
+            "expires_at": "2026-12-29T10:01:00Z",
+            "label": "laptop",
+            "last_used_at": "2026-10-08T08:59:00Z",
+            "public_id": "publicid0001",
+            "revoked_at": null,
+            "state": "active"
+          }
+        ]
+      }
+    ],
+    "projects": [
+      "delta",
+      "gamma"
+    ]
+  },
+  "repositories": {
+    "repositories": [
+      {
+        "access_max": "code",
+        "display_name": "Delta",
+        "last_asked_at": "2026-10-08T08:59:00Z",
+        "people": [
+          {
+            "approver": false,
+            "disabled_at": null,
+            "display_name": "Alex",
+            "email": "pm@example.com",
+            "role": "pm"
+          }
+        ],
+        "probe": {
+          "access": "metadata",
+          "access_limited_by": "token",
+          "last_seen_at": "2026-10-08T08:59:00Z",
+          "modules": [
+            "Invoicing"
+          ],
+          "quarantine_reason": null,
+          "registered_at": "2026-10-01T08:00:00Z",
+          "schema": "mercury.facts/0.1",
+          "status": "healthy",
+          "tools": [
+            "describe",
+            "progress"
+          ]
+        },
+        "project": "delta",
+        "questions_30d": 27
+      },
+      {
+        "access_max": "metadata",
+        "display_name": "Gamma",
+        "last_asked_at": null,
+        "people": [],
+        "probe": null,
+        "project": "gamma",
+        "questions_30d": 0
+      }
+    ]
+  }
+}
