@@ -1,0 +1,64 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT q.channel AS \"channel!\", q.status AS \"status!\", q.judge_mode AS \"judge_mode?\",\n                  EXISTS (SELECT 1 FROM audit_events a\n                          WHERE a.question_id = q.id AND a.type = 'pending_signoff') AS \"held!: bool\",\n                  COUNT(*) AS \"n!: i64\"\n           FROM questions q WHERE q.created_at >= ?\n           GROUP BY 1, 2, 3, 4",
+  "describe": {
+    "columns": [
+      {
+        "name": "channel!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "channel"
+          }
+        }
+      },
+      {
+        "name": "status!",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "judge_mode?",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "judge_mode"
+          }
+        }
+      },
+      {
+        "name": "held!: bool",
+        "ordinal": 3,
+        "type_info": "Integer",
+        "origin": "Expression"
+      },
+      {
+        "name": "n!: i64",
+        "ordinal": 4,
+        "type_info": "Integer",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "6f2aa6fc167cdbb2d100a6dd3e705a6bb89c5e07da5269048220c419fe721d12"
+}

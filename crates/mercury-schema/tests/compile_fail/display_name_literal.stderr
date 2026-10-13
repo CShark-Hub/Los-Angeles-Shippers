@@ -1,0 +1,11 @@
+error[E0423]: cannot initialize a tuple struct which contains private fields
+ --> tests/compile_fail/display_name_literal.rs:4:17
+  |
+4 |     let _name = DisplayName(String::from("someone@example.com"));
+  |                 ^^^^^^^^^^^
+  |
+note: constructor is not visible here due to private fields
+ --> src/redact.rs
+  |
+  | pub struct DisplayName(String);
+  |                        ^^^^^^ private field

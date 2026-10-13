@@ -1,0 +1,33 @@
+[package]
+name = "mercury-judge"
+description = "The judge: the Judge trait, the Jev client and its fallbacks"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+axum.workspace = true
+chrono.workspace = true
+indexmap.workspace = true
+mercury-schema.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_norway.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+wiremock.workspace = true
+
+[[bin]]
+name = "judge-eval"
+path = "src/bin/judge-eval.rs"
+
+[lints]
+workspace = true

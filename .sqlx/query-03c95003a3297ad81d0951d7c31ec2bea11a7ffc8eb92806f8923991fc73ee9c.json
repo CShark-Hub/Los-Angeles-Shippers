@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE probes SET status = ? WHERE project = ? AND status <> ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "03c95003a3297ad81d0951d7c31ec2bea11a7ffc8eb92806f8923991fc73ee9c"
+}

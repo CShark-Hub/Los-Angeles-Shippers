@@ -1,0 +1,74 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT access, status, manifest_json, tools_json, last_seen_at FROM probes WHERE project = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "access",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "access"
+          }
+        }
+      },
+      {
+        "name": "status",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "manifest_json",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "manifest_json"
+          }
+        }
+      },
+      {
+        "name": "tools_json",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "tools_json"
+          }
+        }
+      },
+      {
+        "name": "last_seen_at",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "last_seen_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "2882b5edd9c1664c9ef54e61985c9f63910fda2a86abb9233d8b9c3ba6243273"
+}

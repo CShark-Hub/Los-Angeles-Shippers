@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO probes (project, url, access, access_limited_by, status, schema, manifest_hash,\n                                   manifest_json, tools_json, quarantine_reason, registered_at, last_seen_at)\n               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n               ON CONFLICT (project) DO UPDATE SET\n                   url = excluded.url, access = excluded.access, access_limited_by = excluded.access_limited_by,\n                   status = excluded.status, schema = excluded.schema, manifest_hash = excluded.manifest_hash,\n                   manifest_json = excluded.manifest_json, tools_json = excluded.tools_json,\n                   quarantine_reason = excluded.quarantine_reason, last_seen_at = excluded.last_seen_at",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 12
+    },
+    "nullable": []
+  },
+  "hash": "dd87d324ed4af71217da32c90e9b46810f27840e73d35fe387fd1a2b8752749a"
+}

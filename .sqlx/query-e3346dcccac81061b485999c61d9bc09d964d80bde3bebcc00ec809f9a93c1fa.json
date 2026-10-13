@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE audit_events SET hash = ? WHERE seq = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "e3346dcccac81061b485999c61d9bc09d964d80bde3bebcc00ec809f9a93c1fa"
+}

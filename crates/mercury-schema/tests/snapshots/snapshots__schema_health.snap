@@ -1,0 +1,186 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"input\": input, \"output\": output })"
+---
+{
+  "input": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "title": "HealthArgs",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "BuildStatus": {
+        "enum": [
+          "passed",
+          "failed",
+          "running",
+          "none"
+        ],
+        "type": "string"
+      },
+      "CiRun": {
+        "additionalProperties": false,
+        "description": "The latest CI run: `at` is `null` when the status is `none`.",
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/$defs/BuildStatus"
+          }
+        },
+        "required": [
+          "status",
+          "at"
+        ],
+        "type": "object"
+      },
+      "LastRelease": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SafeText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "at"
+        ],
+        "type": "object"
+      },
+      "OpenPrs": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "oldest_days": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "count",
+          "oldest_days"
+        ],
+        "type": "object"
+      },
+      "Ratio": {
+        "maximum": 1,
+        "minimum": 0,
+        "type": "number"
+      },
+      "SafeText": {
+        "description": "One line of redacted text: no code, paths, identifiers, URLs, e-mail addresses or secrets.",
+        "format": "safe-text",
+        "maxLength": 120,
+        "minLength": 1,
+        "type": "string"
+      },
+      "SchemaId": {
+        "const": "mercury.facts/0.1",
+        "type": "string"
+      },
+      "Score": {
+        "description": "A health score from 0 to 100.",
+        "format": "uint8",
+        "maximum": 100,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "TodoFixme": {
+        "additionalProperties": false,
+        "description": "TODO and FIXME markers. `null` as a whole in `metadata` mode.",
+        "properties": {
+          "count": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "trend_14d": {
+            "description": "The change in the count over the last 14 days, negative when it fell.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "count",
+          "trend_14d"
+        ],
+        "type": "object"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The reply of `health`.",
+    "properties": {
+      "as_of": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "build": {
+        "$ref": "#/$defs/CiRun"
+      },
+      "ci_pass_rate_7d": {
+        "$ref": "#/$defs/Ratio"
+      },
+      "last_release": {
+        "$ref": "#/$defs/LastRelease"
+      },
+      "open_prs": {
+        "$ref": "#/$defs/OpenPrs"
+      },
+      "schema": {
+        "$ref": "#/$defs/SchemaId"
+      },
+      "score": {
+        "$ref": "#/$defs/Score"
+      },
+      "todo_fixme": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/TodoFixme"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schema",
+      "as_of",
+      "build",
+      "ci_pass_rate_7d",
+      "open_prs",
+      "todo_fixme",
+      "last_release",
+      "score"
+    ],
+    "title": "HealthReply",
+    "type": "object"
+  }
+}

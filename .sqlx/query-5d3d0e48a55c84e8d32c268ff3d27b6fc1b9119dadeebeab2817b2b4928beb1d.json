@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET status = 'pending_signoff' WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "5d3d0e48a55c84e8d32c268ff3d27b6fc1b9119dadeebeab2817b2b4928beb1d"
+}

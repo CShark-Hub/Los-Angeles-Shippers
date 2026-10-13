@@ -1,0 +1,117 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"input\": input, \"output\": output })"
+---
+{
+  "input": {
+    "$defs": {
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+      "module": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ModuleName"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "since": {
+        "format": "date",
+        "type": "string"
+      }
+    },
+    "required": [
+      "since"
+    ],
+    "title": "ChangesArgs",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "ChangeSummary": {
+        "additionalProperties": false,
+        "description": "What changed in one module.",
+        "properties": {
+          "commits": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "merged_prs": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "module": {
+            "$ref": "#/$defs/ModuleName"
+          },
+          "notable": {
+            "items": {
+              "$ref": "#/$defs/SafeText"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "module",
+          "commits",
+          "merged_prs",
+          "notable"
+        ],
+        "type": "object"
+      },
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      },
+      "SafeText": {
+        "description": "One line of redacted text: no code, paths, identifiers, URLs, e-mail addresses or secrets.",
+        "format": "safe-text",
+        "maxLength": 120,
+        "minLength": 1,
+        "type": "string"
+      },
+      "SchemaId": {
+        "const": "mercury.facts/0.1",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The reply of `changes`.",
+    "properties": {
+      "as_of": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "modules": {
+        "items": {
+          "$ref": "#/$defs/ChangeSummary"
+        },
+        "type": "array"
+      },
+      "schema": {
+        "$ref": "#/$defs/SchemaId"
+      }
+    },
+    "required": [
+      "schema",
+      "as_of",
+      "modules"
+    ],
+    "title": "ChangesReply",
+    "type": "object"
+  }
+}

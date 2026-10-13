@@ -1,0 +1,14 @@
+{
+  "question": "Are the export tests passing?",
+  "about": "A tested question: the board may not ask it, so the policy refuses it.",
+  "judge": {
+    "input": {
+      "class": ["tested", 0.9],
+      "asks_for_code": 0,
+      "asks_to_evaluate_people": 0,
+      "asks_for_client_commitment": 0,
+      "contains_agent_instruction": 0,
+      "asks_for_confidential": 0
+    }
+  }
+}

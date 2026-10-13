@@ -1,0 +1,81 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/mercury-schema",
+    "crates/mercury-judge",
+    "crates/mercury-core",
+    "crates/mercury-probe",
+    "crates/mercury-cli",
+]
+
+[workspace.package]
+# the project names nobody: no author, in any crate
+authors = []
+license = "Apache-2.0"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[workspace.dependencies]
+mercury-schema = { path = "crates/mercury-schema" }
+
+async-trait = "0.1"
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "matched-path", "query", "tokio"] }
+# the version sqlx already brings
+base64 = "0.22"
+chrono = { version = "0.4", default-features = false, features = ["serde", "std"] }
+clap = { version = "4", features = ["derive"] }
+getrandom = "0.4"
+# gunzip for the probe's snapshot tarball, in Rust (miniz_oxide)
+flate2 = "1"
+globset = "0.4"
+futures-util = { version = "0.3", default-features = false, features = ["std"] }
+indexmap = { version = "2", features = ["serde"] }
+ipnet = "2"
+# the OS keychain for the CLI: Credential Manager, Keychain Services, or the Secret Service elsewhere
+keyring = "4.2"
+# for sqlx's statement-log levels
+log = "0.4"
+regex = "1"
+# MCP over Streamable HTTP, server side only; no client and no reqwest of its own
+rmcp = { version = "3.5", default-features = false, features = ["server", "transport-streamable-http-server"] }
+# rustls on ring with the system's roots. 0.13 verifies through a crate whose licence the
+# dependency policy doesn't allow, and its default backend, aws-lc-rs, carries another.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-native-roots"] }
+schemars = { version = "1", features = ["chrono04", "indexmap2"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+serde_norway = "0.9"
+serde_path_to_error = "0.1"
+# the version sqlx already brings
+sha2 = "0.10"
+# runtime queries only in the probe; a crate that needs the macros or migrations adds them
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "sqlite-bundled"] }
+subtle = "2"
+# the probe's snapshot unpacker; no extended attributes are written
+tar = { version = "0.4", default-features = false }
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+utoipa = { version = "5", features = ["chrono", "indexmap"] }
+
+# tests
+http-body-util = "0.1"
+insta = { version = "1", features = ["json"] }
+proptest = "1"
+tempfile = "3"
+tower = { version = "0.5", features = ["util"] }
+trybuild = "1"
+wiremock = "0.6"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+dbg_macro = "warn"
+todo = "warn"
+unwrap_used = "warn"
+expect_used = "warn"

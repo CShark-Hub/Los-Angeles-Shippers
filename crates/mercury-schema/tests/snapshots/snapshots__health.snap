@@ -1,0 +1,26 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "build": {
+    "status": "passed",
+    "at": "2026-10-04T14:58:00Z"
+  },
+  "ci_pass_rate_7d": 0.94,
+  "open_prs": {
+    "count": 4,
+    "oldest_days": 6
+  },
+  "todo_fixme": {
+    "count": 37,
+    "trend_14d": -3
+  },
+  "last_release": {
+    "name": "Release 1.4",
+    "at": "2026-09-28T12:00:00Z"
+  },
+  "score": 86
+}

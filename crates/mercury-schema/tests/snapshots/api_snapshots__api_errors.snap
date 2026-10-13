@@ -1,0 +1,20 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: "json!([error, bare])"
+---
+[
+  {
+    "error": {
+      "code": "rate_limited",
+      "hint": "Try again in a few minutes.",
+      "message": "Too many questions."
+    }
+  },
+  {
+    "error": {
+      "code": "internal",
+      "hint": null,
+      "message": "Something failed."
+    }
+  }
+]

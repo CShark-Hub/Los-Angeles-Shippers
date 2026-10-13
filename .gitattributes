@@ -1,0 +1,16 @@
+# Recipes and scripts run under sh or bash, which refuse CRLF line endings.
+justfile text eol=lf
+*.sh text eol=lf
+# What the containers read stays LF on every checkout: a CR would end each allowlist pattern, for one.
+deploy/** text eol=lf
+.trivyignore.yaml text eol=lf
+# The web client too: prettier checks for LF, so a CRLF checkout would fail every file.
+apps/web/** text eol=lf
+# sqlx checksums each migration's bytes, so a CRLF checkout would make a database migrated on one
+# system look modified to a build on another. The offline query data stays LF with them.
+crates/mercury-core/migrations/** text eol=lf
+.sqlx/** text eol=lf
+# The runs on Compose copy the configuration examples into the core's /config and mount the replay
+# server's recordings: a Windows checkout would hand the containers CRLF where CI hands them LF.
+config-examples/** text eol=lf
+tests/** text=auto eol=lf

@@ -1,0 +1,15 @@
+# The image builds need only the Rust workspace and the web client. Everything else stays out of the build context.
+*
+!Cargo.toml
+!Cargo.lock
+!rust-toolchain.toml
+!crates/
+# the offline query data the core's SQL is checked against, and the setting that makes the build use it
+!.sqlx/
+!.cargo/
+# the web client's source, for the web image (its build writes build/ and csp.caddy, and installs its own node_modules)
+!apps/web/
+apps/web/node_modules
+apps/web/build
+apps/web/.svelte-kit
+apps/web/csp.caddy

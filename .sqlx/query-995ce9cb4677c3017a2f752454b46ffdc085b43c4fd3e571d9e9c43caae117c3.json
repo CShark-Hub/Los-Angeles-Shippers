@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE sessions SET revoked_at = ? WHERE id_sha256 = ? AND revoked_at IS NULL",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "995ce9cb4677c3017a2f752454b46ffdc085b43c4fd3e571d9e9c43caae117c3"
+}

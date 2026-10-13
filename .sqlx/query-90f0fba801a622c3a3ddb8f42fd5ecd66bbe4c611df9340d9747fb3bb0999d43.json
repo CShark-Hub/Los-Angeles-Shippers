@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET answer_redacted = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "90f0fba801a622c3a3ddb8f42fd5ecd66bbe4c611df9340d9747fb3bb0999d43"
+}

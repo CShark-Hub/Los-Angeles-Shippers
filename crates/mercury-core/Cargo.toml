@@ -1,0 +1,55 @@
+[package]
+name = "mercury-core"
+description = "The gateway: API, orchestrator, audit and admin commands"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+axum.workspace = true
+base64.workspace = true
+chrono.workspace = true
+clap.workspace = true
+futures-util.workspace = true
+getrandom.workspace = true
+http-body-util.workspace = true
+indexmap.workspace = true
+ipnet.workspace = true
+log.workspace = true
+# the judge chain, the check catalogue and the chat client for the planner and the composer
+mercury-judge = { path = "../mercury-judge" }
+mercury-schema.workspace = true
+regex.workspace = true
+# the probes' MCP endpoints, on the probes network
+reqwest.workspace = true
+# the core's own MCP server at `/mcp`, for AI agents
+rmcp.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_norway.workspace = true
+serde_path_to_error.workspace = true
+sha2.workspace = true
+# queries checked at compile time against `.sqlx/`, so a build needs no database; the migrations built in
+sqlx = { workspace = true, features = ["macros", "migrate"] }
+subtle.workspace = true
+thiserror.workspace = true
+# `signal`: Ctrl-C stops a command of the admin shell, not the shell
+tokio = { workspace = true, features = ["time", "signal"] }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+# the real probe, to show the core and the probe speak the same MCP
+mercury-probe = { path = "../mercury-probe" }
+tempfile.workspace = true
+tower.workspace = true
+
+[lints]
+workspace = true
+
+[target."cfg(unix)".dependencies]
+# the admin shell's terminal: raw mode and the window size, with no `unsafe` of our own
+rustix = { version = "1.1.5", default-features = false, features = ["std", "termios"] }

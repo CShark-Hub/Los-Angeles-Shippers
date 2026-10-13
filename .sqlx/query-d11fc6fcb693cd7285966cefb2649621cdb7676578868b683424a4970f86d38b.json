@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT project, manifest_json FROM probes",
+  "describe": {
+    "columns": [
+      {
+        "name": "project",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "manifest_json",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "probes",
+            "name": "manifest_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "d11fc6fcb693cd7285966cefb2649621cdb7676578868b683424a4970f86d38b"
+}

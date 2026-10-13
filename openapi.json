@@ -1,0 +1,4972 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Mercury core API",
+    "description": "The core's HTTP API: the bodies of every request and response, and the events of a question's stream.",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/v1/admin/overview": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "admin_overview",
+        "parameters": [
+          {
+            "name": "window",
+            "in": "query",
+            "description": "`24h` (in hours), `7d` or `30d` (in days); `7d` by default.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The questions of the window by outcome, channel, project, class, refusal and judge, their durations and cost, the sign-offs, today's spend against the budget, the alerts that hold and the settings the core runs with. Counts and metadata only: no question's text, answer or fact. The read is itself an audit row, `admin_viewed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A window other than 24h, 7d or 30d, or another parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/admin/people": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "admin_people",
+        "responses": {
+          "200": {
+            "description": "Everyone, disabled people too: role, grants with approver flags and what each lets them ask, tokens by public id, label and dates (never a secret), their questions of the last 30 days. Read-only: people, roles, grants and tokens change through the admin commands on the server. The read is itself an audit row, `admin_viewed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPeople"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A parameter; the route takes none.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/admin/repositories": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "admin_repositories",
+        "responses": {
+          "200": {
+            "description": "Every project projects.yaml lists or a probe registered: its probe's state, freshness, access mode and what limited it, its quarantine, and the people granted it. Read-only: a quarantine changes through the admin commands on the server, an access mode through the files there. The read is itself an audit row, `admin_viewed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminRepositories"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A parameter; the route takes none.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/approvals": {
+      "get": {
+        "tags": [
+          "approvals"
+        ],
+        "operationId": "approvals",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "`pending`, the only one; it may be left out.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The held answers, pending and unexpired, of every project the caller approves, oldest first; the caller's own questions come with asked_by_me and without draft and flags, since the asker reads nothing of a held answer before the decision. Empty for someone who approves nothing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A status other than pending, or another parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/approvals/{id}": {
+      "post": {
+        "tags": [
+          "approvals"
+        ],
+        "operationId": "decide",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The approval's id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalDecision"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Decided: the question goes on with the draft unchanged (answer, done) or with refused rejected_by_approver, the note as its hint."
+          },
+          "400": {
+            "description": "A malformed body, or a rejection without a note of 1 to 500 characters on one line.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The caller's own question; or with the session cookie but not from the web client's own page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such approval, or one of a project the caller doesn't approve.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already decided, or expired after 24 hours.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "A body over 64 KB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/audit": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "operationId": "audit",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "query",
+            "description": "The row's project, else its question's.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "The asker's e-mail address, or for a row without a question the one its payload names; case ignored.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "A token's public id: its questions, and the rows without a question that name it (sign-ins, refusals, its creation and revocation).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "question",
+            "in": "query",
+            "description": "A question's id.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "class",
+            "in": "query",
+            "description": "The question's class; rows without a question don't match.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "outcome",
+            "in": "query",
+            "description": "The question's status: running, pending_signoff, delivered, refused, clarify or failed; rows without a question don't match.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "From this time on, included: RFC 3339, or YYYY-MM-DD for its midnight UTC.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Before this time, not included: RFC 3339, or YYYY-MM-DD for its midnight UTC.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Rows per page, 1 to 500; 100 by default.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "The `next` of the page before.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of rows in seq order: every row, for an admin, the only one who reads the audit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A filter, the limit or the cursor doesn't parse.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin. What Mercury did with a person's own question is in its events.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/audit/export": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "operationId": "audit_export",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "description": "`jsonl`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "question",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "class",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "outcome",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "As for /v1/audit.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Every matching row up to the last one at the request's start, one AuditItem per line in seq order, streamed. The export is itself an audit row, `audit_exported`, written first.",
+            "content": {
+              "application/jsonl": {}
+            }
+          },
+          "400": {
+            "description": "`format` isn't jsonl, or a filter doesn't parse.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "tags": [
+          "service"
+        ],
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "The service is up.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceHealth"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "Who the token belongs to.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/openapi.json": {
+      "get": {
+        "tags": [
+          "service"
+        ],
+        "operationId": "openapi",
+        "responses": {
+          "200": {
+            "description": "This document.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/v1/projects": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "operationId": "projects",
+        "responses": {
+          "200": {
+            "description": "The projects the person may ask about.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/questions": {
+      "post": {
+        "tags": [
+          "questions"
+        ],
+        "operationId": "ask",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "1 to 128 printable ASCII characters; a repeat returns the first question's id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewQuestion"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted; follow its events.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accepted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or key; a clarify of a question that isn't the caller's or didn't end with a clarify; a follows that isn't the caller's own question rejected by an approver (the same message whatever the reason).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "With the session cookie but not from the web client's own page (Origin, X-Mercury-Client).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "A body over 64 KB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Over the token's rate limit; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/questions/{id}": {
+      "get": {
+        "tags": [
+          "questions"
+        ],
+        "operationId": "question",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The question's id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Where the question stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionState"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not the caller's question, or no such question.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/questions/{id}/events": {
+      "get": {
+        "tags": [
+          "questions"
+        ],
+        "operationId": "events",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The question's id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Last-Event-ID",
+            "in": "header",
+            "description": "Replay the events after this one.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server-sent events: `event:` an event's name, `id:` its audit seq, `data:` its data (see the Event schema). Ends after a terminal event.",
+            "content": {
+              "text/event-stream": {}
+            }
+          },
+          "404": {
+            "description": "Not the caller's question, or no such question.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/questions/{id}/feedback": {
+      "post": {
+        "tags": [
+          "questions"
+        ],
+        "operationId": "feedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The question's id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Feedback"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Recorded; a second one replaces the first."
+          },
+          "403": {
+            "description": "With the session cookie but not from the web client's own page (Origin, X-Mercury-Client).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not the caller's question, or no such question.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          },
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/v1/session": {
+      "post": {
+        "tags": [
+          "people"
+        ],
+        "operationId": "sign_in",
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "description": "The web client's own origin, as the server is set up with it (MERCURY_PUBLIC_ORIGIN).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Mercury-Client",
+            "in": "header",
+            "description": "`web`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Signed in: the cookie `__Host-mercury_session` is set (HttpOnly, Secure, SameSite=Strict, Path=/), for the server's session time and never beyond the token's expiry."
+          },
+          "400": {
+            "description": "A malformed body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid token: unauthenticated, or token_expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not from the web client's own page: the Origin or the X-Mercury-Client header is wrong or missing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "A body over 64 KB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many sign-ins from this address; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "people"
+        ],
+        "operationId": "sign_out",
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "description": "The web client's own origin, as the server is set up with it (MERCURY_PUBLIC_ORIGIN).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Mercury-Client",
+            "in": "header",
+            "description": "`web`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Signed out: the session is ended and the cookie cleared."
+          },
+          "401": {
+            "description": "No valid session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not from the web client's own page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Accepted": {
+        "type": "object",
+        "description": "`202` to `POST /v1/questions`, and the data of the `accepted` event.",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "follows": {
+            "$ref": "#/components/schemas/QuestionId",
+            "description": "In the `accepted` event of a question asked again after a rejection: the rejected question\nits `follows` named. Left out otherwise, and always from the `202`."
+          },
+          "id": {
+            "$ref": "#/components/schemas/QuestionId"
+          }
+        }
+      },
+      "AccessLimit": {
+        "type": "string",
+        "description": "What lowered the probe's access mode below the one asked for.",
+        "enum": [
+          "token",
+          "manifest",
+          "access_max",
+          "size_cap",
+          "no_code_reader"
+        ]
+      },
+      "AccessMode": {
+        "type": "string",
+        "description": "How much of a repository the probe reads, ordered so the strictest of several is the `min`.",
+        "enum": [
+          "metadata",
+          "code",
+          "code_model"
+        ]
+      },
+      "AdminAlert": {
+        "type": "object",
+        "description": "One of the three alerts `mercury-core admin status` says.",
+        "required": [
+          "kind",
+          "project",
+          "since",
+          "judge_mode",
+          "spent_usd",
+          "budget_usd"
+        ],
+        "properties": {
+          "budget_usd": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Usd"
+              }
+            ]
+          },
+          "judge_mode": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeMode",
+                "description": "The judge the questions ended on; `null` but for `judge_degraded`."
+              }
+            ]
+          },
+          "kind": {
+            "$ref": "#/components/schemas/AlertKind"
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId",
+                "description": "The silent probe's project; `null` for the other kinds."
+              }
+            ]
+          },
+          "since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Since when it holds: the first degraded ending, or the probe's last registration; `null`\nfor the spend, and for a probe never seen."
+          },
+          "spent_usd": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Usd",
+                "description": "Today's spend and the daily budget; `null` but for `spend`."
+              }
+            ]
+          }
+        }
+      },
+      "AdminGrant": {
+        "type": "object",
+        "description": "A project granted, or the pseudo-project `portfolio`.",
+        "required": [
+          "project",
+          "approver",
+          "classes"
+        ],
+        "properties": {
+          "approver": {
+            "type": "boolean"
+          },
+          "classes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/GrantClass"
+            },
+            "description": "What the grant lets its person ask: the classes of their role in `policies.yaml` and the\nproject's manifest combined, as the core applies them. `null` when the project has no\nmanifest yet (it can't be asked) or the files can't be read."
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          }
+        }
+      },
+      "AdminOverview": {
+        "type": "object",
+        "description": "`GET /v1/admin/overview?window=…`: the questions asked in the window and what became of them,\ntoday's spend, the alerts that hold, and the settings the core runs with.",
+        "required": [
+          "window",
+          "since",
+          "until",
+          "bucket",
+          "totals",
+          "series",
+          "channels",
+          "projects",
+          "classes",
+          "refusals",
+          "judge",
+          "duration_ms",
+          "cost_usd",
+          "askers",
+          "signoffs",
+          "spend",
+          "alerts",
+          "settings"
+        ],
+        "properties": {
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminAlert"
+            },
+            "description": "The alerts that hold now."
+          },
+          "askers": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many people asked in the window.",
+            "minimum": 0
+          },
+          "bucket": {
+            "$ref": "#/components/schemas/Bucket"
+          },
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelCount"
+            },
+            "description": "`cli`, `web` and `mcp`, each listed even with nothing asked."
+          },
+          "classes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassCount"
+            },
+            "description": "The classes the questions were given, the most first."
+          },
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd",
+            "description": "What the window's questions cost."
+          },
+          "duration_ms": {
+            "$ref": "#/components/schemas/Durations",
+            "description": "How long the questions that finished in the window took, from asked to ended, leaving out\nthose held for a sign-off, whose time includes the wait for the approver."
+          },
+          "judge": {
+            "$ref": "#/components/schemas/JudgeCounts",
+            "description": "Which judge answered the questions that ended in the window, by the weakest any stage had."
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectCount"
+            },
+            "description": "The projects asked about, the most asked first."
+          },
+          "refusals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefusalCount"
+            },
+            "description": "Why questions were refused, the most first."
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeriesPoint"
+            },
+            "description": "The window in buckets, oldest first, the empty ones included; the first starts at or\nbefore `since`."
+          },
+          "settings": {
+            "$ref": "#/components/schemas/Settings"
+          },
+          "signoffs": {
+            "$ref": "#/components/schemas/SignoffCounts",
+            "description": "The sign-offs of the window's questions."
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The window's start, included."
+          },
+          "spend": {
+            "$ref": "#/components/schemas/SpendToday",
+            "description": "Today's spend (UTC), whatever the window."
+          },
+          "totals": {
+            "$ref": "#/components/schemas/OutcomeCounts",
+            "description": "Every question asked in the window, by outcome."
+          },
+          "until": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The request's time, the window's end."
+          },
+          "window": {
+            "$ref": "#/components/schemas/OverviewWindow"
+          }
+        }
+      },
+      "AdminPeople": {
+        "type": "object",
+        "description": "`GET /v1/admin/people`: everyone in the database, disabled people too, with their grants,\nwhat each grant lets them ask, and their tokens.",
+        "required": [
+          "people",
+          "projects",
+          "classes_known"
+        ],
+        "properties": {
+          "classes_known": {
+            "type": "boolean",
+            "description": "False when `policies.yaml` or `projects.yaml` can't be read: every grant's `classes` is\nthen `null`."
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminPerson"
+            },
+            "description": "By e-mail address."
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectId"
+            },
+            "description": "The projects `projects.yaml` lists, which a grant may name; empty when it can't be read."
+          }
+        }
+      },
+      "AdminPerson": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "display_name",
+          "role",
+          "created_at",
+          "disabled_at",
+          "grants",
+          "tokens",
+          "questions_30d",
+          "last_asked_at",
+          "spent_today_usd"
+        ],
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "disabled_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "grants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminGrant"
+            },
+            "description": "By project."
+          },
+          "id": {
+            "$ref": "#/components/schemas/UserId"
+          },
+          "last_asked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "questions_30d": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The questions they asked in the last 30 days.",
+            "minimum": 0
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "spent_today_usd": {
+            "$ref": "#/components/schemas/Usd",
+            "description": "Their spend today (UTC)."
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminToken"
+            },
+            "description": "Oldest first; never a secret."
+          }
+        }
+      },
+      "AdminProbe": {
+        "type": "object",
+        "required": [
+          "status",
+          "access",
+          "access_limited_by",
+          "schema",
+          "registered_at",
+          "last_seen_at",
+          "quarantine_reason",
+          "modules",
+          "tools"
+        ],
+        "properties": {
+          "access": {
+            "$ref": "#/components/schemas/AccessMode",
+            "description": "The mode it reads with."
+          },
+          "access_limited_by": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AccessLimit",
+                "description": "What kept it below `access_max`; `null` when nothing did."
+              }
+            ]
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModuleName"
+            },
+            "description": "From its `describe`."
+          },
+          "quarantine_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The reason the admin gave, while it is quarantined."
+          },
+          "registered_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "schema": {
+            "$ref": "#/components/schemas/SchemaId"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProbeStatus",
+            "description": "At the time of the request: a healthy probe silent for three minutes shows as stale."
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolName"
+            }
+          }
+        }
+      },
+      "AdminRepositories": {
+        "type": "object",
+        "description": "`GET /v1/admin/repositories`: every project `projects.yaml` lists or a probe registered, with\nits probe and the people who may ask about it.",
+        "required": [
+          "repositories"
+        ],
+        "properties": {
+          "repositories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminRepository"
+            },
+            "description": "By project."
+          }
+        }
+      },
+      "AdminRepository": {
+        "type": "object",
+        "required": [
+          "project",
+          "display_name",
+          "access_max",
+          "probe",
+          "people",
+          "questions_30d",
+          "last_asked_at"
+        ],
+        "properties": {
+          "access_max": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AccessMode",
+                "description": "The most `projects.yaml` lets its probe read; `null` as for `display_name`."
+              }
+            ]
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "From `projects.yaml`; `null` for a probe registered under a project the file doesn't list,\nor when it can't be read."
+          },
+          "last_asked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepositoryPerson"
+            },
+            "description": "The people granted the project, by e-mail address."
+          },
+          "probe": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AdminProbe",
+                "description": "`null` until the project's probe has registered."
+              }
+            ]
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          },
+          "questions_30d": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The questions asked about it in the last 30 days.",
+            "minimum": 0
+          }
+        }
+      },
+      "AdminToken": {
+        "type": "object",
+        "required": [
+          "public_id",
+          "label",
+          "state",
+          "created_at",
+          "expires_at",
+          "revoked_at",
+          "last_used_at"
+        ],
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "label": {
+            "type": "string",
+            "description": "What the admin named it for, the device say."
+          },
+          "last_used_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "public_id": {
+            "$ref": "#/components/schemas/TokenPublicId"
+          },
+          "revoked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "state": {
+            "$ref": "#/components/schemas/TokenState"
+          }
+        }
+      },
+      "AlertKind": {
+        "type": "string",
+        "enum": [
+          "spend",
+          "judge_degraded",
+          "probe_silent"
+        ]
+      },
+      "Answer": {
+        "type": "object",
+        "description": "An answer that passed the output checks, with the facts it cites. Also the `answer` event.",
+        "required": [
+          "text",
+          "facts",
+          "confidence"
+        ],
+        "properties": {
+          "confidence": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "facts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fact"
+            }
+          },
+          "text": {
+            "type": "string",
+            "description": "Plain text for the person, the citations removed."
+          }
+        }
+      },
+      "Approval": {
+        "type": "object",
+        "required": [
+          "id",
+          "question_id",
+          "project",
+          "class",
+          "asker_role",
+          "reason",
+          "asked_by_me",
+          "status",
+          "created_at",
+          "expires_at"
+        ],
+        "properties": {
+          "asked_by_me": {
+            "type": "boolean",
+            "description": "The caller's own question, which they can't approve; it comes without `draft` and `flags`."
+          },
+          "asker_role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "class": {
+            "$ref": "#/components/schemas/QuestionClass"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/Answer",
+            "description": "Exactly what approving delivers. Left out of the caller's own question: the asker reads\nnothing of a held answer before the decision."
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flag"
+            },
+            "description": "The draft's flagged sentences. Left out of the caller's own question, as the draft is."
+          },
+          "id": {
+            "$ref": "#/components/schemas/ApprovalId"
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId",
+                "description": "`null` for a portfolio answer."
+              }
+            ]
+          },
+          "question_id": {
+            "$ref": "#/components/schemas/QuestionId"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/SignoffReason"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ApprovalStatus"
+          }
+        }
+      },
+      "ApprovalDecision": {
+        "type": "object",
+        "description": "`POST /v1/approvals/{id}`. A rejection needs a note, which the asker sees as the hint.",
+        "required": [
+          "decision"
+        ],
+        "properties": {
+          "decision": {
+            "$ref": "#/components/schemas/Decision"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApprovalId": {
+        "type": "string",
+        "format": "approval-id",
+        "pattern": "^ap_[0-9A-HJKMNP-TV-Z]{26}$"
+      },
+      "ApprovalList": {
+        "type": "object",
+        "description": "`GET /v1/approvals?status=…`: the held answers of the approver's projects.",
+        "required": [
+          "approvals"
+        ],
+        "properties": {
+          "approvals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Approval"
+            }
+          }
+        }
+      },
+      "ApprovalStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "approved",
+          "rejected",
+          "expired"
+        ]
+      },
+      "AskCodeArgs": {
+        "type": "object",
+        "description": "The arguments of `ask_code`: the asker's question after the project's redaction rules, and\nnothing else.",
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "$ref": "#/components/schemas/RedactedQuestion"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuditItem": {
+        "type": "object",
+        "description": "One audit row. `GET /v1/audit/export` writes the same rows, one JSON object per line. With\n`payload_sha256` and `prev_hash` a row's `hash` can be recomputed without the database:\n`SHA-256(prev_hash ‖ seq ‖ len(type) ‖ type ‖ payload_sha256 ‖ at)`, `seq` as 8 big-endian\nbytes, `len(type)` as one byte, `at` written with milliseconds.",
+        "required": [
+          "seq",
+          "question_id",
+          "type",
+          "at",
+          "user",
+          "token",
+          "project",
+          "payload",
+          "payload_sha256",
+          "prev_hash",
+          "hash"
+        ],
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash": {
+            "$ref": "#/components/schemas/Sha256Hex"
+          },
+          "payload": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The event's data; `null` once retention deleted it. The hash still covers its digest."
+          },
+          "payload_sha256": {
+            "$ref": "#/components/schemas/Sha256Hex",
+            "description": "The SHA-256 of the payload's stored JSON, kept when retention deletes the payload."
+          },
+          "prev_hash": {
+            "$ref": "#/components/schemas/Sha256Hex",
+            "description": "The previous row's `hash`; 64 zeros before the first row."
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId"
+              }
+            ]
+          },
+          "question_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/QuestionId"
+              }
+            ]
+          },
+          "seq": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "token": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TokenPublicId"
+              }
+            ]
+          },
+          "type": {
+            "$ref": "#/components/schemas/EventType"
+          },
+          "user": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Email"
+              }
+            ]
+          }
+        }
+      },
+      "AuditPage": {
+        "type": "object",
+        "description": "`GET /v1/audit`: a page of audit rows, one per event, in `seq` order.",
+        "required": [
+          "items",
+          "next"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditItem"
+            }
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The cursor of the next page, `null` on the last one."
+          }
+        }
+      },
+      "BackendName": {
+        "type": "string",
+        "enum": [
+          "openrouter",
+          "openai_compatible"
+        ]
+      },
+      "BlockedArgs": {
+        "type": "object",
+        "properties": {
+          "since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Bucket": {
+        "type": "string",
+        "description": "How the overview's series cuts its window.",
+        "enum": [
+          "hour",
+          "day"
+        ]
+      },
+      "BudgetSettings": {
+        "type": "object",
+        "required": [
+          "per_question_usd",
+          "per_user_daily_usd",
+          "global_daily_usd"
+        ],
+        "properties": {
+          "global_daily_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "per_question_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "per_user_daily_usd": {
+            "$ref": "#/components/schemas/Usd"
+          }
+        }
+      },
+      "BuildStatus": {
+        "type": "string",
+        "enum": [
+          "passed",
+          "failed",
+          "running",
+          "none"
+        ]
+      },
+      "ChangesArgs": {
+        "type": "object",
+        "required": [
+          "since"
+        ],
+        "properties": {
+          "module": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ModuleName"
+              }
+            ]
+          },
+          "since": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Channel": {
+        "type": "string",
+        "description": "Where a question came from: its `questions.channel`.",
+        "enum": [
+          "cli",
+          "web",
+          "mcp"
+        ]
+      },
+      "ChannelCount": {
+        "type": "object",
+        "required": [
+          "channel",
+          "counts"
+        ],
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/OutcomeCounts"
+          }
+        }
+      },
+      "CheckId": {
+        "type": "string",
+        "format": "check-id",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "CheckLine": {
+        "type": "object",
+        "description": "A check of the judge's catalogue and the thresholds it is held to; a threshold the check\ndoesn't use is `null`.",
+        "required": [
+          "id",
+          "stage",
+          "block_at",
+          "review_at",
+          "pass_at",
+          "clarify_below"
+        ],
+        "properties": {
+          "block_at": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio"
+              }
+            ]
+          },
+          "clarify_below": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio"
+              }
+            ]
+          },
+          "id": {
+            "$ref": "#/components/schemas/CheckId"
+          },
+          "pass_at": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio"
+              }
+            ]
+          },
+          "review_at": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio"
+              }
+            ]
+          },
+          "stage": {
+            "$ref": "#/components/schemas/CheckStage"
+          }
+        }
+      },
+      "CheckResult": {
+        "type": "object",
+        "description": "One check's outcome.",
+        "required": [
+          "id",
+          "source",
+          "verdict"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CheckId"
+          },
+          "p": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio",
+                "description": "The judge's probability; left out when a rule decided."
+              }
+            ]
+          },
+          "source": {
+            "$ref": "#/components/schemas/CheckSource"
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/Verdict"
+          }
+        }
+      },
+      "CheckSource": {
+        "type": "string",
+        "description": "What decided a check: a rule, or the judge that answered.",
+        "enum": [
+          "rule",
+          "jev",
+          "chat"
+        ]
+      },
+      "CheckStage": {
+        "type": "string",
+        "enum": [
+          "input",
+          "tool",
+          "data",
+          "output"
+        ]
+      },
+      "Clarify": {
+        "type": "object",
+        "description": "The question can't go on without the person's choice; it ends here.",
+        "required": [
+          "kind",
+          "question",
+          "options",
+          "cost_usd",
+          "judge_mode"
+        ],
+        "properties": {
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd",
+            "description": "What the question cost until it asked back."
+          },
+          "judge_mode": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeMode",
+                "description": "The weakest judge any stage had; `null` when no judge answered before it."
+              }
+            ]
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ClarifyKind"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClarifyOption"
+            }
+          },
+          "question": {
+            "type": "string"
+          }
+        }
+      },
+      "ClarifyAnswer": {
+        "type": "object",
+        "required": [
+          "of",
+          "option"
+        ],
+        "properties": {
+          "of": {
+            "$ref": "#/components/schemas/QuestionId",
+            "description": "The question that ended with the `clarify`."
+          },
+          "option": {
+            "type": "string",
+            "description": "The `id` of the option picked."
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClarifyKind": {
+        "type": "string",
+        "enum": [
+          "project",
+          "class"
+        ]
+      },
+      "ClarifyOption": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The project id or the class; sent back as `clarify.option`."
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "ClassCount": {
+        "type": "object",
+        "required": [
+          "class",
+          "count"
+        ],
+        "properties": {
+          "class": {
+            "$ref": "#/components/schemas/QuestionClass"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "Classified": {
+        "type": "object",
+        "description": "The question's class and the input checks.",
+        "required": [
+          "class",
+          "p",
+          "checks"
+        ],
+        "properties": {
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckResult"
+            }
+          },
+          "class": {
+            "$ref": "#/components/schemas/QuestionClass"
+          },
+          "p": {
+            "$ref": "#/components/schemas/Ratio"
+          }
+        }
+      },
+      "ComposerMode": {
+        "type": "string",
+        "description": "Who wrote an answer: the composer model, or the template composer when the model couldn't.",
+        "enum": [
+          "model",
+          "template"
+        ]
+      },
+      "Composing": {
+        "type": "object",
+        "description": "The answer is being written."
+      },
+      "Decision": {
+        "type": "string",
+        "enum": [
+          "approve",
+          "reject"
+        ]
+      },
+      "Deny": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/QuestionClass"
+          },
+          {
+            "$ref": "#/components/schemas/DenyTopic"
+          }
+        ],
+        "description": "What a project refuses: a whole question class, or a topic the checks look for."
+      },
+      "DenyTopic": {
+        "type": "string",
+        "enum": [
+          "source_code",
+          "file_paths",
+          "secrets",
+          "people_evaluation",
+          "client_commitments"
+        ]
+      },
+      "DescribeArgs": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "DisplayName": {
+        "type": "string",
+        "format": "display-name",
+        "maxLength": 60,
+        "minLength": 1,
+        "pattern": "^(?:[\\p{L}'’-]+ )*[\\p{L}'’-]*\\p{L}[\\p{L}'’-]*(?: [\\p{L}'’-]+)*$"
+      },
+      "Done": {
+        "type": "object",
+        "description": "The question is finished.",
+        "required": [
+          "duration_ms",
+          "cost_usd",
+          "judge_mode",
+          "composer",
+          "audit_id"
+        ],
+        "properties": {
+          "audit_id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "composer": {
+            "$ref": "#/components/schemas/ComposerMode",
+            "description": "Who wrote the answer."
+          },
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "judge_mode": {
+            "$ref": "#/components/schemas/JudgeMode",
+            "description": "The weakest judge any stage had."
+          }
+        }
+      },
+      "Durations": {
+        "type": "object",
+        "description": "Each `null` when nothing finished in the window.",
+        "required": [
+          "p50",
+          "p95",
+          "max"
+        ],
+        "properties": {
+          "max": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          },
+          "p50": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          },
+          "p95": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "Email": {
+        "type": "string",
+        "format": "email",
+        "pattern": "^[^@\\s]{1,64}@[^@\\s]{1,253}\\.[^@\\s.]{1,63}$"
+      },
+      "ErrorBody": {
+        "type": "object",
+        "description": "The body of every error: for requests that can't start. A question that starts and is then\nrefused ends with a `refused` event instead.",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        }
+      },
+      "ErrorCode": {
+        "type": "string",
+        "enum": [
+          "unauthenticated",
+          "token_expired",
+          "forbidden_project",
+          "forbidden_class",
+          "rate_limited",
+          "budget_exceeded",
+          "probe_unavailable",
+          "judge_unavailable",
+          "invalid_request",
+          "internal"
+        ]
+      },
+      "ErrorDetail": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "hint"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "hint": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Event": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Accepted"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "accepted"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/ProjectPicked"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "project"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Classified"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "classified"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Refused"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "refused"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Clarify"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "clarify"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Plan"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "plan"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/ToolChecked"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "tool_checked"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/ToolResult"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "tool_result"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Composing"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "composing"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Judged"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "judged"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/PendingSignoff"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "pending_signoff"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Answer"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "answer"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Done"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "done"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "event"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/EventError"
+              },
+              "event": {
+                "type": "string",
+                "enum": [
+                  "error"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "EventError": {
+        "type": "object",
+        "description": "The question failed after it started.",
+        "required": [
+          "code",
+          "message",
+          "cost_usd",
+          "judge_mode"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd",
+            "description": "What the question cost until it failed."
+          },
+          "judge_mode": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeMode",
+                "description": "The weakest judge any stage had; `null` when no judge answered before the failure."
+              }
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "EventType": {
+        "type": "string",
+        "format": "event-type",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "Evidence": {
+        "type": "object",
+        "description": "What a fact rests on. Deserializing rejects a state that doesn't fit the type, and a `ref` on\nCI runs or releases.",
+        "required": [
+          "type",
+          "ref",
+          "state",
+          "at"
+        ],
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date"
+          },
+          "ref": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/IssueNumber",
+                "description": "`#<number>` for pull requests and issues when the policy shows references, else `null`."
+              }
+            ]
+          },
+          "state": {
+            "$ref": "#/components/schemas/EvidenceState"
+          },
+          "type": {
+            "$ref": "#/components/schemas/EvidenceType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EvidenceState": {
+        "type": "string",
+        "description": "The states of every evidence type in one list; [`Evidence`] checks that the pair fits.",
+        "enum": [
+          "open",
+          "draft",
+          "merged",
+          "closed",
+          "passed",
+          "failed",
+          "running",
+          "published"
+        ]
+      },
+      "EvidenceType": {
+        "type": "string",
+        "enum": [
+          "pr",
+          "issue",
+          "ci",
+          "release"
+        ]
+      },
+      "Fact": {
+        "type": "object",
+        "description": "One structured statement about a piece of work.",
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "module",
+          "status",
+          "tested",
+          "confidence",
+          "waiting_on",
+          "people",
+          "evidence",
+          "title_withheld",
+          "updated_at"
+        ],
+        "properties": {
+          "confidence": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            }
+          },
+          "id": {
+            "$ref": "#/components/schemas/FactId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/Kind"
+          },
+          "module": {
+            "$ref": "#/components/schemas/ModuleName"
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DisplayName"
+            },
+            "description": "Only when the effective policy shows people; otherwise empty."
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "tested": {
+            "$ref": "#/components/schemas/Tested"
+          },
+          "title": {
+            "$ref": "#/components/schemas/SafeText"
+          },
+          "title_withheld": {
+            "type": "boolean",
+            "description": "`true` when the title failed a rule or a check and was replaced."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "waiting_on": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/WaitingOn"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "FactId": {
+        "type": "string",
+        "format": "fact-id",
+        "pattern": "^f_[A-Za-z0-9]{4,16}$"
+      },
+      "Feedback": {
+        "type": "object",
+        "description": "`POST /v1/questions/{id}/feedback`.",
+        "required": [
+          "helpful",
+          "needed_dev"
+        ],
+        "properties": {
+          "helpful": {
+            "type": "boolean"
+          },
+          "needed_dev": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FieldPointer": {
+        "type": "string",
+        "format": "json-pointer",
+        "pattern": "^(/[a-z0-9_]{1,40}){1,8}$"
+      },
+      "Flag": {
+        "type": "object",
+        "description": "A sentence of the draft that a check flagged, with the check and its probability.",
+        "required": [
+          "sentence",
+          "check",
+          "p"
+        ],
+        "properties": {
+          "check": {
+            "$ref": "#/components/schemas/CheckId"
+          },
+          "p": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "sentence": {
+            "type": "string"
+          }
+        }
+      },
+      "Grant": {
+        "type": "object",
+        "description": "A project the person was granted, or the pseudo-project `portfolio`.",
+        "required": [
+          "project",
+          "approver"
+        ],
+        "properties": {
+          "approver": {
+            "type": "boolean"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          }
+        }
+      },
+      "GrantClass": {
+        "type": "object",
+        "required": [
+          "class",
+          "signoff"
+        ],
+        "properties": {
+          "class": {
+            "$ref": "#/components/schemas/QuestionClass"
+          },
+          "signoff": {
+            "type": "boolean",
+            "description": "Its answers wait for an approver."
+          }
+        }
+      },
+      "HealthArgs": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "HealthStatus": {
+        "type": "string",
+        "enum": [
+          "ok"
+        ]
+      },
+      "IssueNumber": {
+        "type": "string",
+        "format": "issue-number",
+        "pattern": "^#[1-9][0-9]{0,8}$"
+      },
+      "IssueSignals": {
+        "type": "object",
+        "required": [
+          "open",
+          "blocked"
+        ],
+        "properties": {
+          "blocked": {
+            "type": "boolean",
+            "description": "It carries one of the manifest's blocking labels."
+          },
+          "open": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemSignals": {
+        "type": "object",
+        "description": "The states the status rules read.",
+        "required": [
+          "pr",
+          "issues",
+          "ci"
+        ],
+        "properties": {
+          "ci": {
+            "$ref": "#/components/schemas/BuildStatus",
+            "description": "The latest CI run's status."
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueSignals"
+            },
+            "description": "The linked issues, or the issue itself; at most 20.",
+            "maxItems": 20
+          },
+          "pr": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PullSignals",
+                "description": "`null` for an issue on its own."
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "JudgeContext": {
+        "type": "string",
+        "description": "Repository texts the judge may see as context.",
+        "enum": [
+          "titles",
+          "labels",
+          "comments"
+        ]
+      },
+      "JudgeCounts": {
+        "type": "object",
+        "required": [
+          "jev",
+          "chat",
+          "rules",
+          "none"
+        ],
+        "properties": {
+          "chat": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "jev": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "none": {
+            "type": "integer",
+            "format": "int64",
+            "description": "No judge answered: a question refused before any check ran.",
+            "minimum": 0
+          },
+          "rules": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "JudgeItemId": {
+        "type": "string",
+        "format": "judge-item-id",
+        "pattern": "^[A-Za-z0-9_-]{1,40}$"
+      },
+      "JudgeKind": {
+        "type": "string",
+        "enum": [
+          "jev",
+          "chat"
+        ]
+      },
+      "JudgeMode": {
+        "type": "string",
+        "description": "Which judge decided, from the strongest to the most degraded.",
+        "enum": [
+          "jev",
+          "chat",
+          "rules"
+        ]
+      },
+      "JudgeReply": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "judge_mode",
+              "items",
+              "purpose"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/StatusAnswer"
+                }
+              },
+              "judge_mode": {
+                "$ref": "#/components/schemas/JudgeMode"
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "status_from_candidates"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "judge_mode",
+              "items",
+              "purpose"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/KindAnswer"
+                }
+              },
+              "judge_mode": {
+                "$ref": "#/components/schemas/JudgeMode"
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "kind"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "judge_mode",
+              "items",
+              "purpose"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TitleAnswer"
+                }
+              },
+              "judge_mode": {
+                "$ref": "#/components/schemas/JudgeMode"
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "title_safety"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "The core's reply: the request's purpose, the judge that answered, and one answer per item in\nthe request's order. Numbers and enums only."
+      },
+      "JudgeRequest": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "items",
+              "purpose"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/StatusItem"
+                },
+                "maxItems": 200,
+                "minItems": 1
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "status_from_candidates"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "items",
+              "purpose"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/KindItem"
+                },
+                "maxItems": 200,
+                "minItems": 1
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "kind"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "items",
+              "purpose"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TitleItem"
+                },
+                "maxItems": 200,
+                "minItems": 1
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "title_safety"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "`POST /internal/judge`: one purpose, 1 to 200 items, each id once."
+      },
+      "JudgeText": {
+        "type": "string",
+        "format": "judge-text",
+        "description": "A repository text for the judge; the core redacts it before the judge reads it.",
+        "maxLength": 500,
+        "minLength": 1,
+        "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+      },
+      "Judged": {
+        "type": "object",
+        "description": "The output checks: how many sentences, how many were stripped, how many held for sign-off.",
+        "required": [
+          "sentences",
+          "stripped",
+          "held"
+        ],
+        "properties": {
+          "held": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "p_min": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio",
+                "description": "The lowest probability that the answer is fine, over the checks a judge answered on the\nsentences the person reads, delivered or held: a check's `p` when its polarity in\n`checks.yaml` is `legit`, `1 - p` when it is `risk`. Left out, like a check's `p`, when only\nrules decided or there was nothing to check."
+              }
+            ]
+          },
+          "sentences": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "stripped": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "Kind": {
+        "type": "string",
+        "enum": [
+          "feature",
+          "fix",
+          "chore",
+          "unknown"
+        ]
+      },
+      "KindAnswer": {
+        "type": "object",
+        "description": "`feature`, `fix` or `chore`, and its probability.",
+        "required": [
+          "id",
+          "kind",
+          "p"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/JudgeItemId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/Kind"
+          },
+          "p": {
+            "$ref": "#/components/schemas/Ratio"
+          }
+        }
+      },
+      "KindItem": {
+        "type": "object",
+        "description": "An item whose kind the labels didn't settle: a title, at least one label, or both.",
+        "required": [
+          "id",
+          "title",
+          "labels"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/JudgeItemId"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JudgeText"
+            },
+            "description": "Empty when the manifest's `judge_context` leaves labels out; at most 20.",
+            "maxItems": 20
+          },
+          "title": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeText",
+                "description": "`null` when the manifest's `judge_context` leaves titles out."
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "Limit": {
+        "type": "integer",
+        "maximum": 50,
+        "minimum": 1
+      },
+      "ManifestVersion": {
+        "type": "string",
+        "enum": [
+          "0.1"
+        ]
+      },
+      "Me": {
+        "type": "object",
+        "description": "`GET /v1/me`.",
+        "required": [
+          "user",
+          "projects",
+          "token"
+        ],
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Grant"
+            }
+          },
+          "token": {
+            "$ref": "#/components/schemas/MeToken"
+          },
+          "user": {
+            "$ref": "#/components/schemas/MeUser"
+          }
+        }
+      },
+      "MeToken": {
+        "type": "object",
+        "description": "The token the request came with.",
+        "required": [
+          "public_id",
+          "expires_at"
+        ],
+        "properties": {
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "public_id": {
+            "$ref": "#/components/schemas/TokenPublicId"
+          }
+        }
+      },
+      "MeUser": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "display_name",
+          "role"
+        ],
+        "properties": {
+          "display_name": {
+            "type": "string"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "id": {
+            "$ref": "#/components/schemas/UserId"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        }
+      },
+      "ModelRole": {
+        "type": "string",
+        "enum": [
+          "judge",
+          "judge_fallback",
+          "planner",
+          "composer"
+        ]
+      },
+      "ModelRoleLine": {
+        "type": "object",
+        "required": [
+          "role",
+          "backend",
+          "kind",
+          "model"
+        ],
+        "properties": {
+          "backend": {
+            "$ref": "#/components/schemas/BackendName"
+          },
+          "kind": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeKind",
+                "description": "`jev` or `chat` for the judge's roles; `null` for the planner and the composer."
+              }
+            ]
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelSlug"
+          },
+          "role": {
+            "$ref": "#/components/schemas/ModelRole"
+          }
+        }
+      },
+      "ModelSlug": {
+        "type": "string",
+        "format": "model-slug",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$"
+      },
+      "ModuleName": {
+        "type": "string",
+        "format": "module-name",
+        "description": "A module name from the probe's describe tool, or Other.",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$"
+      },
+      "NewQuestion": {
+        "type": "object",
+        "description": "`POST /v1/questions`, with the `Idempotency-Key` header.",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "clarify": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ClarifyAnswer",
+                "description": "The option picked after a `clarify`; the text stays the same."
+              }
+            ]
+          },
+          "follows": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/QuestionId",
+                "description": "The caller's own question that an approver rejected (`rejected_by_approver`), asked again\nhere in new words or the same; the audit links the two."
+              }
+            ]
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId"
+              }
+            ]
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OutcomeCounts": {
+        "type": "object",
+        "description": "Questions by what became of them; each question is in exactly one.",
+        "required": [
+          "answered",
+          "refused",
+          "degraded",
+          "held",
+          "other"
+        ],
+        "properties": {
+          "answered": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Delivered, judged by Jev.",
+            "minimum": 0
+          },
+          "degraded": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Delivered, judged by the chat fallback or the rules.",
+            "minimum": 0
+          },
+          "held": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Went to a sign-off, whatever was decided.",
+            "minimum": 0
+          },
+          "other": {
+            "type": "integer",
+            "format": "int64",
+            "description": "A clarify, a failure, or still running.",
+            "minimum": 0
+          },
+          "refused": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "OverviewWindow": {
+        "type": "string",
+        "description": "The span `GET /v1/admin/overview` counts over, back from the request's time.",
+        "enum": [
+          "24h",
+          "7d",
+          "30d"
+        ]
+      },
+      "PendingSignoff": {
+        "type": "object",
+        "description": "The answer waits for an approver.",
+        "required": [
+          "approval_id",
+          "reason"
+        ],
+        "properties": {
+          "approval_id": {
+            "$ref": "#/components/schemas/ApprovalId"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/SignoffReason"
+          }
+        }
+      },
+      "Plan": {
+        "type": "object",
+        "description": "The tool calls the fixed class table chose, with the arguments the planner filled.",
+        "required": [
+          "calls"
+        ],
+        "properties": {
+          "calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolCall"
+            }
+          }
+        }
+      },
+      "ProbeManifest": {
+        "type": "object",
+        "required": [
+          "version",
+          "project",
+          "display_name",
+          "allow",
+          "judge_context"
+        ],
+        "properties": {
+          "access": {
+            "$ref": "#/components/schemas/AccessMode",
+            "description": "Can only lower what the token and the admin's cap allow."
+          },
+          "allow": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionClass"
+            }
+          },
+          "blocked_labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deny": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deny"
+            }
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "exclude": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Globs deleted right after a snapshot is unpacked, never indexed."
+          },
+          "judge_context": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JudgeContext"
+            },
+            "description": "Which repository texts the judge may see. No default: the owner states it."
+          },
+          "module_labels": {
+            "type": "object",
+            "description": "Labels that put pull requests and issues into a module; the only mapping in `metadata` mode.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "propertyNames": {
+              "type": "string",
+              "format": "module-name",
+              "description": "A module name from the probe's describe tool, or Other.",
+              "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$"
+            }
+          },
+          "modules": {
+            "type": "object",
+            "description": "Globs that map files to modules, in the order they are tried.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "propertyNames": {
+              "type": "string",
+              "format": "module-name",
+              "description": "A module name from the probe's describe tool, or Other.",
+              "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$"
+            }
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          },
+          "redact": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RedactRule"
+            }
+          },
+          "signoff": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionClass"
+            }
+          },
+          "tests": {
+            "$ref": "#/components/schemas/TestsConfig"
+          },
+          "tracker": {
+            "$ref": "#/components/schemas/Tracker"
+          },
+          "version": {
+            "$ref": "#/components/schemas/ManifestVersion"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProbeRegistration": {
+        "type": "object",
+        "description": "`POST /internal/probes/register`, from a probe on start and every 60 s.",
+        "required": [
+          "project",
+          "schema",
+          "access",
+          "access_limited_by",
+          "manifest_hash",
+          "manifest",
+          "tools"
+        ],
+        "properties": {
+          "access": {
+            "$ref": "#/components/schemas/AccessMode",
+            "description": "The effective mode: the strictest of the token, the manifest and the admin's cap."
+          },
+          "access_limited_by": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AccessLimit",
+                "description": "What lowered the mode, or `null` when nothing did."
+              }
+            ]
+          },
+          "manifest": {
+            "$ref": "#/components/schemas/ProbeManifest"
+          },
+          "manifest_hash": {
+            "$ref": "#/components/schemas/Sha256Hex",
+            "description": "The SHA-256 of the manifest the probe read."
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          },
+          "schema": {
+            "$ref": "#/components/schemas/SchemaId"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolName"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProbeState": {
+        "type": "object",
+        "required": [
+          "status",
+          "as_of"
+        ],
+        "properties": {
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the probe's data was last fresh."
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProbeStatus"
+          }
+        }
+      },
+      "ProbeStatus": {
+        "type": "string",
+        "enum": [
+          "healthy",
+          "stale",
+          "quarantined"
+        ]
+      },
+      "ProgressArgs": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Limit"
+              }
+            ]
+          },
+          "module": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ModuleName"
+              }
+            ]
+          },
+          "since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectCount": {
+        "type": "object",
+        "required": [
+          "project",
+          "counts",
+          "cost_usd"
+        ],
+        "properties": {
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/OutcomeCounts"
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId",
+                "description": "`null` for the questions that never reached a project (refused or clarified first)."
+              }
+            ]
+          }
+        }
+      },
+      "ProjectId": {
+        "type": "string",
+        "format": "project-id",
+        "pattern": "^[a-z][a-z0-9-]{0,39}$"
+      },
+      "ProjectList": {
+        "type": "object",
+        "description": "`GET /v1/projects`: the projects the person may ask about.",
+        "required": [
+          "projects"
+        ],
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectSummary"
+            }
+          }
+        }
+      },
+      "ProjectPicked": {
+        "type": "object",
+        "description": "The project the question is about, and who chose it.",
+        "required": [
+          "project",
+          "p",
+          "source"
+        ],
+        "properties": {
+          "p": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ProjectSource"
+          }
+        }
+      },
+      "ProjectSource": {
+        "type": "string",
+        "enum": [
+          "explicit",
+          "judge"
+        ]
+      },
+      "ProjectSummary": {
+        "type": "object",
+        "required": [
+          "project",
+          "display_name",
+          "modules",
+          "classes",
+          "probe"
+        ],
+        "properties": {
+          "classes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionClass"
+            },
+            "description": "The classes the effective policy allows this person here."
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModuleName"
+            },
+            "description": "From the probe's `describe`."
+          },
+          "probe": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProbeState",
+                "description": "`null` until the project's probe has registered."
+              }
+            ]
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectId"
+          }
+        }
+      },
+      "PullSignals": {
+        "type": "object",
+        "required": [
+          "state",
+          "review_requested",
+          "updated_14d"
+        ],
+        "properties": {
+          "review_requested": {
+            "type": "boolean"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PullState"
+          },
+          "updated_14d": {
+            "type": "boolean",
+            "description": "Updated in the last 14 days."
+          }
+        },
+        "additionalProperties": false
+      },
+      "PullState": {
+        "type": "string",
+        "enum": [
+          "open",
+          "draft",
+          "merged",
+          "closed"
+        ]
+      },
+      "QuestionClass": {
+        "type": "string",
+        "description": "What kind of question it is. One judge choice over these classifies every question.",
+        "enum": [
+          "progress",
+          "tested",
+          "blocked",
+          "health",
+          "changes",
+          "open",
+          "portfolio",
+          "forbidden",
+          "other"
+        ]
+      },
+      "QuestionId": {
+        "type": "string",
+        "format": "question-id",
+        "pattern": "^q_[0-9A-HJKMNP-TV-Z]{26}$"
+      },
+      "QuestionState": {
+        "type": "object",
+        "description": "`GET /v1/questions/{id}`: where the question stands.",
+        "required": [
+          "id",
+          "status",
+          "project",
+          "class",
+          "answer",
+          "refusal",
+          "judge_mode",
+          "cost_usd",
+          "duration_ms",
+          "audit_id"
+        ],
+        "properties": {
+          "answer": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Answer"
+              }
+            ]
+          },
+          "audit_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          },
+          "class": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/QuestionClass"
+              }
+            ]
+          },
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          },
+          "id": {
+            "$ref": "#/components/schemas/QuestionId"
+          },
+          "judge_mode": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeMode",
+                "description": "`null` until a judge has answered."
+              }
+            ]
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId"
+              }
+            ]
+          },
+          "refusal": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Refusal"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/QuestionStatus"
+          }
+        }
+      },
+      "QuestionStatus": {
+        "type": "string",
+        "enum": [
+          "running",
+          "pending_signoff",
+          "delivered",
+          "refused",
+          "clarify",
+          "failed"
+        ]
+      },
+      "Ratio": {
+        "type": "number",
+        "maximum": 1,
+        "minimum": 0
+      },
+      "RedactRule": {
+        "type": "object",
+        "description": "One redaction rule: a regular expression and the literal text that replaces each match.",
+        "required": [
+          "pattern",
+          "replace"
+        ],
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "replace": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RedactedQuestion": {
+        "type": "string",
+        "format": "redacted-question",
+        "description": "The asker's question after the redaction rules, on one line: a tool argument, never part of a reply.",
+        "maxLength": 1000,
+        "minLength": 1
+      },
+      "Refusal": {
+        "type": "object",
+        "description": "Why a question was refused, and what the person can do instead. Also the `refused` event.",
+        "required": [
+          "code",
+          "message",
+          "hint"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/RefusalCode"
+          },
+          "hint": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "RefusalCode": {
+        "type": "string",
+        "enum": [
+          "forbidden_class",
+          "forbidden_project",
+          "asks_for_code",
+          "asks_to_evaluate_people",
+          "asks_for_client_commitment",
+          "contains_agent_instruction",
+          "confidential",
+          "out_of_scope",
+          "strict_mode",
+          "rejected_by_approver"
+        ]
+      },
+      "RefusalCount": {
+        "type": "object",
+        "required": [
+          "code",
+          "count"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/RefusalCode"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "Refused": {
+        "type": "object",
+        "description": "The question was refused: why, what the person can do instead, and what it cost until then.",
+        "required": [
+          "code",
+          "message",
+          "hint",
+          "cost_usd",
+          "judge_mode"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/RefusalCode"
+          },
+          "cost_usd": {
+            "$ref": "#/components/schemas/Usd",
+            "description": "What the question cost until it was refused."
+          },
+          "hint": {
+            "type": "string"
+          },
+          "judge_mode": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeMode",
+                "description": "The weakest judge any stage had; `null` when no judge answered before the refusal."
+              }
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "RepositoryPerson": {
+        "type": "object",
+        "required": [
+          "email",
+          "display_name",
+          "role",
+          "approver",
+          "disabled_at"
+        ],
+        "properties": {
+          "approver": {
+            "type": "boolean"
+          },
+          "disabled_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        }
+      },
+      "Role": {
+        "type": "string",
+        "description": "Who a token belongs to. Approving is a flag on a user, not a role.",
+        "enum": [
+          "tech_lead",
+          "pm",
+          "board",
+          "admin"
+        ]
+      },
+      "SafeText": {
+        "type": "string",
+        "format": "safe-text",
+        "description": "One line of redacted text: no code, paths, identifiers, URLs, e-mail addresses or secrets.",
+        "maxLength": 120,
+        "minLength": 1
+      },
+      "SchemaId": {
+        "type": "string",
+        "enum": [
+          "mercury.facts/0.1"
+        ]
+      },
+      "SeriesPoint": {
+        "type": "object",
+        "required": [
+          "start",
+          "counts"
+        ],
+        "properties": {
+          "counts": {
+            "$ref": "#/components/schemas/OutcomeCounts"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ServiceHealth": {
+        "type": "object",
+        "description": "`GET /v1/health`.",
+        "required": [
+          "status",
+          "version"
+        ],
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/HealthStatus"
+          },
+          "version": {
+            "type": "string",
+            "description": "The product version, `0.0.0` until a release."
+          }
+        }
+      },
+      "SessionRequest": {
+        "type": "object",
+        "description": "`POST /v1/session`: the web client's sign-in.",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "$ref": "#/components/schemas/TokenSecret"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Settings": {
+        "type": "object",
+        "description": "What the core runs with, from its files: shown, never changed here.",
+        "required": [
+          "models",
+          "budgets",
+          "checks"
+        ],
+        "properties": {
+          "budgets": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/BudgetSettings",
+                "description": "`null` when `models.yaml` can't be read."
+              }
+            ]
+          },
+          "checks": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CheckLine"
+            },
+            "description": "The judge's checks and their thresholds; `null` when `checks.yaml` can't be read."
+          },
+          "models": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ModelRoleLine"
+            },
+            "description": "Each model role's backend; `null` when `models.yaml` can't be read."
+          }
+        }
+      },
+      "Sha256Hex": {
+        "type": "string",
+        "format": "sha256",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "SignoffCounts": {
+        "type": "object",
+        "required": [
+          "pending",
+          "approved",
+          "rejected",
+          "expired"
+        ],
+        "properties": {
+          "approved": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "expired": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Nobody decided within 24 hours.",
+            "minimum": 0
+          },
+          "pending": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Waiting for an approver now.",
+            "minimum": 0
+          },
+          "rejected": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "SignoffReason": {
+        "type": "string",
+        "description": "Why an answer waits for an approver.",
+        "enum": [
+          "class",
+          "review_band"
+        ]
+      },
+      "SpendToday": {
+        "type": "object",
+        "required": [
+          "day",
+          "everyone_usd",
+          "daily_budget_usd",
+          "per_user_daily_usd",
+          "people"
+        ],
+        "properties": {
+          "daily_budget_usd": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Usd",
+                "description": "`global_daily_usd` from `models.yaml`; `null` when the file can't be read."
+              }
+            ]
+          },
+          "day": {
+            "type": "string",
+            "format": "date",
+            "description": "The UTC day the spend is counted on."
+          },
+          "everyone_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Spender"
+            },
+            "description": "The people who spent anything today, the most first."
+          },
+          "per_user_daily_usd": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Usd",
+                "description": "`per_user_daily_usd` from `models.yaml`; `null` when the file can't be read."
+              }
+            ]
+          }
+        }
+      },
+      "Spender": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "email",
+          "display_name",
+          "spent_usd"
+        ],
+        "properties": {
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Email",
+                "description": "`null` for a person no longer in the database."
+              }
+            ]
+          },
+          "spent_usd": {
+            "$ref": "#/components/schemas/Usd"
+          },
+          "user_id": {
+            "$ref": "#/components/schemas/UserId"
+          }
+        }
+      },
+      "Status": {
+        "type": "string",
+        "enum": [
+          "done",
+          "in_review",
+          "in_progress",
+          "blocked",
+          "not_started",
+          "unclear"
+        ]
+      },
+      "StatusAnswer": {
+        "type": "object",
+        "description": "The candidate the judge chose, and its probability.",
+        "required": [
+          "id",
+          "status",
+          "p"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/JudgeItemId"
+          },
+          "p": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "StatusItem": {
+        "type": "object",
+        "description": "A status the rules couldn't settle: the statuses they point to, and what the judge may read.",
+        "required": [
+          "id",
+          "candidates",
+          "title",
+          "labels",
+          "signals"
+        ],
+        "properties": {
+          "candidates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Status"
+            },
+            "description": "2 to 5 statuses, each once, never `unclear`.",
+            "maxItems": 5,
+            "minItems": 2
+          },
+          "id": {
+            "$ref": "#/components/schemas/JudgeItemId"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JudgeText"
+            },
+            "description": "Empty when the manifest's `judge_context` leaves labels out; at most 20.",
+            "maxItems": 20
+          },
+          "signals": {
+            "$ref": "#/components/schemas/ItemSignals"
+          },
+          "title": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JudgeText",
+                "description": "`null` when the manifest's `judge_context` leaves titles out."
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestFramework": {
+        "type": "string",
+        "enum": [
+          "rust",
+          "jest",
+          "vitest",
+          "xunit",
+          "nunit",
+          "mstest",
+          "junit",
+          "pytest"
+        ]
+      },
+      "Tested": {
+        "type": "string",
+        "description": "`missing` only where the probe counts tests, never in `metadata` mode.",
+        "enum": [
+          "passing",
+          "failing",
+          "missing",
+          "unknown"
+        ]
+      },
+      "TestedArgs": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ModuleName"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestsConfig": {
+        "type": "object",
+        "properties": {
+          "frameworks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestFramework"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "TitleAnswer": {
+        "type": "object",
+        "description": "The probability that the title holds code, an identifier, a path, a secret or a client name.",
+        "required": [
+          "id",
+          "p"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/JudgeItemId"
+          },
+          "p": {
+            "$ref": "#/components/schemas/Ratio"
+          }
+        }
+      },
+      "TitleItem": {
+        "type": "object",
+        "description": "A title the rules let through, for the judge to look at again.",
+        "required": [
+          "id",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/JudgeItemId"
+          },
+          "title": {
+            "$ref": "#/components/schemas/JudgeText"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenPublicId": {
+        "type": "string",
+        "format": "token-public-id",
+        "pattern": "^[A-Za-z0-9]{12}$"
+      },
+      "TokenSecret": {
+        "type": "string",
+        "format": "password",
+        "description": "A personal token, mcy_<public_id>_<secret>.",
+        "writeOnly": true
+      },
+      "TokenState": {
+        "type": "string",
+        "enum": [
+          "active",
+          "expired",
+          "revoked"
+        ]
+      },
+      "ToolCall": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/DescribeArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "describe"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/ProgressArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "progress"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/TestedArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "tested"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/BlockedArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "blocked"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/HealthArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "health"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/ChangesArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "changes"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "args",
+              "tool"
+            ],
+            "properties": {
+              "args": {
+                "$ref": "#/components/schemas/AskCodeArgs"
+              },
+              "tool": {
+                "type": "string",
+                "enum": [
+                  "ask_code"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "One probe tool call: `{\"tool\": <name>, \"args\": {…}}`."
+      },
+      "ToolChecked": {
+        "type": "object",
+        "description": "The checks on one call, before it runs.",
+        "required": [
+          "call",
+          "checks"
+        ],
+        "properties": {
+          "call": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The call's index in `plan.calls`.",
+            "minimum": 0
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckResult"
+            }
+          }
+        }
+      },
+      "ToolName": {
+        "type": "string",
+        "description": "A probe tool. The set is fixed by the probe's access mode; a probe that offers a different one\nis quarantined.",
+        "enum": [
+          "describe",
+          "progress",
+          "tested",
+          "blocked",
+          "health",
+          "changes",
+          "ask_code"
+        ]
+      },
+      "ToolResult": {
+        "type": "object",
+        "description": "What one call returned, counted, never shown.",
+        "required": [
+          "call",
+          "items",
+          "withheld_fields",
+          "access"
+        ],
+        "properties": {
+          "access": {
+            "$ref": "#/components/schemas/AccessMode",
+            "description": "The probe's effective mode when it answered."
+          },
+          "call": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The call's index in `plan.calls`.",
+            "minimum": 0
+          },
+          "items": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "p_min": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Ratio",
+                "description": "The lowest probability that the reply is fine, over the call's data checks a judge\nanswered (`field_contains_agent_instruction` on each text of the reply, findings\nincluded): a check's `p` when its polarity in `checks.yaml` is `legit`, `1 - p` when it is\n`risk`. Left out, like a check's `p`, when only rules decided or there was nothing to check."
+              }
+            ]
+          },
+          "withheld_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldPointer"
+            },
+            "description": "Text values a data check withheld, as JSON Pointers into the reply."
+          }
+        }
+      },
+      "Tracker": {
+        "type": "string",
+        "enum": [
+          "github_issues"
+        ]
+      },
+      "Usd": {
+        "type": "number",
+        "description": "US dollars.",
+        "minimum": 0
+      },
+      "UserId": {
+        "type": "string",
+        "format": "user-id",
+        "pattern": "^u_[0-9A-HJKMNP-TV-Z]{26}$"
+      },
+      "Verdict": {
+        "type": "string",
+        "description": "A check's outcome, ordered so the strictest of several is the `max`.",
+        "enum": [
+          "pass",
+          "review",
+          "block"
+        ]
+      },
+      "WaitingOn": {
+        "type": "string",
+        "enum": [
+          "review",
+          "dependency",
+          "environment",
+          "external",
+          "decision",
+          "unknown"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "session": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-mercury_session",
+        "description": "The web client's session. A request that changes state with it must send Origin (the server's own origin) and X-Mercury-Client: web, or it gets 403. Never on /mcp."
+      },
+      "token": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

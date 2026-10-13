@@ -1,0 +1,38 @@
+# CI's VM mode: the default files as a server runs them (Caddy publishing 80 and 443, TLS on), with
+# docker-compose.fixture.yml's probe on the bundled repository and the replay server of tests/it in
+# place of the model APIs, so a Linux runner can start them and check them over HTTPS without a domain
+# or a key. With MERCURY_DOMAIN=localhost, Caddy signs its certificate with its own local CA (as
+# `tls internal` does), whose root the smoke test trusts; a real domain gets a public certificate
+# from the same Caddyfile. The configuration and the secrets come from MERCURY_VM_WORK, which
+# scripts/vm-smoke.sh writes. Never on a real server.
+services:
+  core:
+    volumes:
+      - ${MERCURY_VM_WORK:-../../target/vm}/config:/config:ro
+      - ${MERCURY_VM_WORK:-../../target/vm}/secrets/probes:/run/mercury/probe-tokens:ro
+    secrets: [replay_key]
+
+  # A model server with the OpenAI chat API, answering from recordings (tests/it/config/models.yaml).
+  replay:
+    image: node:22-alpine
+    command: ["node", "/replay/server.mjs"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true
+    volumes:
+      - ../../tests/it/replay:/replay:ro
+    networks: [egress]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+secrets:
+  openrouter_api_key: { file: "${MERCURY_VM_WORK:-../../target/vm}/secrets/openrouter_api_key" }
+  probe_delta_token: { file: "${MERCURY_VM_WORK:-../../target/vm}/secrets/probes/delta.token" }
+  replay_key: { file: "${MERCURY_VM_WORK:-../../target/vm}/secrets/replay_key" }

@@ -1,0 +1,260 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"input\": input, \"output\": output })"
+---
+{
+  "input": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+      "since": {
+        "format": "date",
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "title": "BlockedArgs",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "DisplayName": {
+        "format": "display-name",
+        "maxLength": 60,
+        "minLength": 1,
+        "pattern": "^(?:[\\p{L}'’-]+ )*[\\p{L}'’-]*\\p{L}[\\p{L}'’-]*(?: [\\p{L}'’-]+)*$",
+        "type": "string"
+      },
+      "Evidence": {
+        "additionalProperties": false,
+        "description": "What a fact rests on. Deserializing rejects a state that doesn't fit the type, and a `ref` on\nCI runs or releases.",
+        "properties": {
+          "at": {
+            "format": "date",
+            "type": "string"
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/IssueNumber"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "`#<number>` for pull requests and issues when the policy shows references, else `null`."
+          },
+          "state": {
+            "$ref": "#/$defs/EvidenceState"
+          },
+          "type": {
+            "$ref": "#/$defs/EvidenceType"
+          }
+        },
+        "required": [
+          "type",
+          "ref",
+          "state",
+          "at"
+        ],
+        "type": "object"
+      },
+      "EvidenceState": {
+        "description": "The states of every evidence type in one list; [`Evidence`] checks that the pair fits.",
+        "enum": [
+          "open",
+          "draft",
+          "merged",
+          "closed",
+          "passed",
+          "failed",
+          "running",
+          "published"
+        ],
+        "type": "string"
+      },
+      "EvidenceType": {
+        "enum": [
+          "pr",
+          "issue",
+          "ci",
+          "release"
+        ],
+        "type": "string"
+      },
+      "Fact": {
+        "additionalProperties": false,
+        "description": "One structured statement about a piece of work.",
+        "properties": {
+          "confidence": {
+            "$ref": "#/$defs/Ratio"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "type": "array"
+          },
+          "id": {
+            "$ref": "#/$defs/FactId"
+          },
+          "kind": {
+            "$ref": "#/$defs/Kind"
+          },
+          "module": {
+            "$ref": "#/$defs/ModuleName"
+          },
+          "people": {
+            "description": "Only when the effective policy shows people; otherwise empty.",
+            "items": {
+              "$ref": "#/$defs/DisplayName"
+            },
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/$defs/Status"
+          },
+          "tested": {
+            "$ref": "#/$defs/Tested"
+          },
+          "title": {
+            "$ref": "#/$defs/SafeText"
+          },
+          "title_withheld": {
+            "description": "`true` when the title failed a rule or a check and was replaced.",
+            "type": "boolean"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "waiting_on": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/WaitingOn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "module",
+          "status",
+          "tested",
+          "confidence",
+          "waiting_on",
+          "people",
+          "evidence",
+          "title_withheld",
+          "updated_at"
+        ],
+        "type": "object"
+      },
+      "FactId": {
+        "format": "fact-id",
+        "pattern": "^f_[A-Za-z0-9]{4,16}$",
+        "type": "string"
+      },
+      "IssueNumber": {
+        "format": "issue-number",
+        "pattern": "^#[1-9][0-9]{0,8}$",
+        "type": "string"
+      },
+      "Kind": {
+        "enum": [
+          "feature",
+          "fix",
+          "chore",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      },
+      "Ratio": {
+        "maximum": 1,
+        "minimum": 0,
+        "type": "number"
+      },
+      "SafeText": {
+        "description": "One line of redacted text: no code, paths, identifiers, URLs, e-mail addresses or secrets.",
+        "format": "safe-text",
+        "maxLength": 120,
+        "minLength": 1,
+        "type": "string"
+      },
+      "SchemaId": {
+        "const": "mercury.facts/0.1",
+        "type": "string"
+      },
+      "Status": {
+        "enum": [
+          "done",
+          "in_review",
+          "in_progress",
+          "blocked",
+          "not_started",
+          "unclear"
+        ],
+        "type": "string"
+      },
+      "Tested": {
+        "description": "`missing` only where the probe counts tests, never in `metadata` mode.",
+        "enum": [
+          "passing",
+          "failing",
+          "missing",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "WaitingOn": {
+        "enum": [
+          "review",
+          "dependency",
+          "environment",
+          "external",
+          "decision",
+          "unknown"
+        ],
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The reply of `blocked`: facts with the status `blocked` and what they wait on.",
+    "properties": {
+      "as_of": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "items": {
+        "items": {
+          "$ref": "#/$defs/Fact"
+        },
+        "type": "array"
+      },
+      "schema": {
+        "$ref": "#/$defs/SchemaId"
+      }
+    },
+    "required": [
+      "schema",
+      "as_of",
+      "items"
+    ],
+    "title": "BlockedReply",
+    "type": "object"
+  }
+}

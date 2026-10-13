@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT up.approver FROM user_projects up JOIN users u ON u.id = up.user_id\n         WHERE up.user_id = ? AND up.project = ? AND u.role IN ('pm', 'tech_lead')",
+  "describe": {
+    "columns": [
+      {
+        "name": "approver",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "user_projects",
+            "name": "approver"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "d3cdd772d6edfb01566c976a8406a4ea475a61377e5c41e2d38fb45143090315"
+}

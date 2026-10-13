@@ -1,0 +1,6 @@
+# Each machine's own configuration and secrets; starting points come from config-examples/.
+/config/
+/secrets/
+/backups/
+# A laptop's own repositories file (scripts/demo-local.sh suggests the name): it names private repositories.
+/docker-compose.mine.yml

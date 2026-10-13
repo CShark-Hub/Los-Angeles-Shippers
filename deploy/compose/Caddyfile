@@ -1,0 +1,30 @@
+{$MERCURY_SITE} {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+	request_body {
+		max_size 256KB
+	}
+
+	# the API and MCP: never compressed, never buffered (SSE)
+	@core path /v1/* /mcp
+	handle @core {
+		reverse_proxy core:8080 {
+			flush_interval -1
+		}
+	}
+
+	# everything else: the web client's static files
+	handle {
+		# the CSP header, with the script hashes of this build:
+		# written by the web client's build, baked into mercury-web, mounted by the local file
+		import /etc/caddy/csp.caddy
+		root * /srv/web
+		encode zstd gzip
+		try_files {path} /index.html
+		file_server
+	}
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO spend (day, user_id, spent_usd) VALUES (?, ?, ?) ON CONFLICT (day, user_id) DO UPDATE SET spent_usd = spent_usd + excluded.spent_usd",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "6b7a50bfab9643e685034dc94ef609a7907ca6f317783aee3205c4c9d425f19c"
+}

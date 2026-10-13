@@ -1,0 +1,86 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT up.project, up.approver, u.email, u.display_name, u.role, u.disabled_at\n         FROM user_projects up JOIN users u ON u.id = up.user_id ORDER BY u.email",
+  "describe": {
+    "columns": [
+      {
+        "name": "project",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "user_projects",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "approver",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "user_projects",
+            "name": "approver"
+          }
+        }
+      },
+      {
+        "name": "email",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "email"
+          }
+        }
+      },
+      {
+        "name": "display_name",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "display_name"
+          }
+        }
+      },
+      {
+        "name": "role",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "role"
+          }
+        }
+      },
+      {
+        "name": "disabled_at",
+        "ordinal": 5,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "disabled_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "8fd0335280c126fda7bea5bc37665eb5eb06508cf27396167a60f5fdb88c7178"
+}

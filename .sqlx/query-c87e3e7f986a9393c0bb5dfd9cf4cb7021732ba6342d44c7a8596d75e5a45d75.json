@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET judge_mode = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "c87e3e7f986a9393c0bb5dfd9cf4cb7021732ba6342d44c7a8596d75e5a45d75"
+}

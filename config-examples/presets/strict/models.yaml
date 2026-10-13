@@ -1,0 +1,21 @@
+# Preset `strict`: nothing leaves your network. Every role runs on a model server of your own, any
+# server with the OpenAI chat API (Ollama, vLLM, llama.cpp, LM Studio, ...); no OpenRouter, no Jev.
+# Copied into the core's /config; every key is checked when the core starts (unknown keys fail).
+#
+# Name the models your server serves in the roles below. The judge is a chat judge (`kind: chat`),
+# so the chain is that chat judge, then the stage's own rules. A chat judge is uncalibrated: every
+# risk threshold is 0.2 stricter than Jev's, and fail-closed still holds, but expect more refusals
+# and more answers held for sign-off. Measure it on your own questions before relying on it.
+backends:
+  openai_compatible:
+    chat_url: http://llm:8000/v1/chat/completions   # your model server, on a network the core reaches
+    key_file: null              # or a secret file, if the server wants a key; a file that is named but
+                                # missing or empty fails every request, it never sends none
+roles:
+  judge:    { backend: openai_compatible, kind: chat, model: local/judge-model, temperature: 0, max_tokens: 300, timeout_ms: 4000 }
+  planner:  { backend: openai_compatible, model: local/planner-model, temperature: 0, max_tokens: 150 }
+  composer: { backend: openai_compatible, model: local/composer-model, temperature: 0.2, max_tokens: 400 }
+budgets:                        # a local server reports no cost, so its calls add nothing to these
+  per_question_usd: 0.05
+  per_user_daily_usd: 1.00
+  global_daily_usd: 5.00

@@ -1,0 +1,14 @@
+{
+  "question": "Thanks, that's all I needed.",
+  "about": "Not a question about the project: the policy refuses class other as out of scope.",
+  "judge": {
+    "input": {
+      "class": ["other", 1],
+      "asks_for_code": 0,
+      "asks_to_evaluate_people": 0,
+      "asks_for_client_commitment": 0,
+      "contains_agent_instruction": 0,
+      "asks_for_confidential": 0
+    }
+  }
+}

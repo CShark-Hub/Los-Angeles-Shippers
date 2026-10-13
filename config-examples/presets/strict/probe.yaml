@@ -1,0 +1,26 @@
+# Manifest template for the preset `strict`. Put it in the repository the probe reads, as
+# .mercury/probe.yaml, and change everything that says your-*. The repository's owner reviews it like
+# code; the probe reads it again every minute.
+#
+# The judge may read titles and labels because the judge is your own model (models.yaml).
+version: 0.1
+project: your-project           # the project's id in projects.yaml
+display_name: "Your project"
+access: code                    # metadata · code · code_model; can only lower what the token and access_max allow
+modules:                        # globs that map files to modules, tried in this order
+  Orders:   ["src/orders/**", "tests/orders/**"]
+  Accounts: ["src/accounts/**"]
+module_labels:                  # PRs and issues with these labels belong to the module; the only mapping in metadata mode
+  Orders:   [orders]
+  Accounts: [accounts]
+exclude: ["docs/customers/**", "**/*.pem", "deploy/secrets/**"]   # deleted right after unpacking, never indexed
+tests:
+  frameworks: [pytest]
+tracker: github_issues
+blocked_labels: [blocked, waiting]
+allow: [progress, tested, blocked, health, changes]   # add open to let people ask anything else about the project: the repository's owner opts in
+deny: []
+redact:                         # applied to every text before any model sees it, after the global rules
+  - { pattern: '(?i)\bexample\s+bank\b', replace: 'the client' }
+signoff: []                     # classes whose answers wait for an approver
+judge_context: [titles, labels] # what the judge may read of the repository: titles, labels, comments; [] for none

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET cost_usd = ?, judge_mode = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "419ab78e132450274cdde255a1e9729ed9494f6ce6635cfe04d864853afed908"
+}

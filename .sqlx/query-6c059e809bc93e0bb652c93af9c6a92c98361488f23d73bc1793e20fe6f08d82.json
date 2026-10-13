@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT project, approver FROM user_projects WHERE user_id = ? ORDER BY project",
+  "describe": {
+    "columns": [
+      {
+        "name": "project",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "user_projects",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "approver",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "user_projects",
+            "name": "approver"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "6c059e809bc93e0bb652c93af9c6a92c98361488f23d73bc1793e20fe6f08d82"
+}

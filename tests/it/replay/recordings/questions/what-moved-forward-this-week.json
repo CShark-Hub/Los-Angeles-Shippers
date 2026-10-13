@@ -1,0 +1,25 @@
+{
+  "question": "What moved forward this week, and what is still open?",
+  "about": "A composer that brackets its citations every way a model does: a citation after bold text that ends with its stop, nested; an empty bracket beside a real one; ids in one bracket with a semicolon; and a citation after a closing quote, its brackets nested two ways. Every sentence still cites a fact, nothing of a bracket reaches the answer, and the output checks read exactly the sentences delivered. The week, the plan and the facts are those of what-was-merged-this-week, and so are the judge's numbers, until record.mjs reads its own.",
+  "judge": {
+    "input": {
+      "class": ["progress", 0.86],
+      "asks_for_code": 0.02,
+      "asks_to_evaluate_people": 0.01,
+      "asks_for_client_commitment": 0.01,
+      "contains_agent_instruction": 0.01,
+      "asks_for_confidential": 0
+    },
+    "tool": { "args_match_question": 0.9, "args_free_of_instructions": 1 },
+    "output": {
+      "sentence_contains_code_or_identifier": 0.02,
+      "sentence_contains_path_or_secret": 0.01,
+      "sentence_mentions_client": 0.03,
+      "sentence_evaluates_people": 0.01,
+      "sentence_commits_to_client": 0.01,
+      "grounded": 0.95
+    }
+  },
+  "planner": { "since": "2026-09-28", "module": null, "limit": null },
+  "composer": "**One piece of work was merged this week.** [[f_dxf03376gg]] It was the logging package bump on 29 September, though the CI run on its merge failed [] [f_dxf03376gg]. The SEPA export for the client is still a draft, and the late fee rules for billing cycles are in review [f_fyjowa9ygg; f_hzncqibqhg]. In short, the week reads \"one merged, two still open.\" [[f_dxf03376gg], f_fyjowa9ygg [f_hzncqibqhg]]"
+}

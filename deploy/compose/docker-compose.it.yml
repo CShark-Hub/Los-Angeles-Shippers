@@ -1,0 +1,140 @@
+# The runs on Compose (`just it`, `just golden`, `just redteam`), over the laptop files with the
+# fixture: a replay server stands in for the model APIs (tests/it/replay), the configuration and
+# the secrets are the ones the runner writes into target/it (MERCURY_IT_WORK, relative to this
+# folder), and Caddy has a port of its own and the probes network a subnet of its own, so a
+# `just compose-up` stack can keep running beside it. Caddy runs the mercury-web image. The runner
+# names the project `mercury-it`.
+services:
+  caddy:
+    ports: !override ["127.0.0.1:${MERCURY_IT_PORT:-18080}:8080"]
+    # the mercury-web image CI builds, with its own build and CSP header inside, in place of the laptop
+    # file's image and mounts of the local build: the browser tests run against what ships
+    image: ${MERCURY_REGISTRY}/mercury-web:${MERCURY_VERSION}
+    volumes: !override
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+  core:
+    environment:
+      MERCURY_INTERNAL_ALLOW_CIDRS: ${MERCURY_IT_PROBES_SUBNET:-172.30.20.0/24}   # this run's probes network below
+      MERCURY_PUBLIC_ORIGIN: http://localhost:${MERCURY_IT_PORT:-18080}   # the page the runs sign in from: Caddy at localhost, where every browser keeps a Secure cookie over http
+      MERCURY_TRUSTED_PROXY_CIDRS: ${MERCURY_IT_EDGE_SUBNET:-172.30.19.0/24}   # this run's edge network below
+    volumes:
+      - ${MERCURY_IT_WORK:-../../target/it}/config:/config:ro
+      - ${MERCURY_IT_WORK:-../../target/it}/secrets/probes:/run/mercury/probe-tokens:ro
+    secrets: [replay_key]
+    # the models' stand-in answers before the core asks it anything: a probe's first title check that
+    # reached a core without it would be the rules', and its titles withheld until the next round
+    depends_on:
+      replay: { condition: service_healthy }
+
+  # A model server with the OpenAI chat API, answering from recordings; the core reaches it
+  # through its openai_compatible backend (tests/it/config/models.yaml).
+  replay:
+    image: node:22-alpine
+    command: ["node", "/replay/server.mjs"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true
+    volumes:
+      - ../../tests/it/replay:/replay:ro
+    # probes too, for the code reader below: it calls an upstream inside your network
+    # directly, never through its proxy, so the recorded reader is reached on a network it is on
+    networks: [egress, probes]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+
+  # The red team's repository (tests/redteam/repo-poisoned), the second project `poison` of `just redteam`:
+  # a probe in dev mode on it, like the fixture's, and between the core and that probe a proxy that
+  # forwards every call and, when told to, breaks the contract in the three ways a probe can (an extra
+  # field, an extra tool, a reply over the cap). The core's `poison` project calls the proxy; the mode
+  # is a file the runner writes in target/it/rogue. Both are started only by `just redteam`.
+  probe-poison:
+    image: ${MERCURY_REGISTRY}/mercury-probe:${MERCURY_VERSION}
+    command: ["dev", "--repo", "/poisoned", "--meta", "/poisoned/meta", "--listen", "0.0.0.0:7000"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true
+    environment:
+      PROBE_TOKEN_FILE: /run/secrets/probe_poison_token
+      PROBE_CORE_INTERNAL_URL: http://core:8081
+      # its manifest asks for code_model, which it gets with the reader below
+      PROBE_CODE_READER_URL: http://code-reader:7100
+      PROBE_CODE_READER_MODEL: ${MERCURY_IT_READER_MODEL:-replay/reader}
+    secrets: [probe_poison_token]
+    volumes:
+      - ../../tests/redteam/repo-poisoned:/poisoned:ro
+    networks: [probes]
+    healthcheck:
+      test: ["CMD", "mercury-probe", "healthcheck", "7000"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  rogue:
+    image: node:22-alpine
+    command: ["node", "/rogue/proxy.mjs"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp"]
+    user: "10001:10001"
+    init: true
+    environment:
+      ROGUE_UPSTREAM: http://probe-poison:7000
+    volumes:
+      - ../../tests/redteam/rogue-probe:/rogue:ro
+      - ${MERCURY_IT_WORK:-../../target/it}/rogue:/rogue-mode:ro
+    networks: [probes]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:7000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # The poisoned repository's code reader, as docker-compose.reader.yml defines it: started only by
+  # `just redteam` and the drills that start that probe. Recorded, its upstream is the replay server
+  # (`replay/reader`), which it calls directly as a host inside your network; with --live,
+  # the demo preset's model through reader-egress. The runner sets the upstream, the model and the
+  # allowlist (tests/it/reader-egress/allowlist names the replay server); the key is the run's secret.
+  code-reader:
+    extends: { file: docker-compose.reader.yml, service: code-reader }
+    environment:
+      READER_UPSTREAM_URL: ${MERCURY_IT_READER_URL:-http://replay:9000/v1/chat/completions}
+      READER_MODEL: ${MERCURY_IT_READER_MODEL:-replay/reader}
+      READER_DAILY_USD: "${MERCURY_IT_READER_DAILY_USD:-1.00}"   # a drill sets 0.00 to spend the day's cap
+
+  reader-egress:
+    extends: { file: docker-compose.reader.yml, service: reader-egress }
+    volumes: !override
+      - ${MERCURY_IT_READER_ALLOWLIST:-../../tests/it/reader-egress/allowlist}:/etc/egress/allowlist:ro
+
+networks:
+  reader-out: { internal: true }   # code-reader and reader-egress alone
+  probes:
+    ipam:
+      config: !override [{ subnet: "${MERCURY_IT_PROBES_SUBNET:-172.30.20.0/24}" }]
+  edge:
+    ipam:
+      config: !override [{ subnet: "${MERCURY_IT_EDGE_SUBNET:-172.30.19.0/24}" }]
+
+secrets:
+  openrouter_api_key: { file: "${MERCURY_IT_WORK:-../../target/it}/secrets/openrouter_api_key" }
+  probe_delta_token: { file: "${MERCURY_IT_WORK:-../../target/it}/secrets/probes/delta.token" }
+  probe_poison_token: { file: "${MERCURY_IT_WORK:-../../target/it}/secrets/probes/poison.token" }
+  replay_key: { file: "${MERCURY_IT_WORK:-../../target/it}/secrets/replay_key" }
+  reader_api_key: { file: "${MERCURY_IT_WORK:-../../target/it}/secrets/reader_api_key" }

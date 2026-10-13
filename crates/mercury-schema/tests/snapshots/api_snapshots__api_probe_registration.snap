@@ -1,0 +1,69 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: registration
+---
+{
+  "access": "code",
+  "access_limited_by": null,
+  "manifest": {
+    "access": "code",
+    "allow": [
+      "progress",
+      "tested",
+      "blocked",
+      "health",
+      "changes"
+    ],
+    "blocked_labels": [
+      "blocked"
+    ],
+    "deny": [],
+    "display_name": "Delta — invoicing",
+    "exclude": [
+      "**/*.pem"
+    ],
+    "judge_context": [
+      "titles",
+      "labels"
+    ],
+    "module_labels": {
+      "Export": [
+        "export"
+      ]
+    },
+    "modules": {
+      "Export": [
+        "src/Export/**"
+      ],
+      "Invoicing": [
+        "src/Invoices/**"
+      ]
+    },
+    "project": "delta",
+    "redact": [
+      {
+        "pattern": "(?i)\\bexample\\s+bank\\b",
+        "replace": "the client"
+      }
+    ],
+    "signoff": [],
+    "tests": {
+      "frameworks": [
+        "xunit"
+      ]
+    },
+    "tracker": "github_issues",
+    "version": "0.1"
+  },
+  "manifest_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "project": "delta",
+  "schema": "mercury.facts/0.1",
+  "tools": [
+    "describe",
+    "progress",
+    "tested",
+    "blocked",
+    "health",
+    "changes"
+  ]
+}

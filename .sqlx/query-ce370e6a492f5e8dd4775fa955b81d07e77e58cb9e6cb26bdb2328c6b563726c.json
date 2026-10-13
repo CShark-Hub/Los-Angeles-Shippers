@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET cost_usd = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "ce370e6a492f5e8dd4775fa955b81d07e77e58cb9e6cb26bdb2328c6b563726c"
+}

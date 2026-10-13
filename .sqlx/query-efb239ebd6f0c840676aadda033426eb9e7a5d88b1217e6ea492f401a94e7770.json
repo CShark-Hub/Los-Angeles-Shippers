@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO audit_events (question_id, project, type, payload_json, payload_sha256, prev_hash, hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 8
+    },
+    "nullable": []
+  },
+  "hash": "efb239ebd6f0c840676aadda033426eb9e7a5d88b1217e6ea492f401a94e7770"
+}

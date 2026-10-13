@@ -1,0 +1,37 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: projects
+---
+{
+  "projects": [
+    {
+      "classes": [
+        "progress",
+        "tested",
+        "blocked",
+        "health",
+        "changes"
+      ],
+      "display_name": "Delta — invoicing",
+      "modules": [
+        "Invoicing",
+        "Export",
+        "Auth"
+      ],
+      "probe": {
+        "as_of": "2026-10-04T15:12:00Z",
+        "status": "healthy"
+      },
+      "project": "delta"
+    },
+    {
+      "classes": [
+        "health"
+      ],
+      "display_name": "Omega — mobile app",
+      "modules": [],
+      "probe": null,
+      "project": "omega"
+    }
+  ]
+}

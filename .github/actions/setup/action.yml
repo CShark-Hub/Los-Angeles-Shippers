@@ -1,0 +1,75 @@
+# The steps every job of the CI workflow starts with after the checkout: the pinned tools the job names
+# (each download checked against its SHA-256), and the Rust toolchain or Node.js when the job needs them.
+name: Set up the job
+description: Pinned tools, and the Rust toolchain or Node.js 22 with pnpm through corepack
+inputs:
+  tools:
+    description: The pinned tools, separated by spaces (just, nextest, deny, gitleaks)
+    default: just
+  rust:
+    description: Install the toolchain rust-toolchain.toml pins
+    default: "false"
+  node:
+    description: Install Node.js 22 and enable pnpm through corepack
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - name: Install the pinned tools (${{ inputs.tools }})
+      shell: bash
+      env:
+        TOOLS: ${{ inputs.tools }}
+        JUST_VERSION: 1.58.0
+        JUST_SHA256: 4a5cc2f53e6f0f8c59092a6cc38291eb729d46a7dd95d3ae582008881b84931d
+        NEXTEST_VERSION: 0.9.146
+        NEXTEST_SHA256: 682c21b777c333e96fd532e114d3a5a894e0729ab88d94c0a9f20f8419695428
+        DENY_VERSION: 0.20.2
+        DENY_SHA256: 9f12ed4c49936e09b48bf862b595cde2fe64fcbd9d74dfacac6131ca824c8d5f
+        GITLEAKS_VERSION: 8.30.1
+        GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+      run: |
+        set -euo pipefail
+        bin="$RUNNER_TOOL_CACHE/mercury-ci/bin"
+        mkdir -p "$bin"
+        cd "$RUNNER_TEMP"
+        fetch() { # name url sha256
+          curl -fsSL --retry 3 --connect-timeout 20 --max-time 300 -o "$1" "$2"
+          echo "$3  $1" | sha256sum -c -
+        }
+        gh=https://github.com
+        for tool in $TOOLS; do
+          case "$tool" in
+            just)
+              fetch just.tgz "$gh/casey/just/releases/download/$JUST_VERSION/just-$JUST_VERSION-x86_64-unknown-linux-musl.tar.gz" "$JUST_SHA256"
+              tar -xzf just.tgz -C "$bin" just ;;
+            nextest)
+              fetch nextest.tgz "$gh/nextest-rs/nextest/releases/download/cargo-nextest-$NEXTEST_VERSION/cargo-nextest-$NEXTEST_VERSION-x86_64-unknown-linux-gnu.tar.gz" "$NEXTEST_SHA256"
+              tar -xzf nextest.tgz -C "$bin" cargo-nextest ;;
+            deny)
+              fetch deny.tgz "$gh/EmbarkStudios/cargo-deny/releases/download/$DENY_VERSION/cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl.tar.gz" "$DENY_SHA256"
+              tar -xzf deny.tgz -C "$bin" --strip-components=1 "cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl/cargo-deny" ;;
+            gitleaks)
+              fetch gitleaks.tgz "$gh/gitleaks/gitleaks/releases/download/v$GITLEAKS_VERSION/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" "$GITLEAKS_SHA256"
+              tar -xzf gitleaks.tgz -C "$bin" gitleaks ;;
+            *)
+              echo "::error::no such pinned tool: $tool"
+              exit 1 ;;
+          esac
+        done
+        echo "$bin" >> "$GITHUB_PATH"
+
+    - name: The Rust toolchain rust-toolchain.toml pins
+      if: inputs.rust == 'true'
+      shell: bash
+      run: rustup toolchain install
+
+    - name: Node.js 22
+      if: inputs.node == 'true'
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+
+    - name: pnpm through corepack, at the version apps/web/package.json pins
+      if: inputs.node == 'true'
+      shell: bash
+      run: corepack enable

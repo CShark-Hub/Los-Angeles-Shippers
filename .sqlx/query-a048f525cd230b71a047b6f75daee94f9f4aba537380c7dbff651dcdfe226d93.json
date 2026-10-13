@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT s.user_id, s.spent_usd, u.email AS \"email?\" FROM spend s\n           LEFT JOIN users u ON u.id = s.user_id\n           WHERE s.day = ? ORDER BY s.spent_usd DESC, s.user_id",
+  "describe": {
+    "columns": [
+      {
+        "name": "user_id",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "spend",
+            "name": "user_id"
+          }
+        }
+      },
+      {
+        "name": "spent_usd",
+        "ordinal": 1,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "spend",
+            "name": "spent_usd"
+          }
+        }
+      },
+      {
+        "name": "email?",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "email"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "a048f525cd230b71a047b6f75daee94f9f4aba537380c7dbff651dcdfe226d93"
+}

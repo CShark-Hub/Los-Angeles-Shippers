@@ -1,0 +1,150 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"input\": input, \"output\": output })"
+---
+{
+  "input": {
+    "$defs": {
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+      "module": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ModuleName"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "title": "TestedArgs",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "BuildStatus": {
+        "enum": [
+          "passed",
+          "failed",
+          "running",
+          "none"
+        ],
+        "type": "string"
+      },
+      "CiRun": {
+        "additionalProperties": false,
+        "description": "The latest CI run: `at` is `null` when the status is `none`.",
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/$defs/BuildStatus"
+          }
+        },
+        "required": [
+          "status",
+          "at"
+        ],
+        "type": "object"
+      },
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      },
+      "ModuleStats": {
+        "additionalProperties": false,
+        "description": "The tests and CI results of one module.\nThe counts are `null` in `metadata` mode, where tests aren't counted, which is not zero tests.",
+        "properties": {
+          "flaky_7d": {
+            "$ref": "#/$defs/Ratio",
+            "description": "The share of flaky CI runs in the last 7 days."
+          },
+          "last_ci": {
+            "$ref": "#/$defs/CiRun"
+          },
+          "module": {
+            "$ref": "#/$defs/ModuleName"
+          },
+          "pass_rate_7d": {
+            "$ref": "#/$defs/Ratio"
+          },
+          "tests_changed_14d": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tests_total": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "module",
+          "tests_total",
+          "tests_changed_14d",
+          "last_ci",
+          "pass_rate_7d",
+          "flaky_7d"
+        ],
+        "type": "object"
+      },
+      "Ratio": {
+        "maximum": 1,
+        "minimum": 0,
+        "type": "number"
+      },
+      "SchemaId": {
+        "const": "mercury.facts/0.1",
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The reply of `tested`.",
+    "properties": {
+      "as_of": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "modules": {
+        "items": {
+          "$ref": "#/$defs/ModuleStats"
+        },
+        "type": "array"
+      },
+      "schema": {
+        "$ref": "#/$defs/SchemaId"
+      }
+    },
+    "required": [
+      "schema",
+      "as_of",
+      "modules"
+    ],
+    "title": "TestedReply",
+    "type": "object"
+  }
+}
