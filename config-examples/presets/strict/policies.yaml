@@ -1,0 +1,30 @@
+# Preset `strict`: the same policies as the examples. Titles are shown (`show_titles: true`) because
+# the models that read them are yours; see models.yaml.
+#
+# What each role may ask, what is refused and redacted for every project, and the limits per token.
+# Copied into the core's /config; every key is checked when the core starts (unknown keys fail).
+version: 1
+defaults:                       # all three are required
+  show_evidence_refs: true      # "#412" on pull request and issue evidence
+  show_people: false
+  show_titles: true             # false withholds every repository title before any model sees it
+roles:                          # a role that isn't listed may ask nothing
+  pm:
+    classes: [progress, tested, blocked, health, changes, open]
+    show_people: true
+  tech_lead:
+    classes: [progress, tested, blocked, health, changes, open]
+    show_people: true
+  board:
+    classes: [health, portfolio]
+    aggregates_only: true
+    signoff: [portfolio]
+global:
+  deny: [source_code, file_paths, secrets, people_evaluation, client_commitments]
+  redact:                       # before each manifest's own rules; e-mail addresses are always redacted
+    - { pattern: '(?i)\bacme(\s+corp)?\b', replace: 'the client' }
+    - { pattern: '[\w.+-]+@[\w-]+\.[\w.]+', replace: '[email]' }
+  hold_review_band_for_signoff: true
+limits:
+  questions_per_hour: 30
+  burst: 5
