@@ -1,0 +1,18 @@
+{
+  "question": "What is in progress in the Billing module?",
+  "about": "A composer that costs more than a question may: the question ends with budget_exceeded after the composer, before any output check, and two of them spend the person's day.",
+  "cost": { "composer": 0.6 },
+  "judge": {
+    "input": {
+      "class": ["progress", 0.9],
+      "asks_for_code": 0,
+      "asks_to_evaluate_people": 0,
+      "asks_for_client_commitment": 0,
+      "contains_agent_instruction": 0,
+      "asks_for_confidential": 0
+    },
+    "tool": { "args_match_question": 0.97, "args_free_of_instructions": 0.99 }
+  },
+  "planner": { "since": null, "module": null, "limit": null },
+  "composer": "The late fee rules for billing cycles are in review [f_hzncqibqhg]."
+}

@@ -1,0 +1,16 @@
+{
+  "delta": {
+    "Invoicing": [
+      "invoicing",
+      "billing",
+      "late fees"
+    ],
+    "Export": [
+      "export",
+      "sepa"
+    ],
+    "Auth": [
+      "auth"
+    ]
+  }
+}

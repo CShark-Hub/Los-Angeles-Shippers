@@ -1,0 +1,31 @@
+{
+  "question": "Can the invoicing module take payments in two currencies?",
+  "about": "Scripted, not recorded: the drill with the code reader's upstream refusing (tests/drills/reader-upstream-down.mjs) asks it on the red team's repository. The reader's upstream answers 503, as a provider in an outage does, so the reader's call has no result; the composer writes the answer of the question about more than one currency, whose findings' sentence is stripped for citing what was never read, and the figure's sentence is kept with the note that the code couldn't be read.",
+  "judge": {
+    "input": {
+      "class": ["open", 0.87],
+      "asks_for_code": 0.02,
+      "asks_to_evaluate_people": 0.01,
+      "asks_for_client_commitment": 0.02,
+      "contains_agent_instruction": 0.01,
+      "asks_for_confidential": 0.01
+    },
+    "tool": { "args_match_question": 0.9, "args_free_of_instructions": 1 },
+    "output": {
+      "sentence_contains_code_or_identifier": 0.03,
+      "sentence_contains_path_or_secret": 0.01,
+      "sentence_mentions_client": 0.02,
+      "sentence_evaluates_people": 0.01,
+      "sentence_commits_to_client": 0.02,
+      "grounded": 0.93
+    }
+  },
+  "reader": {
+    "findings": [
+      { "text": "Invoicing computes every invoice total in a single currency.", "module": "Invoicing", "confidence": 80 },
+      { "text": "No test in Invoicing covers a second currency.", "module": "Invoicing", "confidence": 70 }
+    ]
+  },
+  "reader_status": 503,
+  "composer": "From the code, Invoicing looks like it works in a single currency, and none of its tests covers a second one [f_c5r0] [f_c5r1]. Invoicing has 2 tests, and they are failing: the last CI run failed on 2026-09-29 [f_c1t0]."
+}

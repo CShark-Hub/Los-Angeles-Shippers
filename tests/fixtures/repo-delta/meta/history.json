@@ -1,0 +1,60 @@
+{
+  "head": "31b03fd996b197f7ada70d08202bb775b01e8c91",
+  "window_start": "2026-09-16T12:00:00Z",
+  "commits": [
+    {
+      "sha": "31b03fd996b197f7ada70d08202bb775b01e8c91",
+      "committed_at": "2026-09-29T08:00:00Z",
+      "files": ["src/Delta.Api/Delta.Api.csproj"]
+    },
+    {
+      "sha": "11c3b6cf04bbd006980bdf1abb7e378db1ecd4d1",
+      "committed_at": "2026-09-27T08:44:00Z",
+      "files": ["db/migrations/0007_credit_note_lines.sql"]
+    },
+    {
+      "sha": "6f64270b73b9a45b9b7a2cad767c37c390b5d2a0",
+      "committed_at": "2026-09-26T14:05:00Z",
+      "files": ["src/Export/CsvStatementFormatter.cs"]
+    },
+    {
+      "sha": "b58847731c7663f57b79b18065365a30bebe6974",
+      "committed_at": "2026-09-24T15:55:00Z",
+      "files": ["README.md"]
+    },
+    {
+      "sha": "19f9666b40b7195db8c9683a338be51e75d5b55e",
+      "committed_at": "2026-09-24T09:30:00Z",
+      "files": [
+        "src/Invoices/InvoiceLedgerService.cs",
+        "src/Invoices/InvoiceQueryFilter.cs",
+        "tests/Invoicing.Tests/InvoiceLedgerServiceTests.cs"
+      ]
+    },
+    {
+      "sha": "26bf6be9708f05ac9cd0479fe9946118862a0b05",
+      "committed_at": "2026-09-22T09:20:00Z",
+      "files": ["tests/Export.Tests/SepaExportWriterTests.cs", "tests/Export.Tests/StatementFixtures.cs"]
+    },
+    {
+      "sha": "f1c29a913abf5738f54e74f1a961a099cf51b3ac",
+      "committed_at": "2026-09-21T11:03:00Z",
+      "files": ["src/Invoices/InvoiceNumberSequencer.cs", "tests/Invoicing.Tests/InvoiceNumberSequencerTests.cs"]
+    },
+    {
+      "sha": "804347aa24414ac724b6a395f08825a2e5ce8b4a",
+      "committed_at": "2026-09-18T15:40:00Z",
+      "files": ["docs/customers/megabank-onboarding.md", "deploy/secrets/relay.env"]
+    },
+    {
+      "sha": "994463945796db6363cdd93ed828b522d664f653",
+      "committed_at": "2026-09-17T10:12:00Z",
+      "files": ["src/Auth/SessionTimeoutPolicy.cs", "src/Auth/SessionOptions.cs"]
+    },
+    {
+      "sha": "391195e5d12e4fd6c2f9e7d14d4a0c373a34f11b",
+      "committed_at": "2026-09-08T10:15:00Z",
+      "files": ["src/Billing/BillingCalendar.cs", "src/Billing/BillingCycleScheduler.cs"]
+    }
+  ]
+}
