@@ -92,7 +92,7 @@ test.describe('The admin panel', () => {
 				const rows = page.getByRole('table').getByRole('row');
 				await expect(rows.nth(2)).toBeVisible();
 				await expect(page.getByRole('heading', { name: 'Tokens' })).toBeVisible();
-				await expect(page.getByText(/^\$?\s*mctl access list --email /).first()).toBeVisible();
+				await expect(page.getByText(/^(mercury>)?\s*access list --email /).first()).toBeVisible();
 			});
 		});
 
@@ -105,7 +105,7 @@ test.describe('The admin panel', () => {
 				const delta = page.getByRole('article').filter({ hasText: 'delta' }).first();
 				await expect(delta).toBeVisible();
 				await expect(delta.getByRole('region', { name: 'Who may ask' })).toBeVisible();
-				await expect(delta).toContainText('mctl access list --project delta');
+				await expect(delta).toContainText('access list --project delta');
 			});
 		});
 	});

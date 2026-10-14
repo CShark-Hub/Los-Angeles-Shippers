@@ -27,8 +27,9 @@
 
 	import Icon from '$lib/components/Icon.svelte';
 
-	// A command the admin runs on the server, as text they can select, with a button that copies it.
-	// The panel changes nothing itself: this is the way from what it shows to the change.
+	// A command the admin types at the admin shell on the server, as text they can select, with a
+	// button that copies it. The panel changes nothing itself: this is the way from what it shows to
+	// the change.
 	let { command, label }: { command: string; label?: string } = $props();
 
 	/** What the last press came to: copied, or selected for the person to copy by hand. */
@@ -101,13 +102,14 @@
 
 <div class="flex min-w-0 flex-col">
 	{#if label}<span class="pb-1.5 text-2xs font-medium text-text-3">{label}</span>{/if}
-	<!-- a code chip: an inset with the prompt in the accent, the command, and its copy button -->
+	<!-- a code chip: an inset with the admin shell's prompt in the accent, the command, and its copy
+	     button -->
 	<div
 		class="group flex min-w-0 items-start gap-2 rounded-control border border-border bg-surface-2 py-1 pr-1 pl-2.5 transition-colors duration-150 hover:border-border-control"
 	>
 		<span
 			class="shrink-0 py-0.5 font-mono text-2xs leading-4.5 font-semibold text-accent-text select-none"
-			aria-hidden="true">$</span
+			aria-hidden="true">mercury&gt;</span
 		>
 		<code bind:this={code} class="min-w-0 flex-1 py-0.5 font-mono text-2xs leading-4.5 text-text"
 			><!-- a line breaks between the words of the command, never inside a flag or an address -->{#each words as word, i (i)}{#if i > 0}{gap}{/if}<span
