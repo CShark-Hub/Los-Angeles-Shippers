@@ -81,7 +81,7 @@ web-dev mode="mock":
         *) echo "just web-dev: the mode is mock or proxy, not {{ mode }}" >&2; exit 1 ;;
     esac
 
-# The local stack in Docker Compose on http://localhost:8080: the core, and a probe on the fixture repository
+# The local stack in Docker Compose on http://localhost:8080: the core, a probe on the fixture repository, and on a first start one demo person of each role
 compose-up: _images _web-build
     #!/usr/bin/env bash
     set -euo pipefail
@@ -94,12 +94,28 @@ compose-up: _images _web-build
     [ -e secrets/openrouter_api_key ] || : > secrets/openrouter_api_key
     [ -s secrets/probes/delta.token ] || head -c 32 /dev/urandom | base64 | tr '+/' '-_' | tr -dc 'A-Za-z0-9_-' > secrets/probes/delta.token
     docker compose {{ laptop_fixture }} up -d --remove-orphans
+    up=false
     for _ in $(seq 30); do
-        if curl -fsS http://localhost:8080/v1/health; then echo; exit 0; fi
+        if curl -fsS http://localhost:8080/v1/health; then echo; up=true; break; fi
         sleep 1
     done
-    echo "just compose-up: /v1/health doesn't answer on http://localhost:8080; see docker compose ps" >&2
-    exit 1
+    $up || { echo "just compose-up: /v1/health doesn't answer on http://localhost:8080; see docker compose ps" >&2; exit 1; }
+    # the demo's people (scripts/demo-people.txt), only on a database that has nobody yet: their tokens
+    # go into this machine's own secrets, never to the terminal or a log
+    admin() { docker compose {{ laptop_fixture }} exec -T core mercury-core admin "$@"; }
+    people=$(admin access list) || { echo "just compose-up: the core's people can't be read, so the demo's aren't added" >&2; exit 1; }
+    if grep -qx 'No one.' <<<"$people"; then
+        admin shell < scripts/demo-people.txt > /dev/null
+        tokens=secrets/demo-tokens
+        (umask 077 && : > "$tokens")
+        for person in pm@example.com:pm lead@example.com:tech_lead board@example.com:board admin@example.com:admin; do
+            email=${person%%:*}
+            token=$(admin token create --email "$email" --label demo 2> /dev/null)
+            [[ $token == mcy_* ]] || { echo "just compose-up: no token was made for $email" >&2; exit 1; }
+            printf '%-20s %-10s %s\n' "$email" "${person#*:}" "$token" >> "$tokens"
+        done
+        echo "just compose-up: the demo's people are in, one of each role; their tokens are in deploy/compose/secrets/demo-tokens"
+    fi
 
 # Stop the local Compose stack
 compose-down:
