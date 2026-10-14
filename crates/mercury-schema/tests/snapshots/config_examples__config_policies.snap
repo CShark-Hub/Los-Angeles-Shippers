@@ -29,8 +29,8 @@ expression: "serde_json::to_value(policies).unwrap()"
     ]
   },
   "limits": {
-    "burst": 5,
-    "questions_per_hour": 30
+    "burst": 50,
+    "questions_per_hour": 300
   },
   "retention": {
     "audit_payload_days": 90

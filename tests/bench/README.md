@@ -44,7 +44,8 @@ are dealt in, the same on every run), `--label NAME` (the report's name in place
 On its own stack every asker is a project manager with a token of its own (the runs' `pm` and
 `spender`, then `asker3@example.com` on), and the runs' limits are raised to 3,000 questions an hour
 per token, so the limit never holds an asker back. Against an existing stack the stack's own limit
-applies (30 an hour with a burst of 5 in `config-examples/policies.yaml`): give each asker its own
+applies (300 an hour with a burst of 50 in `config-examples/policies.yaml`, 30 and 5 in the
+private and strict presets): give each asker its own
 token. A question the limit holds back (`429 rate_limited`, before any question starts) waits as the
 server says and is asked again; the report counts those waits, and they are in no time it measures.
 

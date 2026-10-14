@@ -164,9 +164,9 @@ export function reconfigure(name, edit) {
 }
 
 /**
- * The flood check: one token sending 100 questions in a minute, on the limits the examples ship (30
- * an hour, a burst of 5): five start, the rest are refused with `429` and `Retry-After` before
- * anything is spent, and the person's spend is what the five cost.
+ * The flood check: one token sending 100 questions in a minute, on the limits the private and strict
+ * presets ship (30 an hour, a burst of 5): five start, the rest are refused with `429` and
+ * `Retry-After` before anything is spent, and the person's spend is what the five cost.
  */
 export async function floodChecks(t) {
   reconfigure("policies.yaml", (text) =>

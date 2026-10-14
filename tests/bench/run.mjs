@@ -721,7 +721,7 @@ if (MODE === "url") {
   const askers = Array.from({ length: opts.askers }, (_, a) => ({ name: `asker${a + 1}`, token: opts.tokens[a % opts.tokens.length] }));
   if (opts.tokens.length < opts.askers) {
     console.warn(
-      `bench: ${opts.askers} askers share ${opts.tokens.length} token(s); the per-token rate limit (30 an hour, burst 5 in config-examples/policies.yaml) will hold them back. Each held-back question waits as the server says and is asked again; the waits are in no time measured, but the load is lower than ${opts.askers} at once.`,
+      `bench: ${opts.askers} askers share ${opts.tokens.length} token(s); the per-token rate limit (300 an hour, burst 50 in config-examples/policies.yaml; 30 and 5 in the private and strict presets) may hold them back. Each held-back question waits as the server says and is asked again; the waits are in no time measured, but the load is lower than ${opts.askers} at once.`,
     );
   }
   let compose = null;
@@ -741,7 +741,7 @@ if (MODE === "url") {
     ownStack: false,
     modeText: `an existing stack (\`--url\`), project \`${opts.project}\`, with the stack's own models and configuration`,
     stackText: `${addressShown(opts.url)}${opts.composeProject ? `; its probes read from the Compose project \`${opts.composeProject}\`` : ""}`,
-    tokensText: `${opts.tokens.length} token(s) given for ${opts.askers} askers${opts.tokens.length < opts.askers ? " (shared round the askers)" : " (one each)"}; the stack's own per-token limit applies (config-examples has 30 an hour, burst 5).`,
+    tokensText: `${opts.tokens.length} token(s) given for ${opts.askers} askers${opts.tokens.length < opts.askers ? " (shared round the askers)" : " (one each)"}; the stack's own per-token limit applies (config-examples has 300 an hour, burst 50; the private and strict presets 30 and 5).`,
     cap: { value: capIn(join(root, "config-examples/models.yaml")), from: "config-examples/models.yaml; the stack's own models.yaml decides" },
   };
   let ok = false;

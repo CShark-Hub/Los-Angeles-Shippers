@@ -66,9 +66,13 @@ The first version: everything below is new.
 - Docker Compose files for a laptop and for a server with TLS: Caddy is the only service that
   publishes a port, a `serve` probe has no route out, a `sync` probe reaches only the git host
   through an egress proxy.
-- `just compose-up` with a bundled fixture repository and no model key; presets for a demo, a
-  private and a strict setup (`config-examples/presets/`).
+- `just compose-up` with a bundled fixture repository and no model key, and on a database with
+  nobody yet one demo person of each role, their tokens in `deploy/compose/secrets/demo-tokens`;
+  presets for a demo (a token asks 50 questions at once and 300 an hour), a private and a strict
+  setup (5 and 30) (`config-examples/presets/`).
 - `code-reader` and `reader-egress` in Compose when a reader is configured; `check.sh` checks that
   `serve` still has no route out and the reader reaches only its host.
 - `admin` commands for people, tokens, access, probes, the configuration check, the daily status
   and backups made while the core serves; scripts for a daily smoke test and a nightly backup.
+- `/mercury-init`, a Claude Code skill (`.claude/skills/mercury-init/`) that walks a person through
+  the setup step by step: the demo on the fixture, or production on their own repositories.
