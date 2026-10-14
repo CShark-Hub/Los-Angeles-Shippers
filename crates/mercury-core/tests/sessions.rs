@@ -71,7 +71,11 @@ async fn web_with(config: SessionConfig) -> Web {
         tokens.push(created.token.reveal());
     }
     let examples = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../config-examples");
-    let (examples, _) = mercury_core::config::load(&examples).unwrap();
+    let (mut examples, _) = mercury_core::config::load(&examples).unwrap();
+    // the token limit these tests count on, as the private and strict presets ship it; the examples,
+    // the demo's, allow a person trying them far more
+    examples.policies.limits.questions_per_hour = 30;
+    examples.policies.limits.burst = 5;
     let questions = Questions::new(db.clone(), Arc::new(examples), Arc::new(NotBuilt)).with_sessions(config);
     let ben = tokens.pop().unwrap();
     let anna = tokens.pop().unwrap();

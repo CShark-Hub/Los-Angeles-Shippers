@@ -22,8 +22,8 @@ global:
     - { pattern: '(?i)\bacme(\s+corp)?\b', replace: 'the client' }
     - { pattern: '[\w.+-]+@[\w-]+\.[\w.]+', replace: '[email]' }
   hold_review_band_for_signoff: true
-limits:
-  questions_per_hour: 30
-  burst: 5
+limits:                         # the demo's: a person trying it never waits; private and strict keep 30 and 5
+  questions_per_hour: 300
+  burst: 50
 retention:
   audit_payload_days: 90        # audit payloads, question texts and answers; the rows and their hashes stay

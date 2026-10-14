@@ -68,7 +68,8 @@ The first version: everything below is new.
   through an egress proxy.
 - `just compose-up` with a bundled fixture repository and no model key, and on a database with
   nobody yet one demo person of each role, their tokens in `deploy/compose/secrets/demo-tokens`;
-  presets for a demo, a private and a strict setup (`config-examples/presets/`).
+  presets for a demo (a token asks 50 questions at once and 300 an hour), a private and a strict
+  setup (5 and 30) (`config-examples/presets/`).
 - `code-reader` and `reader-egress` in Compose when a reader is configured; `check.sh` checks that
   `serve` still has no route out and the reader reaches only its host.
 - `admin` commands for people, tokens, access, probes, the configuration check, the daily status

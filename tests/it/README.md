@@ -129,7 +129,7 @@ than passing those checks on nothing, and whatever a failed run prints has the r
     the CLI exits 1, and `admin audit export --token` holds its question, its creation and its
     revocation.
   - *The flood check and the day's budget,* last, since each restarts the core on lowered values in
-    the run's configuration: on the examples' limits (30 an hour, a burst of 5) one token's 100
+    the run's configuration: on the private and strict presets' limits (30 an hour, a burst of 5) one token's 100
     questions in a minute start five and get `429` with `Retry-After` for the rest; with the
     installation's daily cap below the day's spend a question from the CLI and one over MCP are both
     `budget_exceeded`, nothing spent.
