@@ -73,3 +73,5 @@ The first version: everything below is new.
   `serve` still has no route out and the reader reaches only its host.
 - `admin` commands for people, tokens, access, probes, the configuration check, the daily status
   and backups made while the core serves; scripts for a daily smoke test and a nightly backup.
+- `/mercury-init`, a Claude Code skill (`.claude/skills/mercury-init/`) that walks a person through
+  the setup step by step: the demo on the fixture, or production on their own repositories.
