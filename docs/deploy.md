@@ -54,7 +54,10 @@ holds the core's database, the metadata and the facts index, never code.
 ## A laptop
 
 The quickstart in the [README](../README.md) runs the stack with the bundled fixture repository
-(`just compose-up`). For your own repositories on a laptop, `just demo-local` builds the images and
+(`just compose-up`). On a database that has nobody yet, it also adds one demo person of each role
+(`scripts/demo-people.txt`) and writes their tokens into `secrets/demo-tokens`, never to the
+terminal or a log; a database with people in it, a restored one too, is left alone. For your own
+repositories on a laptop, `just demo-local` builds the images and
 the web client and starts the stack with `docker-compose.repos.yml`: one `sync` + `serve` pair per
 repository (see [Adding a repository](#adding-a-repository)). On a first run with an empty
 `deploy/compose/config/` it copies the `demo` preset there and stops, so you can add your projects;
@@ -102,12 +105,14 @@ it waits until every probe is registered and healthy, and says which isn't.
    80 and 443 from anywhere; unattended upgrades. Docker writes its own firewall rules, so a
    published port is reachable whatever `ufw` says: **only Caddy may have `ports:`**.
 4. **Docker** Engine and the Compose plugin from Docker's own apt repository. Membership in the
-   `docker` group equals root; give it only to admins.
-5. **Files.**
+   `docker` group equals root; give it only to admins. To build the images: `git`, `just` and bash.
+5. **Images and files.** The images are built on the server, from a clone of this repository:
    ```bash
-   sudo mkdir -p /opt/mercury && sudo chown "$USER": /opt/mercury && cd /opt/mercury
-   # copy deploy/compose/ from the release you run into /opt/mercury
-   # in .env: MERCURY_DOMAIN, MERCURY_VERSION, MERCURY_REGISTRY=ghcr.io/cshark-hub (the release's images)
+   cd ~/mercury                 # the clone
+   just _images                 # the core, probe and web images, named as deploy/compose/.env says
+   sudo mkdir -p /opt/mercury && sudo chown "$USER": /opt/mercury
+   cp -R deploy/compose/. /opt/mercury/ && cd /opt/mercury
+   # in .env: MERCURY_DOMAIN; keep MERCURY_REGISTRY and MERCURY_VERSION, which name the images just built
    mkdir -p secrets/probes secrets/github
    printf '%s' '<your OpenRouter key>' > secrets/openrouter_api_key
    sudo chown -R 10001:10001 secrets && sudo chmod -R u=rX,go= secrets
@@ -120,7 +125,7 @@ it waits until every probe is registered and healthy, and says which isn't.
    ```
 7. **Start.**
    ```bash
-   docker compose pull && docker compose up -d && docker compose ps
+   docker compose up -d && docker compose ps
    curl -fsS https://mercury.<your-domain>/v1/health
    ```
    Caddy obtains the certificate on the first request; the DNS record must already point at the
@@ -255,11 +260,12 @@ and says so; a disabled person is refused. Every change above is an audit row.
 
 ### A prompt of its own
 
-To type several of these one after another, open the admin shell once and leave the long prefix behind:
+To type several of these one after another, open the admin shell once and leave the long prefix behind.
+On the host, from any folder, or over SSH (in Git Bash's own window, mintty, put `winpty` before `docker`):
 
 ```bash
-mctl shell                                    # on the host: docker compose exec core mercury-core admin shell
-ssh -t admin@example.com 'cd /opt/mercury && docker compose exec core mercury-core admin shell'
+docker exec -it mercury-core-1 mercury-core admin shell
+ssh -t admin@example.com docker exec -it mercury-core-1 mercury-core admin shell
 ```
 
 ```text
@@ -310,7 +316,8 @@ used an approver flag counts for those two roles alone.
 
 An admin signed in to the web client reads the same in its admin panel (the overview of what Mercury
 did, the people, the repositories, the audit), read-only: each change stays one of these commands, and
-the panel shows the command to copy. Each read of the panel is an audit row (`admin_viewed`).
+the panel shows the command to copy, as the admin shell takes it (without `mctl`). Each read of the
+panel is an audit row (`admin_viewed`).
 
 Give a token through a password manager or in person, never in chat or e-mail. The person pastes it
 into the web client's sign-in page, which exchanges it for a session at once and keeps nothing, into
@@ -450,13 +457,12 @@ On a laptop the address is `http://127.0.0.1:8080/mcp`.
   hold. `mctl audit export` writes rows as JSON lines that verify without the database. Retention
   clears payloads, question texts and answers older than `retention.audit_payload_days`
   (90 by default); rows and hashes stay, so the chain still verifies.
-- **Updates:** a version tag publishes `mercury-core`, `mercury-probe` and `mercury-web` on
-  `ghcr.io/cshark-hub` (linux/amd64 and linux/arm64, each scanned before it is pushed) and the CLI for
-  Linux, macOS and Windows on the release's page, with checksums; the notes are the version's
-  section of `CHANGELOG.md`. Read them, set `MERCURY_VERSION` in `.env` (without the `v`), then
-  `docker compose pull && docker compose up -d`, `/v1/health`, and one question from the CLI and one
-  from the web client. The three images share the version; roll back by setting the previous one.
-  Copy `deploy/compose/` from the same release when its notes say the Compose files changed.
+- **Updates:** read what is new in `CHANGELOG.md`, then in the clone `git pull` and `just _images`,
+  which builds the three images again under the same names. When the Compose files, the Caddyfile
+  or the scripts changed, copy them into `/opt/mercury`, keeping its `.env` and your repositories'
+  blocks. Then `docker compose up -d` in `/opt/mercury`, which recreates the services whose image
+  changed, `/v1/health`, and one question from the CLI and one from the web client. To roll back,
+  check out the previous commit in the clone and build again.
 
 ## When something fails
 
