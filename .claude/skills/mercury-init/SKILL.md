@@ -15,8 +15,9 @@ behind every step are in `README.md` (Quickstart, Production, Admin shell, Prese
 
 - **The person's language** for everything you write; commands, paths, keys and file contents stay
   exactly as they are.
-- **Each step opens with a heading** `### Step N/M: <title>` (translated), then at most three
-  sentences: what this step does and why it matters. No walls of text.
+- **Each step opens with a heading** `### Step N: <title>` (translated), with no total: how many
+  steps there are depends on the way the person chooses. Then at most three sentences: what this
+  step does and why it matters. No walls of text.
 - **Every choice is a question with options** (the AskUserQuestion tool), never a question buried in
   prose. Each option: a short label and one sentence saying what it means and what it leads to
   (cost, what leaves the network, what it needs). The recommended option goes first, marked
