@@ -45,6 +45,9 @@ keys that say `your-*` and the models that say `local/*` are placeholders.
 
 - **`demo`** caps a question at 0.15 US dollars (`per_question_usd` in `models.yaml`), room for an
   open question that reads the code; `private` and `strict` keep 0.05.
+- **`demo`** lets a token ask 50 questions at once and 300 an hour (`limits` in `policies.yaml`), so a
+  person trying it never waits; `private` and `strict` keep 5 and 30. The budgets, not this limit,
+  are what caps the spend.
 - **`private`** sets `show_titles: false` in `policies.yaml`, so a repository's titles are withheld
   before any model sees them, and `judge_context: []` in the manifest, so the judge reads no
   repository text either. Answers are about statuses, numbers, dates and module names.

@@ -254,8 +254,9 @@ and then edit. The three differ in what leaves your network for the models.
   copies `presets/demo/`. Both only into an empty `config/`.
 - **Switching.** `cp -R config-examples/presets/<preset>/. deploy/compose/config/`, then your projects
   into `config/projects.yaml` again and `docker restart mercury-core-1`.
-- **`demo`** caps a question at $0.15 and holds a `pm`'s health answers for an approver; `private`
-  and `strict` cap it at $0.05.
+- **`demo`** caps a question at $0.15, lets a token ask 50 at once and 300 an hour, and holds a
+  `pm`'s health answers for an approver; `private` and `strict` cap a question at $0.05 and a token
+  at 5 at once and 30 an hour.
 - **`private`** also needs `judge_context: []` in each repository's manifest, as its `probe.yaml`
   has it, so the judge reads no repository text either.
 - **`strict`** needs your server's `chat_url` and its model names, in place of `local/*`, in
