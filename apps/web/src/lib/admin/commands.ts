@@ -1,23 +1,23 @@
 /**
  * The admin commands the panel shows beside what they change. The panel itself changes nothing:
- * every change is made on the server, over SSH, with `mctl` (the deployment guide's alias for
- * `docker compose exec core mercury-core admin`). These only put the command in words, ready to
- * copy; the values in them are the ones on screen.
+ * every change is made on the server, over SSH, at the admin shell's prompt, which takes the
+ * commands with nothing before them. These only put the command in words, ready to copy; the
+ * values in them are the ones on screen.
  */
 
 import type { Role } from '$lib/api';
 
-/** What `mctl` stands for, for the line that says how to run the commands. */
-export const MCTL = 'docker compose exec core mercury-core admin';
+/** What opens the admin shell on the server, for the line that says how to run the commands. */
+export const ADMIN_SHELL = 'docker exec -it mercury-core-1 mercury-core admin shell';
 
-/** A value as a shell reads it: bare when it is plain, in single quotes otherwise. */
+/** A value as the admin shell reads it: bare when it is plain, in single quotes otherwise. */
 export function quote(value: string): string {
 	if (/^[A-Za-z0-9@._,:/+=-]+$/.test(value)) return value;
 	return `'${value.replaceAll("'", `'\\''`)}'`;
 }
 
 function line(...parts: string[]): string {
-	return ['mctl', ...parts].join(' ');
+	return parts.join(' ');
 }
 
 function grant(email: string, projects: readonly string[], approver = false): string {

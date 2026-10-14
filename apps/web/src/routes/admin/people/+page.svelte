@@ -2,7 +2,7 @@
 	import { tick } from 'svelte';
 
 	import { AdminRead, PEOPLE_PATH } from '$lib/admin/admin.svelte';
-	import { commands, MCTL } from '$lib/admin/commands';
+	import { ADMIN_SHELL, commands } from '$lib/admin/commands';
 	import { approves, filterPeople, noFilter, summarize } from '$lib/admin/people';
 	import { tokenChip } from '$lib/admin/words';
 	import type { AdminPeople, AdminPerson, Role } from '$lib/api';
@@ -685,10 +685,9 @@
 					<span class="min-w-0">
 						<span class="font-semibold text-text-2">Read-only.</span>
 						This page shows people and their access, and changes nothing. Changes are made on the server
-						over SSH with the command shown beside each thing, where
-						<code class={codeChip}>mctl</code>
-						stands for
-						<code class={codeChip}>{MCTL}</code>.
+						over SSH: paste the command shown beside each thing into the admin shell, which
+						<code class={codeChip}>{ADMIN_SHELL}</code>
+						opens.
 					</span>
 				</p>
 			{:else if read.loading}

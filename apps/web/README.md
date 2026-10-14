@@ -27,5 +27,5 @@ sees each:
 
 The side panel links only the screens the person may use. Opened directly, Approvals, the admin
 screens and Audit show a notice instead and ask the core for nothing. The admin screens change
-nothing: beside what they show they give the command that changes it, ready to copy (`mctl …`,
-short for `docker compose exec core mercury-core admin …`).
+nothing: beside what they show they give the command that changes it, ready to copy and paste
+into the admin shell on the server (`docker exec -it mercury-core-1 mercury-core admin shell`).

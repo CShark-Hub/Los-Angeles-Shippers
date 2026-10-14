@@ -7,7 +7,7 @@ import type { AdminGrant, AdminOverview, AdminPerson, Role } from '$lib/api/type
 import PersonDetail from '$lib/components/admin/PersonDetail.svelte';
 import RepositoryCard from '$lib/components/admin/RepositoryCard.svelte';
 import { AdminRead, overviewPath, windowOf } from './admin.svelte';
-import { commands, MCTL, quote } from './commands';
+import { ADMIN_SHELL, commands, quote } from './commands';
 import {
 	approves,
 	filterPeople,
@@ -32,32 +32,32 @@ describe('the commands the panel shows', () => {
 		expect(quote('$(rm -rf /)')).toBe("'$(rm -rf /)'");
 	});
 
-	it('writes each change as the admin command that makes it, through mctl', () => {
+	it('writes each change as the command that makes it, as the admin shell takes it', () => {
 		expect(commands.grant('anna@example.com', ['delta'], true)).toBe(
-			'mctl user grant --email anna@example.com --projects delta --approver'
+			'user grant --email anna@example.com --projects delta --approver'
 		);
 		expect(commands.ungrant('anna@example.com', ['delta', 'gamma'])).toBe(
-			'mctl user ungrant --email anna@example.com --projects delta,gamma'
+			'user ungrant --email anna@example.com --projects delta,gamma'
 		);
 		// a grant again without the flag takes the flag off and keeps the grant
 		expect(commands.dropApprover('anna@example.com', ['delta', 'portfolio'])).toBe(
-			'mctl user grant --email anna@example.com --projects delta,portfolio'
+			'user grant --email anna@example.com --projects delta,portfolio'
 		);
 		expect(commands.setRole('anna@example.com', 'tech_lead')).toBe(
-			'mctl user set-role --email anna@example.com --role tech_lead'
+			'user set-role --email anna@example.com --role tech_lead'
 		);
 		expect(commands.addPerson('anna@example.com', 'Anna K', 'pm')).toBe(
-			"mctl user add --email anna@example.com --name 'Anna K' --role pm"
+			"user add --email anna@example.com --name 'Anna K' --role pm"
 		);
 		expect(commands.createToken('anna@example.com', 'work laptop')).toBe(
-			"mctl token create --email anna@example.com --label 'work laptop' --expires 90d"
+			"token create --email anna@example.com --label 'work laptop' --expires 90d"
 		);
-		expect(commands.revokeToken('publicid0001')).toBe('mctl token revoke publicid0001');
+		expect(commands.revokeToken('publicid0001')).toBe('token revoke publicid0001');
 		expect(commands.quarantine('delta', 'odd output')).toBe(
-			"mctl probe quarantine delta --reason 'odd output'"
+			"probe quarantine delta --reason 'odd output'"
 		);
-		expect(commands.release('delta')).toBe('mctl probe release delta');
-		expect(MCTL).toBe('docker compose exec core mercury-core admin');
+		expect(commands.release('delta')).toBe('probe release delta');
+		expect(ADMIN_SHELL).toBe('docker exec -it mercury-core-1 mercury-core admin shell');
 	});
 });
 
@@ -213,9 +213,7 @@ describe('the People screen', () => {
 		expect(lee.body).not.toContain('type="checkbox"');
 		expect(lee.words).toContain('Not as an approver: only a project manager or a tech lead');
 		expect(lee.words).toContain('Approver flag, no effect');
-		expect(lee.words).toContain(
-			'mctl user grant --email lee.chen@example.com --projects portfolio'
-		);
+		expect(lee.words).toContain('user grant --email lee.chen@example.com --projects portfolio');
 		expect(lee.words).not.toContain('--approver');
 		expect(lee.body).toMatch(/<option value="admin"[^>]*disabled/);
 

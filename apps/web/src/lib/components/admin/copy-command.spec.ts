@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import CopyCommand, { copyKeys, toClipboard } from './CopyCommand.svelte';
 
-const COMMAND = 'mctl user grant --email dana.reyes@example.com --projects delta';
+const COMMAND = 'user grant --email dana.reyes@example.com --projects delta';
 
 /** The command's box as the server renders it: its markup, and the words a person reads. */
 function box(props: { command: string; label?: string }) {
@@ -22,8 +22,8 @@ describe('a command to copy', () => {
 		expect(words).toContain('Grant access');
 		expect(words).toContain(COMMAND);
 		expect(body).toContain(`aria-label="Copy: ${COMMAND}"`);
-		// the prompt is decoration: a screen reader doesn't read a dollar before the command
-		expect(body).toMatch(/aria-hidden="true"[^>]*>\$<\/span>/);
+		// the admin shell's prompt is decoration: a screen reader doesn't read it before the command
+		expect(body).toMatch(/aria-hidden="true"[^>]*>mercury(&gt;|>)<\/span>/);
 	});
 
 	it('has its polite status on the page before a press, saying nothing yet', () => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MCTL } from '$lib/admin/commands';
+	import { ADMIN_SHELL } from '$lib/admin/commands';
 	import Icon from '$lib/components/Icon.svelte';
 
 	// Says once per screen how the commands beside things are run, and why nothing here changes
@@ -20,9 +20,9 @@
 	>
 	<p class="min-w-0 pt-0.5">
 		<span class="font-semibold text-text">Read-only.</span>
-		{what} Changes are made on the server over SSH with the command shown beside each thing, where
-		<code class={chip}>mctl</code>
-		stands for
-		<code class={chip}>{MCTL}</code>.
+		{what} Changes are made on the server over SSH: paste the command shown beside each thing into the
+		admin shell, which
+		<code class={chip}>{ADMIN_SHELL}</code>
+		opens.
 	</p>
 </div>
