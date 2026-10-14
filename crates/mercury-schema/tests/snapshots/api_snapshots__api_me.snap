@@ -1,0 +1,26 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: me
+---
+{
+  "projects": [
+    {
+      "approver": false,
+      "project": "delta"
+    },
+    {
+      "approver": true,
+      "project": "portfolio"
+    }
+  ],
+  "token": {
+    "expires_at": "2026-12-21T00:00:00Z",
+    "public_id": "publicid0001"
+  },
+  "user": {
+    "display_name": "Alex",
+    "email": "pm@example.com",
+    "id": "u_01JB2M3N4P5Q6R7S8T9V0W1X2Z",
+    "role": "pm"
+  }
+}

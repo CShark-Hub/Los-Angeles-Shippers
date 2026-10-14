@@ -1,0 +1,27 @@
+# The model backends, the backend and model of each of the core's roles, and the budgets.
+# Copied into the core's /config; every key is checked when the core starts (unknown keys fail).
+backends:
+  openrouter:
+    chat_url: https://openrouter.ai/api/v1/chat/completions
+    decisions_url: https://openrouter.ai/api/alpha/decisions
+    key_file: /run/secrets/openrouter_api_key
+    provider:                   # required; sent with every chat and Decisions request
+      data_collection: deny
+      zdr: true
+  openai_compatible:            # optional: a model server with the OpenAI chat API on your organisation's own host
+    chat_url: http://llm:8000/v1/chat/completions
+    key_file: null              # or a secret file, if the server wants a key
+roles:
+  # kind: jev runs only on openrouter; the fallback judge is a chat judge. Each model has
+  # zero-retention endpoints and takes temperature and JSON mode. The chat models are named by their
+  # dated snapshot, so a provider cannot move them under a running core (the chat endpoint answers
+  # with the name without the date). Jev's response names the dated snapshot that answered, which the
+  # audit keeps.
+  judge:          { backend: openrouter, kind: jev,  model: typesafe/jev-1.13, timeout_ms: 2000 }
+  judge_fallback: { backend: openrouter, kind: chat, model: openai/gpt-4.1-mini-2025-04-14, temperature: 0, max_tokens: 300, timeout_ms: 4000 }
+  planner:        { backend: openrouter, model: openai/gpt-4.1-mini-2025-04-14, temperature: 0, max_tokens: 150 }
+  composer:       { backend: openrouter, model: anthropic/claude-4.6-sonnet-20260217, temperature: 0.2, max_tokens: 400 }
+budgets:                        # over a cap the question fails with budget_exceeded
+  per_question_usd: 0.15        # an open question that reads the code costs 6-8 cents by itself; the private and strict presets keep 0.05
+  per_user_daily_usd: 1.00
+  global_daily_usd: 2.00

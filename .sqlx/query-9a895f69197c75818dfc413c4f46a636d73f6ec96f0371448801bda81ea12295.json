@@ -1,0 +1,40 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT project AS \"project!\", SUM(created_at >= ?) AS \"recent!: i64\",\n                  MAX(created_at) AS \"last!: String\"\n           FROM questions WHERE project IS NOT NULL GROUP BY project",
+  "describe": {
+    "columns": [
+      {
+        "name": "project!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "recent!: i64",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": "Expression"
+      },
+      {
+        "name": "last!: String",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "9a895f69197c75818dfc413c4f46a636d73f6ec96f0371448801bda81ea12295"
+}

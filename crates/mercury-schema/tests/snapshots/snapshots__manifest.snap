@@ -1,0 +1,59 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: manifest
+---
+{
+  "version": "0.1",
+  "project": "delta",
+  "display_name": "Delta — invoicing",
+  "access": "code",
+  "modules": {
+    "Invoicing": [
+      "src/Invoices/**",
+      "src/Billing/**"
+    ],
+    "Export": [
+      "src/Export/**"
+    ]
+  },
+  "module_labels": {
+    "Invoicing": [
+      "invoicing"
+    ]
+  },
+  "exclude": [
+    "docs/customers/**",
+    "**/*.pem"
+  ],
+  "tests": {
+    "frameworks": [
+      "xunit"
+    ]
+  },
+  "tracker": "github_issues",
+  "blocked_labels": [
+    "blocked",
+    "waiting"
+  ],
+  "allow": [
+    "progress",
+    "tested",
+    "blocked",
+    "health",
+    "changes"
+  ],
+  "deny": [
+    "people_evaluation"
+  ],
+  "redact": [
+    {
+      "pattern": "(?i)\\bmegabank\\b",
+      "replace": "the client"
+    }
+  ],
+  "signoff": [],
+  "judge_context": [
+    "titles",
+    "labels"
+  ]
+}

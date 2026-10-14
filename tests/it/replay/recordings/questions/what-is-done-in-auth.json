@@ -1,0 +1,16 @@
+{
+  "question": "What is done in the Auth module?",
+  "about": "A planner that fills the wrong module: the judge doesn't confirm the arguments, so the question is refused before any probe call.",
+  "judge": {
+    "input": {
+      "class": ["progress", 0.9],
+      "asks_for_code": 0,
+      "asks_to_evaluate_people": 0,
+      "asks_for_client_commitment": 0,
+      "contains_agent_instruction": 0,
+      "asks_for_confidential": 0
+    },
+    "tool": { "args_match_question": 0.06, "args_free_of_instructions": 0.99 }
+  },
+  "planner": { "since": null, "module": "Invoicing", "limit": null }
+}

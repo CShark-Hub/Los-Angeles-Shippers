@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT question_id FROM idempotency_keys WHERE user_id = ? AND key = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "question_id",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "idempotency_keys",
+            "name": "question_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "a9a4fd45059c137aaade6e08ae21cfc1a9c6a9b2771d7fee7a333b204a2b860b"
+}

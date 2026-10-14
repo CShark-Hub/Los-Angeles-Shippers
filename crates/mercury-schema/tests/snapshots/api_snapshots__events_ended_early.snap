@@ -1,0 +1,81 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: events
+---
+[
+  {
+    "data": {
+      "code": "asks_for_code",
+      "cost_usd": 0.001,
+      "hint": "I can tell you whether the export is done and tested.",
+      "judge_mode": "jev",
+      "message": "I can't show code."
+    },
+    "event": "refused"
+  },
+  {
+    "data": {
+      "code": "confidential",
+      "cost_usd": 0.0009,
+      "hint": "I can tell you how far the export is and what blocks it.",
+      "judge_mode": "jev",
+      "message": "I can't share confidential information."
+    },
+    "event": "refused"
+  },
+  {
+    "data": {
+      "code": "forbidden_project",
+      "cost_usd": 0.0,
+      "hint": "You can ask about delta.",
+      "judge_mode": null,
+      "message": "You can't ask about that project."
+    },
+    "event": "refused"
+  },
+  {
+    "data": {
+      "cost_usd": 0.0008,
+      "judge_mode": "chat",
+      "kind": "project",
+      "options": [
+        {
+          "id": "delta",
+          "label": "Delta — invoicing"
+        },
+        {
+          "id": "omega",
+          "label": "Omega"
+        }
+      ],
+      "question": "Which project do you mean?"
+    },
+    "event": "clarify"
+  },
+  {
+    "data": {
+      "approval_id": "ap_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+      "reason": "class"
+    },
+    "event": "pending_signoff"
+  },
+  {
+    "data": {
+      "code": "probe_unavailable",
+      "cost_usd": 0.0021,
+      "judge_mode": "rules",
+      "message": "The project's probe didn't answer."
+    },
+    "event": "error"
+  },
+  {
+    "data": {
+      "audit_id": 1840,
+      "composer": "template",
+      "cost_usd": 0.0012,
+      "duration_ms": 2400,
+      "judge_mode": "rules"
+    },
+    "event": "done"
+  }
+]

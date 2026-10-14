@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET text_redacted = '', answer_redacted = NULL WHERE created_at < ? AND (text_redacted <> '' OR answer_redacted IS NOT NULL)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "94564dfa070326c228debaea32f955c5268ae14ea786811f9911997a365e25f8"
+}

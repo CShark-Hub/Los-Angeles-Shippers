@@ -1,0 +1,21 @@
+# The dependency policy `just ci` enforces with cargo-deny: advisories, licences, duplicates and sources.
+
+[advisories]
+ignore = []
+
+[licenses]
+allow = ["Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Unicode-3.0", "Zlib"]
+confidence-threshold = 0.8
+# The list is the policy, whether or not a dependency uses each licence today.
+unused-allowed-license = "allow"
+# The workspace's own crates are not published (`publish = false`), so their licence is not checked.
+private = { ignore = true }
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

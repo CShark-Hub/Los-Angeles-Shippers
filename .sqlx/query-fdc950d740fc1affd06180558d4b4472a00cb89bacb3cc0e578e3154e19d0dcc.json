@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO questions (id, user_id, token_public_id, channel, project, status, clarify_of,\n                                text_redacted, created_at)\n         VALUES (?, ?, ?, ?, ?, 'running', ?, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 8
+    },
+    "nullable": []
+  },
+  "hash": "fdc950d740fc1affd06180558d4b4472a00cb89bacb3cc0e578e3154e19d0dcc"
+}

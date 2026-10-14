@@ -1,0 +1,86 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT status, project, class, judge_mode, cost_usd, duration_ms FROM questions WHERE id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "status",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "project",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "class",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "class"
+          }
+        }
+      },
+      {
+        "name": "judge_mode",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "judge_mode"
+          }
+        }
+      },
+      {
+        "name": "cost_usd",
+        "ordinal": 4,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "cost_usd"
+          }
+        }
+      },
+      {
+        "name": "duration_ms",
+        "ordinal": 5,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "questions",
+            "name": "duration_ms"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "7eca4654932ef31b460c01278bec81d84055583b77ea28ed32d3ace9327b7536"
+}

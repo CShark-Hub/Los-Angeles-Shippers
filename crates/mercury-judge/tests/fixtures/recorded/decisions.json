@@ -1,0 +1,41 @@
+{
+  "model": "typesafe/jev-1.13-20260917",
+  "answers": {
+    "asks_for_code": {
+      "type": "noul",
+      "noul": 0.12
+    },
+    "class": {
+      "type": "choice",
+      "choice": "tested",
+      "probabilities": {
+        "progress": 0.05,
+        "forbidden": 0.02,
+        "tested": 0.93
+      },
+      "confidence": 0.9
+    },
+    "health": {
+      "type": "score",
+      "score": 0.89,
+      "legend": {
+        "0": "failing",
+        "1": "flaky",
+        "2": "green"
+      },
+      "probabilities": {
+        "0": 0.4,
+        "1": 0.31,
+        "2": 0.29
+      },
+      "confidence": 0
+    }
+  },
+  "usage": {
+    "input_tokens": 416,
+    "output_tokens": 72,
+    "cost": 0.000017472
+  },
+  "id": "gen-dec-1791197539-TLF96TbWoEGTbWlvSnLM",
+  "provider": "TypeSafe"
+}

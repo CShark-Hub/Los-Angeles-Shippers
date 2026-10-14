@@ -1,0 +1,278 @@
+# A release: a `v*` tag publishes the core, probe and web images on GHCR, for amd64 and arm64, and
+# attaches the `mercury` CLI for Linux, macOS and Windows and the probe conformance runner, with their
+# SHA-256 checksums, to a GitHub Release whose notes are the tag's section of CHANGELOG.md.
+#
+# Run by hand (workflow_dispatch) it is a dry run: it builds and scans every image and builds every
+# binary the same way, and pushes, publishes and attaches nothing.
+#
+# Each image is built natively on a runner of its architecture with the Dockerfile CI uses, scanned like
+# CI scans it (a critical vulnerability that has a fix fails, unless .trivyignore.yaml says why not),
+# and pushed by architecture; one manifest per image then names both under the version. Nothing here
+# needs a secret but the workflow's own token, which may write packages and the release only in the
+# jobs that do.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_INCREMENTAL: 0
+  # pushed only on a tag; a dry run builds under this name and keeps it on the runner
+  PUBLISH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+
+jobs:
+  version:
+    name: The version and the release notes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      registry: ${{ steps.version.outputs.registry }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: The version from the tag (a dry run's from the commit)
+        id: version
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          if [ "$PUBLISH" = "true" ]; then
+            version=${REF_NAME#v}
+          else
+            version="0.0.0-dry-run.${GITHUB_SHA::7}"
+          fi
+          [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "::error::$version is not a version (vMAJOR.MINOR.PATCH, a pre-release after a dash)"; exit 1; }
+          prerelease=false
+          case "$version" in *-*) prerelease=true ;; esac
+          {
+            echo "version=$version"
+            # GHCR takes lower-case names only
+            echo "registry=ghcr.io/${OWNER,,}"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
+      - name: The release notes, the version's section of CHANGELOG.md
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+        run: |
+          set -euo pipefail
+          section() { # the lines under "## [$1]", up to the next "## ["
+            awk -v head="## [$1]" 'index($0, head) == 1 { on = 1; next } on && /^## \[/ { exit } on' CHANGELOG.md
+          }
+          notes=$(section "$VERSION")
+          # a pre-release or a dry run may go out before its section is written: then what is unreleased
+          if [ -z "$(tr -d '[:space:]' <<<"$notes")" ] && { [ "$PRERELEASE" = "true" ] || [ "$PUBLISH" != "true" ]; }; then
+            notes=$(section "Unreleased")
+          fi
+          [ -n "$(tr -d '[:space:]' <<<"$notes")" ] || { echo "::error::CHANGELOG.md has no section for $VERSION"; exit 1; }
+          printf '%s\n' "$notes" > release-notes.md
+          echo "release notes: $(wc -l < release-notes.md) lines"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release-notes.md
+
+  images:
+    name: Images (${{ matrix.arch }})
+    needs: version
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      REGISTRY: ${{ needs.version.outputs.registry }}
+      ARCH: ${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: just
+        env:
+          JUST_VERSION: 1.58.0
+        run: |
+          set -euo pipefail
+          # the CI setup pins just for x86_64 only; on either architecture cargo installs the same version
+          cargo install --locked --version "$JUST_VERSION" just
+      - name: The core, probe and web images, as `just _images` builds them
+        run: |
+          set -euo pipefail
+          for target in core probe web; do
+            docker build -f deploy/docker/Dockerfile --target "$target" \
+              -t "$REGISTRY/mercury-$target:$VERSION-$ARCH" .
+          done
+      - name: The image scan (Trivy, critical findings that have a fix)
+        run: just _image-scan "$REGISTRY/mercury-core:$VERSION-$ARCH" "$REGISTRY/mercury-probe:$VERSION-$ARCH" "$REGISTRY/mercury-web:$VERSION-$ARCH"
+      - name: Sign in to GHCR
+        if: env.PUBLISH == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push this architecture's images
+        if: env.PUBLISH == 'true'
+        run: |
+          set -euo pipefail
+          for target in core probe web; do
+            docker push "$REGISTRY/mercury-$target:$VERSION-$ARCH"
+          done
+      - name: A dry run pushes nothing
+        if: env.PUBLISH != 'true'
+        run: docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' | grep "/mercury-.*:$VERSION-$ARCH"
+
+  manifests:
+    name: One manifest per image, both architectures under the version
+    needs: [version, images]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      REGISTRY: ${{ needs.version.outputs.registry }}
+    steps:
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: mercury-core, mercury-probe and mercury-web at the version
+        run: |
+          set -euo pipefail
+          for target in core probe web; do
+            image="$REGISTRY/mercury-$target"
+            docker buildx imagetools create -t "$image:$VERSION" "$image:$VERSION-amd64" "$image:$VERSION-arm64"
+            docker buildx imagetools inspect "$image:$VERSION"
+          done
+
+  binaries:
+    name: CLI (${{ matrix.target }})
+    needs: version
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            runner: ubuntu-24.04
+            conformance: true
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-24.04-arm
+            conformance: true
+          - target: aarch64-apple-darwin
+            runner: macos-15
+            conformance: false
+          - target: x86_64-apple-darwin
+            runner: macos-15 # cross-compiled on Apple silicon: Intel runners are going away
+            conformance: false
+          - target: x86_64-pc-windows-msvc
+            runner: windows-2025
+            conformance: false
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      TARGET: ${{ matrix.target }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: The Rust toolchain rust-toolchain.toml pins, for this target
+        run: |
+          set -euo pipefail
+          rustup toolchain install
+          rustup target add "$TARGET"
+      - name: The CLI
+        run: cargo build --release --locked --target "$TARGET" -p mercury-cli
+      - name: The probe conformance runner
+        if: matrix.conformance
+        run: cargo build --release --locked --target "$TARGET" -p mercury-probe --bin mercury-probe-conformance
+      - name: The archives and their checksums
+        run: |
+          set -euo pipefail
+          out="$PWD/dist"
+          mkdir -p "$out"
+          bin="target/$TARGET/release"
+          exe=""
+          case "$TARGET" in *windows*) exe=".exe" ;; esac
+          pack() { # name, files…
+            local name=$1
+            shift
+            local stage
+            stage=$(mktemp -d)
+            cp "$@" README.md LICENSE "$stage/"
+            if [ -n "$exe" ]; then
+              (cd "$stage" && 7z a -tzip -bso0 "$out/$name.zip" ./*)
+            else
+              tar -czf "$out/$name.tar.gz" -C "$stage" .
+            fi
+          }
+          pack "mercury-$VERSION-$TARGET" "$bin/mercury$exe"
+          if [ "${{ matrix.conformance }}" = "true" ]; then
+            pack "mercury-probe-conformance-$VERSION-$TARGET" "$bin/mercury-probe-conformance"
+          fi
+          cd "$out"
+          for file in *; do
+            if command -v sha256sum >/dev/null; then sha256sum "$file"; else shasum -a 256 "$file"; fi > "$file.sha256"
+          done
+          ls -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    name: The GitHub Release
+    needs: [version, manifests, binaries]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      REGISTRY: ${{ needs.version.outputs.registry }}
+      PRERELEASE: ${{ needs.version.outputs.prerelease }}
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: The release, with the binaries, their checksums and the notes
+        run: |
+          set -euo pipefail
+          {
+            cat artifacts/release-notes/release-notes.md
+            echo
+            echo "### Images"
+            echo
+            for target in core probe web; do echo "- \`$REGISTRY/mercury-$target:$VERSION\` (linux/amd64, linux/arm64)"; done
+          } > notes.md
+          flags=()
+          [ "$PRERELEASE" = "true" ] && flags+=(--prerelease)
+          gh release create "$TAG" --verify-tag --title "Mercury $VERSION" --notes-file notes.md "${flags[@]}" artifacts/binaries-*/*

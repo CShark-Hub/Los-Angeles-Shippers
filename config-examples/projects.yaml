@@ -1,0 +1,27 @@
+# Which probes exist, the admin's cap on each, and where the core finds each probe's token.
+# Copied into the core's /config; every key is checked when the core starts (unknown keys fail).
+projects:
+  delta:                                # the synthetic fixture repository, tests/fixtures/repo-delta
+    display_name: "Delta — invoicing"
+    aliases: [delta, invoicing]
+    access_max: code                    # metadata · code · code_model: the admin's cap, required
+    probe:
+      url: http://probe-delta:7000/mcp
+      token_file: /run/mercury/probe-tokens/delta.token
+  # A project whose probe can't read its own .mercury/probe.yaml uses a copy of the manifest's rules
+  # (no version, project or display_name; the keys above give them), and runs in metadata mode:
+  #
+  # omega:
+  #   display_name: "Omega — mobile app"
+  #   aliases: [omega, mobile]
+  #   access_max: metadata
+  #   manifest:
+  #     module_labels: { Login: [login], Payments: [payments] }
+  #     blocked_labels: [blocked]
+  #     allow: [progress, tested, blocked, health, changes]
+  #     redact:
+  #       - { pattern: '(?i)\bexample\s+bank\b', replace: 'the client' }
+  #     judge_context: [titles, labels]
+  #   probe:
+  #     url: http://probe-omega:7000/mcp
+  #     token_file: /run/mercury/probe-tokens/omega.token

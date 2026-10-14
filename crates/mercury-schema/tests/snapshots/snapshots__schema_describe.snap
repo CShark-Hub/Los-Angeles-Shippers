@@ -1,0 +1,192 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"input\": input, \"output\": output })"
+---
+{
+  "input": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "title": "DescribeArgs",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "AccessLimit": {
+        "description": "What lowered the probe's access mode below the one asked for.",
+        "oneOf": [
+          {
+            "const": "token",
+            "description": "The git host token's permissions.",
+            "type": "string"
+          },
+          {
+            "const": "manifest",
+            "description": "The manifest's `access`.",
+            "type": "string"
+          },
+          {
+            "const": "access_max",
+            "description": "The admin's cap for the project.",
+            "type": "string"
+          },
+          {
+            "const": "size_cap",
+            "description": "The snapshot is above the probe's size cap.",
+            "type": "string"
+          },
+          {
+            "const": "no_code_reader",
+            "description": "`code_model` was asked for, and no code reader is configured.",
+            "type": "string"
+          }
+        ]
+      },
+      "AccessMode": {
+        "description": "How much of a repository the probe reads, ordered so the strictest of several is the `min`.",
+        "oneOf": [
+          {
+            "const": "metadata",
+            "description": "Pull requests, issues, CI runs and releases; no file contents.",
+            "type": "string"
+          },
+          {
+            "const": "code",
+            "description": "The above, plus a snapshot of the default branch analysed by rules.",
+            "type": "string"
+          },
+          {
+            "const": "code_model",
+            "description": "The above, plus a code reader that reads the snapshot for one question and answers with\nfindings (`ask_code`).",
+            "type": "string"
+          }
+        ]
+      },
+      "CommitShort": {
+        "format": "commit-short",
+        "pattern": "^[0-9a-f]{7,12}$",
+        "type": "string"
+      },
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      },
+      "ProjectId": {
+        "format": "project-id",
+        "pattern": "^[a-z][a-z0-9-]{0,39}$",
+        "type": "string"
+      },
+      "SafeText": {
+        "description": "One line of redacted text: no code, paths, identifiers, URLs, e-mail addresses or secrets.",
+        "format": "safe-text",
+        "maxLength": 120,
+        "minLength": 1,
+        "type": "string"
+      },
+      "SchemaId": {
+        "const": "mercury.facts/0.1",
+        "type": "string"
+      },
+      "Snapshot": {
+        "additionalProperties": false,
+        "description": "The snapshot the index was built from. `commit_short` is `null` in `metadata` mode.",
+        "properties": {
+          "commit_short": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CommitShort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "indexed_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "meta_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "commit_short",
+          "indexed_at",
+          "meta_at"
+        ],
+        "type": "object"
+      },
+      "ToolName": {
+        "description": "A probe tool. The set is fixed by the probe's access mode; a probe that offers a different one\nis quarantined.",
+        "enum": [
+          "describe",
+          "progress",
+          "tested",
+          "blocked",
+          "health",
+          "changes",
+          "ask_code"
+        ],
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The reply of `describe`.",
+    "properties": {
+      "access": {
+        "$ref": "#/$defs/AccessMode",
+        "description": "The effective mode: the strictest of the token, the manifest and the admin's cap."
+      },
+      "access_limited_by": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/AccessLimit"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "What lowered the mode, or `null` when nothing did."
+      },
+      "display_name": {
+        "$ref": "#/$defs/SafeText"
+      },
+      "modules": {
+        "items": {
+          "$ref": "#/$defs/ModuleName"
+        },
+        "type": "array"
+      },
+      "project": {
+        "$ref": "#/$defs/ProjectId"
+      },
+      "schema": {
+        "$ref": "#/$defs/SchemaId"
+      },
+      "snapshot": {
+        "$ref": "#/$defs/Snapshot"
+      },
+      "tools": {
+        "items": {
+          "$ref": "#/$defs/ToolName"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "schema",
+      "project",
+      "display_name",
+      "access",
+      "access_limited_by",
+      "modules",
+      "tools",
+      "snapshot"
+    ],
+    "title": "DescribeReply",
+    "type": "object"
+  }
+}

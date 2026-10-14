@@ -1,0 +1,39 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: page
+---
+{
+  "items": [
+    {
+      "at": "2026-10-04T15:12:03Z",
+      "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "payload": {
+        "checks": [],
+        "class": "progress",
+        "p": 0.94
+      },
+      "payload_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "project": "delta",
+      "question_id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+      "seq": 1834,
+      "token": "publicid0001",
+      "type": "classified",
+      "user": "pm@example.com"
+    },
+    {
+      "at": "2026-10-04T15:13:00Z",
+      "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "payload": null,
+      "payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "prev_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "project": null,
+      "question_id": null,
+      "seq": 1835,
+      "token": null,
+      "type": "token_revoked",
+      "user": "admin@example.com"
+    }
+  ],
+  "next": null
+}

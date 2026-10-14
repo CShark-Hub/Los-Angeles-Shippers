@@ -1,0 +1,137 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: "json!({ \"input\": input, \"output\": output })"
+---
+{
+  "input": {
+    "$defs": {
+      "RedactedQuestion": {
+        "description": "The asker's question after the redaction rules, on one line: a tool argument, never part of a reply.",
+        "format": "redacted-question",
+        "maxLength": 1000,
+        "minLength": 1,
+        "type": "string"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The arguments of `ask_code`: the asker's question after the project's redaction rules, and\nnothing else.",
+    "properties": {
+      "question": {
+        "$ref": "#/$defs/RedactedQuestion"
+      }
+    },
+    "required": [
+      "question"
+    ],
+    "title": "AskCodeArgs",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "Finding": {
+        "additionalProperties": false,
+        "description": "One thing the code reader found, in a line anyone may read.",
+        "properties": {
+          "confidence": {
+            "description": "How sure the reader is, from 0 to 100.",
+            "format": "uint8",
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "module": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ModuleName"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The probe's module the finding is about, or `null` when it is about none in particular."
+          },
+          "text": {
+            "$ref": "#/$defs/SafeText"
+          }
+        },
+        "required": [
+          "text",
+          "module",
+          "confidence"
+        ],
+        "type": "object"
+      },
+      "ModuleName": {
+        "description": "A module name from the probe's describe tool, or Other.",
+        "format": "module-name",
+        "pattern": "^\\p{L}[\\p{L}\\p{N} &+-]{0,39}$",
+        "type": "string"
+      },
+      "SafeText": {
+        "description": "One line of redacted text: no code, paths, identifiers, URLs, e-mail addresses or secrets.",
+        "format": "safe-text",
+        "maxLength": 120,
+        "minLength": 1,
+        "type": "string"
+      },
+      "SchemaId": {
+        "const": "mercury.facts/0.1",
+        "type": "string"
+      },
+      "Usd": {
+        "description": "US dollars.",
+        "minimum": 0,
+        "type": "number"
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "The reply of `ask_code`, served only in `code_model`: what the project's code reader found in\nthe snapshot for one question. The reader's words reach the core only as `SafeText`.",
+    "properties": {
+      "as_of": {
+        "description": "When the snapshot the findings were read from was taken.",
+        "format": "date-time",
+        "type": "string"
+      },
+      "cost_usd": {
+        "$ref": "#/$defs/Usd",
+        "description": "What the code reader's model cost for this question."
+      },
+      "findings": {
+        "description": "At most 12.",
+        "items": {
+          "$ref": "#/$defs/Finding"
+        },
+        "maxItems": 12,
+        "type": "array"
+      },
+      "prompt_version": {
+        "description": "The version of the code reader's prompt.",
+        "format": "uint16",
+        "maximum": 65535,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "schema": {
+        "$ref": "#/$defs/SchemaId"
+      },
+      "withheld": {
+        "description": "Findings dropped because their text failed the `SafeText` rules.",
+        "format": "uint32",
+        "minimum": 0,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "schema",
+      "as_of",
+      "findings",
+      "withheld",
+      "cost_usd",
+      "prompt_version"
+    ],
+    "title": "AskCodeReply",
+    "type": "object"
+  }
+}

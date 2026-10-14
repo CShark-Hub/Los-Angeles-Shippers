@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT payload_json FROM audit_events\n         WHERE question_id IS NOT NULL AND created_at >= ?\n           AND type IN ('done', 'refused', 'clarify', 'error')",
+  "describe": {
+    "columns": [
+      {
+        "name": "payload_json",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "d6e5c45971498aba83b595100e397ac820a9b962ae27f6650a9f094a6872f065"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE probes SET status = ? WHERE status = ? AND last_seen_at <= ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "a11a4abb15d00e4dccb1354084f9cb25210f21093139519f295cdd9fd2d48a3a"
+}

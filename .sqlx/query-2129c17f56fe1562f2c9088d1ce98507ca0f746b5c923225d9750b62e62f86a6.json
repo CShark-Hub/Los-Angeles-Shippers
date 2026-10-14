@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE approvals SET draft_answer = '', note = NULL, reason_json = CASE WHEN json_valid(reason_json) THEN json_set(reason_json, '$.flags', json(( SELECT json_group_array(json_set(value, '$.sentence', '')) FROM json_each(reason_json, '$.flags')))) ELSE '{}' END WHERE question_id IN (SELECT id FROM questions WHERE created_at < ?) AND (draft_answer <> '' OR note IS NOT NULL OR NOT json_valid(reason_json) OR EXISTS (SELECT 1 FROM json_each( CASE WHEN json_valid(reason_json) THEN reason_json ELSE '{}' END, '$.flags') WHERE json_extract(value, '$.sentence') <> ''))",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "2129c17f56fe1562f2c9088d1ce98507ca0f746b5c923225d9750b62e62f86a6"
+}

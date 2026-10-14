@@ -1,0 +1,33 @@
+# The disk-full drill (tests/drills/disk-full.mjs) only: the core's /data on a 16 MB tmpfs in place
+# of the named volume, so the drill fills a disk of the core's own in memory and never one Docker
+# shares with other stacks. Passed over the integration runs' files when the drill recreates the
+# core; the two other mounts are the it overlay's. The tmpfs is a volume a second container keeps
+# mounted, so the database outlives a restart of the core; it goes with the drill's `down -v`.
+services:
+  core:
+    volumes: !override
+      - core-disk:/data
+      - ${MERCURY_IT_WORK:-../../target/it}/config:/config:ro
+      - ${MERCURY_IT_WORK:-../../target/it}/secrets/probes:/run/mercury/probe-tokens:ro
+
+  # holds the tmpfs while the core restarts: a volume of the local driver is unmounted, and its
+  # content lost, once no running container uses it
+  disk-holder:
+    image: ${MERCURY_REGISTRY}/mercury-core:${MERCURY_VERSION}
+    entrypoint: ["sleep", "infinity"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    user: "10001:10001"
+    init: true
+    network_mode: none
+    volumes:
+      - core-disk:/data
+
+volumes:
+  core-disk:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: "size=16m,uid=10001,gid=10001,mode=0700"

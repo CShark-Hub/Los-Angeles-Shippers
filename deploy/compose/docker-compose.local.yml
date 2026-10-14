@@ -1,0 +1,15 @@
+# Laptops only: Caddy on http://localhost:8080, never on a VM.
+services:
+  caddy:
+    image: caddy:2.11.4-alpine                  # the official image, as mercury-web is built on; the local build is mounted instead
+    ports: !override ["127.0.0.1:8080:8080"]    # plain http, localhost only (Docker Compose 2.24+)
+    environment:
+      MERCURY_SITE: ":8080"
+    volumes:
+      # what `pnpm build` in apps/web wrote (`just compose-up` and `just demo-local` run it first): the
+      # static files and the CSP header with this build's script hashes; the Caddyfile imports the latter
+      - ../../apps/web/build:/srv/web:ro
+      - ../../apps/web/csp.caddy:/etc/caddy/csp.caddy:ro
+  core:
+    environment:
+      MERCURY_PUBLIC_ORIGIN: ${MERCURY_PUBLIC_ORIGIN:-http://localhost:8080}

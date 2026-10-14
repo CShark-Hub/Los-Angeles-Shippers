@@ -1,0 +1,79 @@
+---
+source: crates/mercury-schema/tests/api_snapshots.rs
+expression: "json!({\n    \"new\": new, \"accepted\": accepted, \"again\": again, \"accepted_again\":\n    accepted_again, \"delivered\": delivered, \"running\": running, \"feedback\":\n    feedback\n})"
+---
+{
+  "accepted": {
+    "id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y"
+  },
+  "accepted_again": {
+    "follows": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Z",
+    "id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y"
+  },
+  "again": {
+    "follows": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Z",
+    "project": "delta",
+    "text": "what's done in billing this week?"
+  },
+  "delivered": {
+    "answer": {
+      "confidence": 0.91,
+      "facts": [
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "at": "2026-10-04",
+              "ref": "#412",
+              "state": "merged",
+              "type": "pr"
+            }
+          ],
+          "id": "f_7Qx2",
+          "kind": "feature",
+          "module": "Invoicing",
+          "people": [],
+          "status": "done",
+          "tested": "passing",
+          "title": "Invoice list with filters",
+          "title_withheld": false,
+          "updated_at": "2026-10-04T15:12:00Z",
+          "waiting_on": null
+        }
+      ],
+      "text": "One item was finished in Invoicing this week: the invoice list with filters."
+    },
+    "audit_id": 1834,
+    "class": "progress",
+    "cost_usd": 0.011,
+    "duration_ms": 6420,
+    "id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+    "judge_mode": "jev",
+    "project": "delta",
+    "refusal": null,
+    "status": "delivered"
+  },
+  "feedback": {
+    "helpful": true,
+    "needed_dev": false
+  },
+  "new": {
+    "clarify": {
+      "of": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+      "option": "delta"
+    },
+    "text": "what's done this week?"
+  },
+  "running": {
+    "answer": null,
+    "audit_id": null,
+    "class": null,
+    "cost_usd": 0.0,
+    "duration_ms": null,
+    "id": "q_01JB2M3N4P5Q6R7S8T9V0W1X2Y",
+    "judge_mode": null,
+    "project": null,
+    "refusal": null,
+    "status": "running"
+  }
+}

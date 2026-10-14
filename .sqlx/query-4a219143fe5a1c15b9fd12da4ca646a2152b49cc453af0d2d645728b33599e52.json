@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE questions SET status = 'failed', finished_at = COALESCE(finished_at, ?) WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "4a219143fe5a1c15b9fd12da4ca646a2152b49cc453af0d2d645728b33599e52"
+}

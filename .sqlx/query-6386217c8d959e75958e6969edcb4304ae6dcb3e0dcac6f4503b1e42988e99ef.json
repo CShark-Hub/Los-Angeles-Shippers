@@ -1,0 +1,136 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT a.seq, a.question_id, a.type AS event_type, a.created_at, a.project,\n                  a.payload_json, a.payload_sha256, a.prev_hash, a.hash,\n                  COALESCE(u.email, json_extract(a.payload_json, '$.email')) AS \"user_email?: String\",\n                  COALESCE(q.token_public_id, json_extract(a.payload_json, '$.token'),\n                           json_extract(a.payload_json, '$.public_id')) AS \"token?: String\"\n           FROM audit_events a\n           LEFT JOIN questions q ON q.id = a.question_id\n           LEFT JOIN users u ON u.id = q.user_id\n           WHERE a.seq > ? AND a.seq <= ?\n             AND (? IS NULL OR COALESCE(a.project, q.project) = ?)\n             AND (? IS NULL OR lower(COALESCE(u.email, json_extract(a.payload_json, '$.email'))) = ?)\n             AND (? IS NULL OR COALESCE(q.token_public_id, json_extract(a.payload_json, '$.token'),\n                                        json_extract(a.payload_json, '$.public_id')) = ?)\n             AND (? IS NULL OR a.question_id = ?)\n             AND (? IS NULL OR q.class = ?)\n             AND (? IS NULL OR q.status = ?)\n             AND (? IS NULL OR a.created_at >= ?)\n             AND (? IS NULL OR a.created_at < ?)\n           ORDER BY a.seq\n           LIMIT ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "seq",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "seq"
+          }
+        }
+      },
+      {
+        "name": "question_id",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "question_id"
+          }
+        }
+      },
+      {
+        "name": "event_type",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "type"
+          }
+        }
+      },
+      {
+        "name": "created_at",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "name": "project",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "project"
+          }
+        }
+      },
+      {
+        "name": "payload_json",
+        "ordinal": 5,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      },
+      {
+        "name": "payload_sha256",
+        "ordinal": 6,
+        "type_info": "Blob",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_sha256"
+          }
+        }
+      },
+      {
+        "name": "prev_hash",
+        "ordinal": 7,
+        "type_info": "Blob",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "prev_hash"
+          }
+        }
+      },
+      {
+        "name": "hash",
+        "ordinal": 8,
+        "type_info": "Blob",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "hash"
+          }
+        }
+      },
+      {
+        "name": "user_email?: String",
+        "ordinal": 9,
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "name": "token?: String",
+        "ordinal": 10,
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 19
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "6386217c8d959e75958e6969edcb4304ae6dcb3e0dcac6f4503b1e42988e99ef"
+}

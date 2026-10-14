@@ -1,0 +1,23 @@
+---
+source: crates/mercury-schema/tests/snapshots.rs
+expression: reply
+---
+{
+  "schema": "mercury.facts/0.1",
+  "as_of": "2026-10-04T15:12:30Z",
+  "build": {
+    "status": "none",
+    "at": null
+  },
+  "ci_pass_rate_7d": 0.0,
+  "open_prs": {
+    "count": 0,
+    "oldest_days": 0
+  },
+  "todo_fixme": null,
+  "last_release": {
+    "name": null,
+    "at": null
+  },
+  "score": 40
+}

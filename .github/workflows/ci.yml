@@ -1,0 +1,128 @@
+# CI is `just ci`, run as its five parts at once, one job each: ci-policy, ci-rust, ci-web, ci-e2e and ci-vm.
+# Each job calls the recipes its part is made of, one step each, so every check still lives in the
+# justfile and a failure loses at most one step's log. The steps every job starts with are in
+# .github/actions/setup. No job needs a secret: the runs on Compose answer from recorded model
+# responses, so the workflow runs the same on a fork.
+name: CI
+
+on:
+  pull_request:
+    branches: [development, main]
+  push:
+    branches: [development, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # A fresh machine gains nothing from incremental artifacts, and line tables are all a backtrace
+  # needs: the test build shrinks from about 9 GB to about 3 GB.
+  CARGO_INCREMENTAL: 0
+  CARGO_PROFILE_DEV_DEBUG: line-tables-only
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+
+# Each time limit is about twice the job's measured time on a fresh runner.
+jobs:
+  policy:
+    name: Policies (ci-policy)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the secret scan reads the whole history
+      - uses: ./.github/actions/setup
+        with:
+          tools: just deny gitleaks
+          rust: "true"
+      - name: main takes pull requests only from development
+        if: github.event_name == 'pull_request' && github.base_ref == 'main' && github.head_ref != 'development'
+        run: |
+          echo "::error::main takes pull requests only from development"
+          exit 1
+      - name: fmt, the lockfile, cargo-deny, gitleaks, the Compose files
+        run: just ci-policy
+
+  rust:
+    name: Rust (ci-rust)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          tools: just nextest
+          rust: "true"
+      - name: clippy
+        run: just _clippy
+      - name: unit tests
+        run: just test
+      - name: Free disk
+        if: always()
+        run: df -h / | tail -1
+
+  web:
+    name: Web client (ci-web)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          node: "true"
+      - name: install, audit, lint, type check, tests, build
+        run: just ci-web
+
+  e2e:
+    name: Images and the runs on Compose (ci-e2e)
+    runs-on: ubuntu-24.04
+    # the browser tests run in four browsers, about four minutes each
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          node: "true"
+      - name: the core, probe and web images
+        run: just _images && df -h / | tail -1
+      - name: the image scan (Trivy, critical findings that have a fix)
+        run: just _image-scan
+      - name: the CLI, from the same release build
+        run: just _cli-image
+      - name: config check in the core image
+        run: just _config-check
+      - name: the web client's packages
+        run: just _web-install
+      - name: the browsers of the web client's tests (Chromium, Edge, Firefox, WebKit)
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium firefox webkit msedge
+      - name: the runs on Compose, with the web client in a browser
+        run: just it --web
+        env:
+          MERCURY_CLI: ${{ github.workspace }}/target/ci-bin/mercury
+          MERCURY_E2E_BROWSERS: chromium,edge,firefox,webkit
+      - name: the attack questions (recorded)
+        run: just redteam
+        env:
+          MERCURY_CLI: ${{ github.workspace }}/target/ci-bin/mercury
+      - name: Free disk
+        if: always()
+        run: df -h / | tail -1
+
+  # The default files as a server runs them: Caddy on 80 and 443 with TLS (its local CA for localhost),
+  # the fixture's probe and the replay server, checked over HTTPS (deploy/compose/scripts/vm-smoke.sh).
+  vm:
+    name: The default files in VM mode (ci-vm)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          node: "true"
+      - name: the images, then the VM-mode smoke test over HTTPS
+        run: just ci-vm

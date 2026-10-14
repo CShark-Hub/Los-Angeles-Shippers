@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT e.created_at, e.payload_json FROM audit_events e\n         WHERE e.question_id IS NOT NULL AND e.created_at >= ?\n           AND e.type IN ('done', 'refused', 'clarify', 'error')\n           AND NOT EXISTS (SELECT 1 FROM audit_events h\n                           WHERE h.question_id = e.question_id AND h.type = 'pending_signoff')\n         ORDER BY e.created_at, e.seq",
+  "describe": {
+    "columns": [
+      {
+        "name": "created_at",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "name": "payload_json",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "audit_events",
+            "name": "payload_json"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true
+    ]
+  },
+  "hash": "f1347d740575fc4e9c54ead8c3f5db46c8c3a8e259412902f7f92b32d6a662c3"
+}
