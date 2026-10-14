@@ -66,7 +66,13 @@ for probes, [docs/probe-spec.md](docs/probe-spec.md).
 
 ## Quickstart
 
-One machine, the whole stack in Docker Compose. You need Docker with Compose 2.24 or later,
+**Guided, with Claude Code.** Clone the repository, open it in
+[Claude Code](https://claude.com/claude-code) and type `/mercury-init`. It checks the machine, asks
+which way you want (the demo below, or production on your own repositories), runs the commands and
+checks each step. Keys and tokens never go through the chat: you write them into their files
+yourself. The skill is [`.claude/skills/mercury-init/`](.claude/skills/mercury-init/SKILL.md).
+
+**By hand.** One machine, the whole stack in Docker Compose. You need Docker with Compose 2.24 or later,
 [`just`](https://github.com/casey/just), Node.js 22 with pnpm (`corepack enable`) and bash (Git
 Bash on Windows); Rust through [`rustup`](https://rustup.rs) only to build the CLI.
 
@@ -303,6 +309,7 @@ Details in [config-examples/presets/README.md](config-examples/presets/README.md
 | `apps/web` | the web client |
 | `deploy/` | the images, the Compose files, the Caddyfile and the egress proxy |
 | `config-examples/` | the configuration and its presets |
+| `.claude/skills/mercury-init/` | `/mercury-init`, the guided setup in Claude Code |
 | `tests/` | the fixture repository, the runs on Compose, the labelled questions and the attacks |
 
 Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · security: [SECURITY.md](SECURITY.md) ·
