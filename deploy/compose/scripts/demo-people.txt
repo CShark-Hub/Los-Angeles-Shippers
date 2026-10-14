@@ -1,0 +1,11 @@
+# The demo's people, one of each role, which `just compose-up` adds to a database that has nobody
+# yet. The admin shell runs this file as a script (`mercury-core admin shell < demo-people.txt`) and
+# stops at its first line that fails. The recipe makes their tokens into secrets/demo-tokens.
+# The fixture's stack on a laptop only: never a server.
+user add --email pm@example.com --name "Demo PM" --role pm
+user grant --email pm@example.com --projects delta
+user add --email lead@example.com --name "Demo Lead" --role tech_lead
+user grant --email lead@example.com --projects delta --approver
+user add --email board@example.com --name "Demo Board" --role board
+user grant --email board@example.com --projects delta,portfolio
+user add --email admin@example.com --name "Demo Admin" --role admin

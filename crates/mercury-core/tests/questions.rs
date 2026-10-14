@@ -120,7 +120,11 @@ async fn core_with(runner: Option<Arc<dyn Runner>>) -> Core {
         tokens.push(token.token.reveal());
     }
     let examples = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../config-examples");
-    let (config, _) = mercury_core::config::load(&examples).unwrap();
+    let (mut config, _) = mercury_core::config::load(&examples).unwrap();
+    // the token limit these tests count on, as the private and strict presets ship it; the examples,
+    // the demo's, allow a person trying them far more
+    config.policies.limits.questions_per_hour = 30;
+    config.policies.limits.burst = 5;
     let go_on = Arc::new(Notify::new());
     let runner = runner.unwrap_or_else(|| Arc::new(Scripted { go_on: go_on.clone() }));
     let app = app(Questions::new(db.clone(), Arc::new(config), runner));

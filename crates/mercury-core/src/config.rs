@@ -566,7 +566,7 @@ mod tests {
         assert!(found[0].contains("projects.delta.access_max"), "{found:?}");
         assert!(found[0].contains("expected one of"), "{found:?}");
         assert!(!found[0].contains("PLANTED"), "{found:?}");
-        let found = problems(POLICIES, |t| t.replace("burst: 5", &format!("burst: {secret}")));
+        let found = problems(POLICIES, |t| t.replace("burst: 50", &format!("burst: {secret}")));
         assert!(
             found[0].contains("limits.burst") && !found[0].contains("PLANTED"),
             "{found:?}"
@@ -829,7 +829,7 @@ mod tests {
     fn the_core_stops_with_one_line_per_problem() {
         let dir = planted(POLICIES, |t| {
             t.replace("version: 1", "version: 2")
-                .replace("burst: 5", "burst: 0")
+                .replace("burst: 50", "burst: 0")
         });
         let err = load(dir.path()).unwrap_err();
         assert!(err.contains("1 problem(s)"), "{err}");
